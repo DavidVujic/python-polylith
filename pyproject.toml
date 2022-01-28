@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "poetry-polylith-plugin"
+version = "0.1.0"
+description = "A Poetry plugin that aims to simplify working with Polylith monorepos"
+authors = ["David Vujic"]
+homepage = "https://github.com/davidvujic/poetry-polylith-plugin"
+repository = "https://github.com/davidvujic/poetry-polylith-plugin"
+readme = "README.md"
+packages = [{include = "poetry_polylith_plugin"}]
+
+[tool.poetry.plugins."poetry.application.plugin"]
+poetry-polylith-plugin = "poetry_polylith_plugin:PolylithPlugin"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+poetry = {version = "^1.2.0a2", allow-prereleases = true}
+poetry-multiproject-plugin = "^0.2.1"
+
+
+[tool.poetry.dev-dependencies]
+cachecontrol = "0.12.10"
+cleo = "1.0.0a4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
