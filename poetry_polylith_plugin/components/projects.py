@@ -50,7 +50,7 @@ def pick_from_workspace(project_toml, workspace_toml):
     return project_toml | d
 
 
-def create_project(path: Path, name: str):
+def create_project(path: Path, namespace: str, name: str):
     d = create_dir(path, f"{dir_name}/{name}")
 
     workspace_toml = get_pyproject_from_workspace(path)
