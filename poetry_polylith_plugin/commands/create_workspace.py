@@ -18,7 +18,7 @@ class CreateWorkspaceCommand(Command):
     ]
 
     def handle(self) -> int:
-        path = workspaces.find_workspace_root(Path.cwd())
+        path = Path.cwd()
         namespace = self.option("name")
 
         if not namespace:
