@@ -1,7 +1,12 @@
 from poetry.console.application import Application
 from poetry.plugins.application_plugin import ApplicationPlugin
 
-from poetry_polylith_plugin.commands import create_component, create_workspace
+from poetry_polylith_plugin.commands import (
+    create_base,
+    create_component,
+    create_project,
+    create_workspace,
+)
 
 
 class PolylithPlugin(ApplicationPlugin):
@@ -12,4 +17,12 @@ class PolylithPlugin(ApplicationPlugin):
 
         application.command_loader.register_factory(
             create_component.command_name, create_component.CreateComponentCommand
+        )
+
+        application.command_loader.register_factory(
+            create_base.command_name, create_base.CreateBaseCommand
+        )
+
+        application.command_loader.register_factory(
+            create_project.command_name, create_project.CreateProjectCommand
         )
