@@ -41,22 +41,17 @@ def pick_from_workspace(project_toml, workspace_toml):
     authors = workspace_toml["tool"]["poetry"]["authors"]
     python_version = workspace_toml["tool"]["poetry"]["dependencies"]["python"]
 
-    d = {
-        "tool": {
-            "poetry": {"authors": authors, "dependencies": {"python": python_version}}
-        }
-    }
-
-    return project_toml | d
+    project_toml["tool"]["poetry"]["authors"] = authors
+    project_toml["tool"]["poetry"]["dependencies"]["python"] = python_version
 
 
 def create_project(path: Path, namespace: str, name: str):
     d = create_dir(path, f"{dir_name}/{name}")
 
     workspace_toml = get_pyproject_from_workspace(path)
-    template_toml = create_project_pyproject(name)
+    project_toml = create_project_pyproject(name)
 
-    project_toml = pick_from_workspace(template_toml, workspace_toml)
+    pick_from_workspace(project_toml, workspace_toml)
 
     fullpath = d / "pyproject.toml"
 
