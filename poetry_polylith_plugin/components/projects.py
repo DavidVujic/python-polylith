@@ -1,8 +1,9 @@
 from pathlib import Path
-import tomlkit
 
+import tomlkit
 from poetry_polylith_plugin.components.dirs import create_dir
 
+dir_name = "projects"
 
 template = """\
 [tool.poetry]
@@ -29,7 +30,7 @@ def get_pyproject_from_workspace(path: Path) -> dict:
     with open(str(path / "pyproject.toml"), "r") as f:
         data: dict = tomlkit.loads(f.read())
 
-    return tomlkit.loads(data)
+    return data
 
 
 def create_project_pyproject(name) -> dict:
@@ -50,17 +51,12 @@ def pick_from_workspace(project_toml, workspace_toml):
 
 
 def create_project(path: Path, name: str):
-    d = create_dir(path, f"projects/{name}")
+    d = create_dir(path, f"{dir_name}/{name}")
 
-    project_toml: dict = get_pyproject(path)
+    workspace_toml = get_pyproject_from_workspace(path)
+    template_toml = create_project_pyproject(name)
 
-    project_toml["tool"]["poetry"]["authors"] = workspace_toml["tool"]["poetry"][
-        "authors"
-    ]
-
-    project_toml["tool"]["poetry"]["dependencies"]["python"] = workspace_toml["tool"][
-        "poetry"
-    ]["dependencies"]["python"]
+    project_toml = pick_from_workspace(template_toml, workspace_toml)
 
     fullpath = d / "pyproject.toml"
 

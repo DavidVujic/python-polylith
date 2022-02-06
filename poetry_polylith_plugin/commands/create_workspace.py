@@ -1,7 +1,8 @@
 from pathlib import Path
 
 from cleo.helpers import option
-from poetry.console.commands.command import Commmand
+
+from poetry.console.commands.command import Command
 from poetry_polylith_plugin.components import workspaces
 
 

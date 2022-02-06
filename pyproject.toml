@@ -14,7 +14,7 @@ poetry-polylith-plugin = "poetry_polylith_plugin:PolylithPlugin"
 [tool.poetry.dependencies]
 python = "^3.10"
 poetry = {version = "^1.2.0a2", allow-prereleases = true}
-tomlkit = "0.9.0"
+tomlkit = ">=0.7.0,<1.0.0"
 
 
 [tool.poetry.dev-dependencies]
