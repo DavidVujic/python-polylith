@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from poetry_polylith_plugin.components import workspaces
+from poetry_polylith_plugin.components import repo, workspaces
 
 
 def create(command, fn):
-    path = workspaces.find_workspace_root(Path.cwd())
+    path = repo.find_workspace_root(Path.cwd())
     name = command.option("name")
     namespace = workspaces.get_namespace_from_config(path)
 
