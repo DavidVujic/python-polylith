@@ -12,7 +12,7 @@ packages = [{include = "poetry_polylith_plugin"}]
 poetry-polylith-plugin = "poetry_polylith_plugin:PolylithPlugin"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.7"
 poetry = {version = "^1.2.0a2", allow-prereleases = true}
 tomlkit = ">=0.7.0,<1.0.0"
 
