@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetry-polylith-plugin"
-version = "0.1.0"
+version = "0.1.1"
 description = "A Poetry plugin that aims to simplify working with Polylith monorepos"
 authors = ["David Vujic"]
 homepage = "https://github.com/davidvujic/poetry-polylith-plugin"
