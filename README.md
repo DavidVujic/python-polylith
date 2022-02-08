@@ -28,6 +28,22 @@ with functionality for adding custom Plugins. Have a look at the [official Poetr
 ### Install Poetry & plugins
 With the latest `Poetry` version installed, you can add plugins.
 
+__Update:__ I have learned that the preview of Poetry does not install plugins correctly.
+
+This is a temporary workaround: install the plugins manually, like this (Mac OS X example):
+
+``` shell
+# Find out where the poetry preview is actually installed.
+ls -l ~/.local/bin/poetry
+
+# install the plugins to that path and the virtual environment within it, like this:
+pip install poetry-multiproject-plugin --target "/Users/<YOUR USER NAME HERE>/Library/Application Support/pypoetry/venv/lib/python3.<YOUR PYTHON VERSION HERE>/site-packages"
+
+pip install poetry-polylith-plugin --target "/Users/<YOUR USER NAME HERE>/Library/Application Support/pypoetry/venv/lib/python3.<YOUR PYTHON VERSION HERE>/site-packages"
+```
+
+When the temporart Hack above isn't necessary, this guide is the way to go.
+
 Add the [Multiproject](https://github.com/DavidVujic/poetry-multiproject-plugin) plugin, that will enable the very important __workspace__ support to Poetry.
 ``` shell
 poetry plugin add poetry-multiproject-plugin
