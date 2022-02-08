@@ -13,7 +13,7 @@ version = "0.1.0"
 description = ""
 authors = {authors}
 license = ""
-readme = ""
+
 packages = []
 
 [tool.poetry.dependencies]
