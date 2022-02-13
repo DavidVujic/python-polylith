@@ -1,7 +1,6 @@
-import logging
 from pathlib import Path
 
-from poetry_polylith_plugin import repo
+from poetry_polylith_plugin.components import log, repo
 
 
 template = """\
@@ -18,7 +17,7 @@ A Python implementation of the Polylith tool:
 """
 
 
-logger = logging.getLogger("poetry-polylith-plugin")
+logger = log.getLogger()
 
 
 def create_workspace_readme(path: Path, namespace: str):
