@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import tomlkit
-from poetry_polylith_plugin.components import bases, components, projects, repo
+from poetry_polylith_plugin.components import bases, components, projects, readme, repo
 from poetry_polylith_plugin.components.development import create_development
 from poetry_polylith_plugin.components.dirs import create_dir
 
@@ -38,3 +38,5 @@ def create_workspace(path: Path, namespace: str):
     create_development(path, keep=True)
 
     create_workspace_config(path, namespace)
+
+    readme.create_workspace_readme(path, namespace)

@@ -3,6 +3,7 @@ from typing import Union
 
 workspace_file = "workspace.toml"
 default_toml = "pyproject.toml"
+readme_file = "README.md"
 
 
 def is_repo_root(cwd: Path) -> bool:
