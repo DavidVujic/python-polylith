@@ -3,11 +3,9 @@ from poetry.console.commands.command import Command
 from poetry_polylith_plugin.commands.create import create
 from poetry_polylith_plugin.components import bases
 
-command_name = "poly create base"
-
 
 class CreateBaseCommand(Command):
-    name = command_name
+    name = "poly create base"
     description = "Creates a <comment>Polylith</> base."
 
     options = [

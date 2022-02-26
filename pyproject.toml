@@ -17,9 +17,11 @@ poetry = {version = "^1.2.0a2", allow-prereleases = true}
 tomlkit = ">=0.7.0,<1.0.0"
 
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 cachecontrol = "0.12.10"
 cleo = "1.0.0a4"
+flake8 = "^4.0.1"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

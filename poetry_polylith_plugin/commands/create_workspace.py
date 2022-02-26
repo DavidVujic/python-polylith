@@ -6,11 +6,8 @@ from poetry.console.commands.command import Command
 from poetry_polylith_plugin.components import workspaces
 
 
-command_name = "poly create workspace"
-
-
 class CreateWorkspaceCommand(Command):
-    name = command_name
+    name = "poly create workspace"
     description = "Creates a <comment>Polylith</> workspace in the current directory."
 
     options = [

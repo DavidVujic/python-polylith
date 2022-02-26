@@ -3,11 +3,9 @@ from poetry.console.commands.command import Command
 from poetry_polylith_plugin.commands.create import create
 from poetry_polylith_plugin.components import components
 
-command_name = "poly create component"
-
 
 class CreateComponentCommand(Command):
-    name = command_name
+    name = "poly create component"
     description = "Creates a <comment>Polylith</> component."
 
     options = [
