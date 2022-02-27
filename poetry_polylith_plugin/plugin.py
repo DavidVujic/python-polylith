@@ -7,6 +7,7 @@ from poetry_polylith_plugin.commands import (
     CreateComponentCommand,
     CreateProjectCommand,
     CreateWorkspaceCommand,
+    InfoCommand,
 )
 
 commands = [
@@ -14,6 +15,7 @@ commands = [
     CreateComponentCommand,
     CreateProjectCommand,
     CreateWorkspaceCommand,
+    InfoCommand,
 ]
 
 
