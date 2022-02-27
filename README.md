@@ -3,6 +3,9 @@
 This is a Python `Poetry` plugin, adding CLI support for the Polylith architecture.
 
 
+[![DavidVujic](https://circleci.com/gh/DavidVujic/poetry-polylith-plugin.svg?style=svg)](https://app.circleci.com/pipelines/github/DavidVujic/poetry-polylith-plugin?branch=main&filter=all)
+
+
 ## Polylith?
 From the [official docs](https://polylith.gitbook.io/polylith/):
 "... Polylith is a software architecture that applies functional thinking at the system scale.
