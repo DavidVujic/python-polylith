@@ -1,0 +1,17 @@
+version: '2.1'
+jobs:
+  build:
+    docker:
+      - image: cimg/python:3.10.2
+    steps:
+      - checkout
+      - run: python --version
+      - run: curl -sSL https://install.python-poetry.org | python - --preview
+      - run: poetry --version
+      - run: poetry install
+      - run: poetry run flake8 poetry_polylith_plugin
+
+workflows:
+  main:
+    jobs:
+      - build
