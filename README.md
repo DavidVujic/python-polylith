@@ -94,6 +94,15 @@ Add a project:
 poetry poly create project --name my_example_aws_lambada_project
 ```
 
+Show info about the workspace:
+
+``` shell
+poetry poly info
+```
+__Note__: the `info` command currently displays the very basic workspace info. The feature is currently developed.
+Stay tuned for upcoming versions!
+
+
 ## Differences between the Clojure & Python implementations
 First, this plugin only has the very basic features (yet). Functionality will be added, step by step.
 
