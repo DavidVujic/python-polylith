@@ -135,3 +135,36 @@ Note that the packages are referenced relative to the project. This is enabled b
     {include = "my_namespace/my_example_aws_lambda", from = "../../bases/my_example_lambda/src"},
 ]
 ``` 
+
+### How to use a Workspace build with this plugin
+
+#### Bases and Components
+
+These two blocks contain pure python code. If a third-party module is needed, a
+`pyproject.toml` file can be created at the root of the base or component (alongside
+the `test` and `src` directories).
+
+In the [example project](https://github.com/DavidVujic/python-polylith-example), this
+can be seen with the FastAPI import in the `demo/my_fastapi/main.py` file.
+
+As a rule of thumbs, a Base will contain the business logic (the CLI, the API, etc.)
+while the Component will contain the functionality (such as the models consumed by the
+API, a generic logger function, etc.).
+
+#### Projects
+
+Each project must contain a `pyproject.toml` file. They will define which base and
+components are needed with the `packages` attribute as shown above. It is there that the
+specific dependencies will be added for the production build of the projects.
+
+No other code must be found in this directory.
+
+#### Development
+
+*To write*
+
+
+## References
+
+See the following articles for more information on Polylith:
+ - [Polylith — a presentation](https://medium.com/webstep/polylith-a-presentation-6e6d2f9ec09c)
