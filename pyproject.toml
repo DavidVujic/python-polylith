@@ -13,14 +13,14 @@ poetry-polylith-plugin = "poetry_polylith_plugin:PolylithPlugin"
 
 [tool.poetry.dependencies]
 python = "^3.7"
-poetry = {version = "^1.2.0a2", allow-prereleases = true}
+poetry = {version = "^1.2.0"}
 tomlkit = ">=0.7.0,<1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
-cachecontrol = "0.12.10"
-cleo = "1.0.0a4"
-flake8 = "^4.0.1"
+#cachecontrol = "0.12.10"
+#cleo = "1.0.0a5"
+#flake8 = "^4.0.1"
 
 
 [build-system]
