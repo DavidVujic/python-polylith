@@ -21,7 +21,7 @@ python = "{python_version}"
 [tool.poetry.group.dev.dependencies]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 """
 
