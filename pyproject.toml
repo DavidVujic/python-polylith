@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "poetry-polylith-plugin"
-version = "0.3.0"
-description = "A Poetry plugin that aims to simplify working with Polylith monorepos"
+version = "1.0.0"
+description = "A Poetry plugin that adds tooling support for the Polylith Architecture"
 authors = ["David Vujic"]
 homepage = "https://github.com/davidvujic/poetry-polylith-plugin"
 repository = "https://github.com/davidvujic/poetry-polylith-plugin"
@@ -12,15 +12,15 @@ packages = [{include = "poetry_polylith_plugin"}]
 poetry-polylith-plugin = "poetry_polylith_plugin:PolylithPlugin"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-poetry = {version = "^1.2.0a2", allow-prereleases = true}
-tomlkit = ">=0.7.0,<1.0.0"
-
+python = "^3.10"
+poetry = "^1.2"
+tomlkit = "^0.11.5"
 
 [tool.poetry.group.dev.dependencies]
-cachecontrol = "0.12.10"
-cleo = "1.0.0a4"
-flake8 = "^4.0.1"
+black = "^22.10.0"
+isort = "^5.10.1"
+mypy = "^0.982"
+flake8 = "^5.0.4"
 
 
 [build-system]
