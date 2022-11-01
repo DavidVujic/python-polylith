@@ -10,18 +10,16 @@ def get_component_dirs(path: Path, top_dir) -> Generator:
     return (f for f in component_dir.iterdir() if f.is_dir())
 
 
-def dirs(path, ns, parent) -> Generator:
-    return (f.name for f in path.glob(f"{parent}/{ns}/{path.name}") if f.is_dir())
+def dirs(path, ns) -> Generator:
+    return (f.name for f in path.glob(f"{ns}/{path.name}") if f.is_dir())
 
 
 def component_dirs(path: Path, ns: str) -> dict:
-    src_dirs = dirs(path, ns, "src")
-    test_dirs = dirs(path, ns, "test")
+    src_dirs = dirs(path, ns)
 
     return {
         "name": path.name,
         "src": True if next(src_dirs, None) else False,
-        "test": True if next(test_dirs, None) else False,
     }
 
 

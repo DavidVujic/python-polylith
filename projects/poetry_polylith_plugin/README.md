@@ -25,27 +25,9 @@ A component can be shared across apps, tools, libraries, serverless functions an
 
 
 ## Usage
-This plugin depends on the latest version - a preview - of [Poetry](https://python-poetry.org/)
-with functionality for adding custom Plugins. Have a look at the [official Poetry preview docs](https://python-poetry.org/docs/master/) for how to install it.
 
 ### Install Poetry & plugins
-With the latest `Poetry` version installed, you can add plugins.
-
-__Update:__ I have learned that the preview of Poetry does not install plugins correctly.
-
-This is a temporary workaround: install the plugins manually, like this (Mac OS X example):
-
-``` shell
-# Find out where the poetry preview is actually installed.
-ls -l ~/.local/bin/poetry
-
-# install the plugins to that path and the virtual environment within it, like this:
-pip install poetry-multiproject-plugin --target "/Users/<YOUR USER NAME HERE>/Library/Application Support/pypoetry/venv/lib/python3.<YOUR PYTHON VERSION HERE>/site-packages"
-
-pip install poetry-polylith-plugin --target "/Users/<YOUR USER NAME HERE>/Library/Application Support/pypoetry/venv/lib/python3.<YOUR PYTHON VERSION HERE>/site-packages"
-```
-
-When the temporart Hack above isn't necessary, this guide is the way to go.
+With the `Poetry` version 1.2 or later installed, you can add plugins.
 
 Add the [Multiproject](https://github.com/DavidVujic/poetry-multiproject-plugin) plugin, that will enable the very important __workspace__ support to Poetry.
 ``` shell
@@ -121,9 +103,9 @@ In particular, the `packages` property is used for that.
 This is the top level `pyproject.toml` used during development.
 ``` shell
  packages = [
-    {include = "dev", from = "development/src"},
-    {include = "my_namespace/my_component", from = "components/my_component/src"},
-    {include = "my_namespace/my_example_aws_lambda", from = "bases/my_example_lambda/src"},
+    {include = "development"},
+    {include = "my_namespace/my_component", from = "components"},
+    {include = "my_namespace/my_example_aws_lambda", from = "bases"},
 ]
 ```
 
@@ -131,7 +113,7 @@ When creating a project, the project specific `pyproject.toml` will include all 
 Note that the packages are referenced relative to the project. This is enabled by the `Multiproject` plugin.
 ``` shell
  packages = [
-    {include = "my_namespace/my_component", from = "../../components/my_component/src"},
-    {include = "my_namespace/my_example_aws_lambda", from = "../../bases/my_example_lambda/src"},
+    {include = "my_namespace/my_component", from = "../../components"},
+    {include = "my_namespace/my_example_aws_lambda", from = "../../bases"},
 ]
 ``` 

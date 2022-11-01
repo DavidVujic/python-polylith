@@ -4,4 +4,4 @@ from polylith.dirs import create_dir
 
 
 def create_development(path: Path, keep=True) -> None:
-    create_dir(path, "development/src/dev", keep=keep)
+    create_dir(path, "development", keep=keep)
