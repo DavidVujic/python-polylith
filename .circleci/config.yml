@@ -11,7 +11,7 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
-            poetry run flake8 ./poetry_multiproject_plugin
+            poetry run flake8
           name: Linting
 
 workflows:
