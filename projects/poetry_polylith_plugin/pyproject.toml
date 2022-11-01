@@ -12,11 +12,11 @@ packages = [
          {include = "polylith/block", from = "../../components"},
          {include = "polylith/component", from = "../../components"},
          {include = "polylith/development", from = "../../components"},
-         {include = "polylith/dir", from = "../../components"},
-         {include = "polylith/file", from = "../../components"},
+         {include = "polylith/dirs", from = "../../components"},
+         {include = "polylith/files", from = "../../components"},
          {include = "polylith/interface", from = "../../components"},
          {include = "polylith/log", from = "../../components"},
-         {include = "polylith/poetry", from = "../../components"},
+         {include = "polylith/poetry_command", from = "../../components"},
          {include = "polylith/project", from = "../../components"},
          {include = "polylith/readme", from = "../../components"},
          {include = "polylith/repo", from = "../../components"},
@@ -25,7 +25,7 @@ packages = [
 ]
 
 [tool.poetry.plugins."poetry.application.plugin"]
-poetry-polylith-plugin = "poetry_polylith_plugin:PolylithPlugin"
+poetry-polylith-plugin = "polylith/poetry_plugin:PolylithPlugin"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -37,7 +37,6 @@ black = "^22.10.0"
 isort = "^5.10.1"
 mypy = "^0.982"
 flake8 = "^5.0.4"
-
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
