@@ -1,17 +1,20 @@
 version: '2.1'
+orbs:
+  python: circleci/python@1.0.0
+
 jobs:
-  build:
-    docker:
-      - image: cimg/python:3.10.2
+  lint:
+    executor: python/default
     steps:
       - checkout
-      - run: python --version
-      - run: curl -sSL https://install.python-poetry.org | python - --preview
-      - run: poetry --version
-      - run: poetry install
-      - run: poetry run flake8 poetry_polylith_plugin
+      - python/install-packages:
+          pkg-manager: poetry
+      - run:
+          command: |
+            poetry run flake8
+          name: Linting
 
 workflows:
   main:
     jobs:
-      - build
+      - lint
