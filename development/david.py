@@ -1,4 +1,5 @@
 from polylith import (
+    poetry_plugin,
     base,
     block,
     component,
@@ -7,7 +8,7 @@ from polylith import (
     files,
     interface,
     log,
-    poetry,
+    poetry_command,
     project,
     readme,
     repo,
@@ -16,3 +17,4 @@ from polylith import (
 )
 
 print("hello world")
+print(base.dir_name)
