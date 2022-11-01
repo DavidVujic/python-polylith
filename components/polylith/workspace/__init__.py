@@ -1,3 +1,3 @@
-from polylith.workspace.workspaces import create_workspace
+from polylith.workspace.workspaces import create_workspace, get_namespace_from_config
 
-__all__ = ["create_workspace"]
+__all__ = ["create_workspace", "get_namespace_from_config"]
