@@ -25,7 +25,7 @@ packages = [
 ]
 
 [tool.poetry.plugins."poetry.application.plugin"]
-poetry-polylith-plugin = "polylith/poetry_plugin:PolylithPlugin"
+poetry-polylith-plugin = "polylith.poetry_plugin:PolylithPlugin"
 
 [tool.poetry.dependencies]
 python = "^3.10"
