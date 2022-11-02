@@ -2,7 +2,7 @@
 
 A repo containing tooling support for the Polylith Architecture in Python.
 
-[![DavidVujic](https://circleci.com/gh/DavidVujic/poetry-polylith-plugin.svg?style=svg)](https://app.circleci.com/pipelines/github/DavidVujic/poetry-polylith-plugin?branch=main&filter=all)
+[![DavidVujic](https://circleci.com/gh/DavidVujic/python-polylith.svg?style=svg)](https://app.circleci.com/pipelines/github/DavidVujic/python-polylith?branch=main&filter=all)
 
 ## What's Polylith?
 From the [official docs](https://polylith.gitbook.io/polylith/):
@@ -18,7 +18,7 @@ Polylith is using a components-first architecture. Similar to LEGO, components a
 A component can be shared across apps, tools, libraries, serverless functions and services.
 
 ## Polylith for Python?
-Currently, this repo contains a Poetry plugin, that will add Polylith specific tooling support to Poetry.
+Currently, this repo contains a [Poetry plugin](https://pypi.org/project/poetry-polylith-plugin), that will add Polylith specific tooling support to Poetry.
 
 Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polylith_plugin/README.md) for more info.
 

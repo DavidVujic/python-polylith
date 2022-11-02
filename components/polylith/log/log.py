@@ -10,7 +10,7 @@ def getHandler():
     return handler
 
 
-def getLogger(name="poetry-polylith-plugin") -> logging.Logger:
+def getLogger(name="python-polylith") -> logging.Logger:
     logger = logging.getLogger(name)
 
     if not logger.hasHandlers():

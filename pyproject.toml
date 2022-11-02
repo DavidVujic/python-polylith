@@ -3,8 +3,8 @@ name = "python-polylith"
 version = "0.0.1"
 description = "A Python Polylith repo adding tooling support for the Polylith Architecture"
 authors = ["David Vujic"]
-homepage = "https://github.com/davidvujic/poetry-polylith-plugin"
-repository = "https://github.com/davidvujic/poetry-polylith-plugin"
+homepage = "https://github.com/davidvujic/python-polylith"
+repository = "https://github.com/davidvujic/python-polylith"
 readme = "README.md"
 packages = [
          {include = "polylith/poetry_plugin", from = "bases"},
