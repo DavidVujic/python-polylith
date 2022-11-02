@@ -1,4 +1,4 @@
-# poetry-polylith-plugin Code of Conduct
+# python-polylith Code of Conduct
 
 ## Our Pledge
 

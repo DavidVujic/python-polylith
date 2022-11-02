@@ -21,6 +21,6 @@
 ## Checklist:
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
-- [ ] I have read the [code of conduct](https://github.com/davidvujic/poetry-polylith-plugin/blob/master/CODE-OF-CONDUCT.md).
-- [ ] I have read the [contributing guide](https://github.com/davidvujic/poetry-polylith-plugin/blob/master/CONTRIBUTING.md).
+- [ ] I have read the [code of conduct](https://github.com/davidvujic/python-polylith/blob/master/CODE-OF-CONDUCT.md).
+- [ ] I have read the [contributing guide](https://github.com/davidvujic/python-polylith/blob/master/CONTRIBUTING.md).
 - [ ] I have updated the documentation accordingly (if applicable).

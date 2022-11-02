@@ -13,7 +13,7 @@ The official Polylith documentation:
 [high-level documentation](https://polylith.gitbook.io/polylith)
 
 A Python implementation of the Polylith tool:
-[poetry-polylith-plugin](https://github.com/DavidVujic/poetry-polylith-plugin#poetry-polylith-plugin)
+[python-polylith](https://github.com/DavidVujic/python-polylith)
 """
 
 

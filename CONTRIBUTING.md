@@ -1,4 +1,4 @@
-# Contributing to the development of poetry-polylith-plugin
+# Contributing to the development of python-polylith
 
 Fork this repo, write code and send a pull request. Easy!
 
