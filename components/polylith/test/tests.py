@@ -15,7 +15,7 @@ def test_sample():
 def create_test(
     path: Path, name: str, namespace: str, package: str, modulename: str = "core"
 ) -> None:
-    d = create_dir(path, f"{name}/test_{namespace}/{package}")
+    d = create_dir(path, f"test/{namespace}/{package}")
 
     create_file(d, "__init__.py")
     test_file = create_file(d, f"test_{modulename}.py")
