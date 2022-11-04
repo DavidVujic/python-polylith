@@ -1,5 +1,4 @@
 from poetry.console.application import Application
-from poetry.console.commands.command import Command
 from poetry.plugins.application_plugin import ApplicationPlugin
 from polylith.poetry_command import (
     CreateBaseCommand,
@@ -18,7 +17,7 @@ commands = [
 ]
 
 
-def register_command(application: Application, command: Command) -> None:
+def register_command(application: Application, command) -> None:
     application.command_loader.register_factory(command.name, command)
 
 
