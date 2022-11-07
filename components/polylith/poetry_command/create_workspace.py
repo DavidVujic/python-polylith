@@ -3,7 +3,7 @@ from pathlib import Path
 from cleo.helpers import option
 
 from poetry.console.commands.command import Command
-from polylith import workspace
+from polylith.workspace.create import create_workspace
 
 
 class CreateWorkspaceCommand(Command):
@@ -23,6 +23,6 @@ class CreateWorkspaceCommand(Command):
                 "Please add a workspace name. Poetry poly create workspace --name myname"
             )
 
-        workspace.create_workspace(path, namespace)
+        create_workspace(path, namespace)
 
         return 0

@@ -17,4 +17,6 @@ from polylith import (
 )
 
 print("hello world")
-print(base.dir_name)
+print(repo.bases_dir)
+print(repo.components_dir)
+print(repo.projects_dir)
