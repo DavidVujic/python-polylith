@@ -4,9 +4,9 @@ from polylith import repo, workspace
 
 
 def create(command, fn):
-    path = repo.find_workspace_root(Path.cwd())
+    root = repo.find_workspace_root(Path.cwd())
     name = command.option("name")
-    namespace = workspace.get_namespace_from_config(path)
+    namespace = workspace.parser.get_namespace_from_config(root)
 
     if not name:
         raise ValueError("Please add a name by using --name or -n")
@@ -16,4 +16,4 @@ def create(command, fn):
             "Didn't find a namespace. Expected to find it in workspace.toml."
         )
 
-    fn(path, namespace, name)
+    fn(root, namespace, name)

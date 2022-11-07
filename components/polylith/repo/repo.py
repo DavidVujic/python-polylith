@@ -5,6 +5,15 @@ workspace_file = "workspace.toml"
 default_toml = "pyproject.toml"
 readme_file = "README.md"
 
+bases_dir = "bases"
+components_dir = "components"
+projects_dir = "projects"
+development_dir = "development"
+
+
+def is_drive_root(cwd: Path) -> bool:
+    return cwd == Path(cwd.root) or cwd == cwd.parent
+
 
 def is_repo_root(cwd: Path) -> bool:
     fullpath = cwd / ".git"
@@ -13,7 +22,7 @@ def is_repo_root(cwd: Path) -> bool:
 
 
 def find_upwards(cwd: Path, name: str) -> Union[Path, None]:
-    if cwd == Path(cwd.root):
+    if is_drive_root(cwd):
         return None
 
     fullpath = cwd / name

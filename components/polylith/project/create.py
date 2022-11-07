@@ -2,7 +2,7 @@ from pathlib import Path
 
 import tomlkit
 from polylith import repo
-from polylith.project.constants import dir_name
+from polylith.repo import projects_dir
 from polylith.dirs import create_dir
 
 template = """\
@@ -43,7 +43,7 @@ def create_project_toml(name, template, workspace_toml) -> tomlkit.TOMLDocument:
 
 
 def create_project(path: Path, namespace: str, name: str) -> None:
-    d = create_dir(path, f"{dir_name}/{name}")
+    d = create_dir(path, f"{projects_dir}/{name}")
 
     workspace_toml = get_workspace_toml(path)
     project_toml = create_project_toml(name, template, workspace_toml)

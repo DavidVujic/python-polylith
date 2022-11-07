@@ -1,1 +1,0 @@
-dir_name = "components"

@@ -1,7 +1,7 @@
 from collections.abc import Generator
 from pathlib import Path
 
-from polylith.component.constants import dir_name
+from polylith.repo import components_dir
 
 
 def get_component_dirs(path: Path, top_dir, ns) -> Generator:
@@ -10,7 +10,7 @@ def get_component_dirs(path: Path, top_dir, ns) -> Generator:
     return (f for f in component_dir.iterdir() if f.is_dir())
 
 
-def get_components_data(path: Path, ns: str, top_dir: str = dir_name) -> list[dict]:
+def get_components_data(path: Path, ns: str, top_dir: str = components_dir) -> list[dict]:
     dirs = get_component_dirs(path, top_dir, ns)
 
     return [{"name": d.name} for d in dirs]

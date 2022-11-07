@@ -2,24 +2,23 @@ from pathlib import Path
 
 from polylith.dirs import create_dir
 from polylith.files import create_file
-
-template = """\
-from {namespace}.{package} import {modulename}
-
-
-def test_sample():
-    assert {modulename} is not None
-"""
+from polylith.workspace import parser
 
 
 def create_test(
-    path: Path, name: str, namespace: str, package: str, modulename: str = "core"
+    root: Path, brick: str, namespace: str, package: str, modulename: str = "core"
 ) -> None:
-    d = create_dir(path, f"test/{namespace}/{package}")
+    if not parser.is_test_generation_enabled(root):
+        return
+
+    dirs_structure = parser.get_tests_structure_from_config(root)
+    dirs = dirs_structure.format(brick=brick, namespace=namespace, package=package)
+    d = create_dir(root, dirs)
 
     create_file(d, "__init__.py")
     test_file = create_file(d, f"test_{modulename}.py")
 
+    template = parser.get_test_template_from_config(root)
     content = template.format(
         namespace=namespace, package=package, modulename=modulename
     )
