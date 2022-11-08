@@ -1,7 +1,7 @@
 from collections.abc import Generator
 from pathlib import Path
 
-from polylith.bricks import create_brick
+from polylith.bricks.brick import create_brick
 from polylith.repo import components_dir
 from polylith.test import create_test
 
