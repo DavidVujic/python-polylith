@@ -1,7 +1,7 @@
 from polylith import (
     poetry_plugin,
     base,
-    block,
+    bricks,
     component,
     development,
     dirs,

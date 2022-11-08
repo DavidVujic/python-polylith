@@ -1,7 +1,7 @@
 from cleo.helpers import option
 from poetry.console.commands.command import Command
+from polylith.bricks import component
 from polylith.poetry_command.create import create
-from polylith import component
 
 
 class CreateComponentCommand(Command):

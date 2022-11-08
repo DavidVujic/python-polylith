@@ -6,7 +6,7 @@ from polylith.interface import create_interface
 from polylith.workspace import parser
 
 
-def create_block(
+def create_brick(
     root: Path, brick: str, namespace: str, package: str, modulename: str = "core"
 ) -> None:
     dirs_structure = parser.get_brick_structure_from_config(root)
