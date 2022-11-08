@@ -9,24 +9,31 @@ from polylith.project.get import (
 )
 
 
-def to_path(package: dict) -> Path:
+def to_path(package: dict) -> dict[str, Path | str]:
     include = package["include"]
     from_path = package.get("from")
 
-    return Path(f"{from_path}/{include}") if from_path else Path(include)
+    combined_path = Path(f"{from_path}/{include}") if from_path else Path(include)
+
+    return {
+        "path": combined_path,
+        "brick": include,
+    }
 
 
-def to_paths(toml: tomlkit.TOMLDocument) -> list[Path]:
+def to_paths(toml: tomlkit.TOMLDocument) -> list[dict[str, Path | str]]:
     packages = get_project_package_includes(toml)
 
-    return [to_path(p) for p in packages]
+    sorted_packages = sorted(packages, key=lambda p: (p["from"], p["include"]))
+
+    return [to_path(p) for p in sorted_packages]
 
 
 def to_project_package_paths(toml: tomlkit.TOMLDocument) -> dict:
     name = get_project_name(toml)
     paths = to_paths(toml)
 
-    return {"name": name, "paths": paths}
+    return {"project_name": name, "bricks": paths}
 
 
 def get_projects_package_paths(path: Path) -> list[dict]:
