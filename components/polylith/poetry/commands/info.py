@@ -1,7 +1,8 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import base, component, project, repo, workspace
+from polylith import project, repo, workspace
+from polylith.bricks import base, component
 
 
 class InfoCommand(Command):
@@ -15,7 +16,7 @@ class InfoCommand(Command):
                 "Didn't find the workspace root. Expected to find a workspace.toml file."
             )
 
-        ns = workspace.get_namespace_from_config(root)
+        ns = workspace.parser.get_namespace_from_config(root)
         project_names = project.get_project_names(root)
         components_data = component.get_components_data(root, ns)
         bases_data = base.get_bases_data(root, ns)

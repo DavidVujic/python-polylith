@@ -1,6 +1,6 @@
 from poetry.console.application import Application
 from poetry.plugins.application_plugin import ApplicationPlugin
-from polylith.poetry_command import (
+from polylith.poetry.commands import (
     CreateBaseCommand,
     CreateComponentCommand,
     CreateProjectCommand,

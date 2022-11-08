@@ -1,7 +1,7 @@
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith.poetry_command.create import create
-from polylith import base
+from polylith.bricks import base
+from polylith.poetry.commands.create import create
 
 
 class CreateBaseCommand(Command):
