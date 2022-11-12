@@ -8,6 +8,7 @@ from polylith.dirs import create_dir
 template = """\
 [tool.polylith]
 namespace = "{namespace}"
+git_tag_pattern = "stable-*"
 
 [tool.polylith.structure]
 bricks = "{brick}/{namespace}/{package}"
