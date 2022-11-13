@@ -83,8 +83,8 @@ The `diff` command will compare the current state of the repository, compared to
 The tool will look for the latest tag according to a certain pattern, such as `stable-*`.
 The pattern can be configured in `workspace.toml`.
 
-The `diff` command is usefull in a CI environment, to determine if a project should be deployed or not.
-The command has a `--short` flag that will display a comma separated list of changed projects.
+The `diff` command is useful in a CI environment, to determine if a project should be deployed or not.
+The command has a `--short` flag to only print a comma separated list of changed projects to the standard output.
 
 
 Useful for CI:
