@@ -27,7 +27,7 @@ there is a `interface.clj` file that is used to separate an API from the impleme
 The Python implementation uses the `__init__.py` to accomplish that. In the Python implementation, the `pyproject.toml` is used to define bases and components.
 In particular, the `packages` property is used for that.
 
-This is an example of the top level `pyproject.toml` used during __development__.
+This is an example of the _top level_ `pyproject.toml` used when _developing_. This is where you add all bricks (components and bases).
 
 ``` shell
  packages = [
@@ -40,6 +40,8 @@ This is an example of the top level `pyproject.toml` used during __development__
 
 When creating a project, the project specific `pyproject.toml` will include all the used components and bases.
 Note that the packages are referenced relative to the project.
+
+This is where you add the bricks used by the actual project.
 
 ``` shell
  packages = [
