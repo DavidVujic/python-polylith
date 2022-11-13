@@ -1,5 +1,6 @@
 import subprocess
 from pathlib import Path
+from typing import Union
 
 from polylith import repo, workspace
 
@@ -29,7 +30,7 @@ def get_changed_projects(changed_files: list[Path]) -> list:
     return sorted(filtered)
 
 
-def get_latest_tag(root: Path) -> str | None:
+def get_latest_tag(root: Path) -> Union[str, None]:
     tag_pattern = workspace.parser.get_git_tag_pattern_from_config(root)
 
     res = subprocess.run(

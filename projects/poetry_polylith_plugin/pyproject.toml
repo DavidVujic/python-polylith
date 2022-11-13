@@ -28,7 +28,7 @@ packages = [
 poetry-polylith-plugin = "polylith.poetry_plugin:PolylithPlugin"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 poetry = "^1.2"
 tomlkit = "^0.11.5"
 rich = "^12.6.0"

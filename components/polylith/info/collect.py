@@ -33,8 +33,10 @@ def get_bricks_in_projects(root: Path) -> list[dict]:
     bases = [b["name"] for b in base.get_bases_data(root, namespace)]
 
     res = [
-        {"name": p["name"]}
-        | get_project_bricks(p["packages"], components, bases, namespace)
+        {
+            **{"name": p["name"]},
+            **get_project_bricks(p["packages"], components, bases, namespace),
+        }
         for p in packages_for_projects
     ]
 
