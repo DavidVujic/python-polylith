@@ -23,4 +23,4 @@ def create_test(
         namespace=namespace, package=package, modulename=modulename
     )
 
-    test_file.write_text(content, newline="\n")
+    test_file.write_text(content)

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-polylith"
-version = "0.0.1"
+version = "0.0.2"
 description = "A Python Polylith repo adding tooling support for the Polylith Architecture"
 authors = ["David Vujic"]
 homepage = "https://github.com/davidvujic/python-polylith"
@@ -26,7 +26,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 poetry = "^1.2"
 tomlkit = "^0.11.5"
 rich = "^12.6.0"

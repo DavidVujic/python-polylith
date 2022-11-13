@@ -16,4 +16,4 @@ def create_interface(path: Path, namespace: str, package: str, modulename: str) 
         namespace=namespace, package=package, modulename=modulename
     )
 
-    interface.write_text(content, newline="\n")
+    interface.write_text(content)
