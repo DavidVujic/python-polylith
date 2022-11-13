@@ -1,4 +1,3 @@
-from collections.abc import Generator
 from pathlib import Path
 
 from polylith.bricks.brick import create_brick
@@ -11,10 +10,13 @@ def create_component(path: Path, namespace: str, package: str) -> None:
     create_test(path, components_dir, namespace, package)
 
 
-def get_component_dirs(path: Path, top_dir, ns) -> Generator:
+def get_component_dirs(path: Path, top_dir, ns) -> list:
     component_dir = path / top_dir / ns
 
-    return (f for f in component_dir.iterdir() if f.is_dir())
+    if not component_dir.exists():
+        return []
+
+    return [f for f in component_dir.iterdir() if f.is_dir()]
 
 
 def get_components_data(

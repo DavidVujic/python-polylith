@@ -24,6 +24,9 @@ def brick_status(brick, bricks) -> str:
 def print_bricks_in_projects(
     projects_data: list[dict], bases_data: list[dict], components_data: list[dict]
 ) -> None:
+    if not components_data and not bases_data:
+        return
+
     console = Console(theme=info_theme)
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
@@ -53,6 +56,10 @@ def print_workspace_summary(
 
     console.print(Padding("[data]Workspace summary[/]", (1, 0, 1, 0)))
 
-    console.print(f"[proj]projects[/]: [data]{len(projects_data)}[/]")
-    console.print(f"[comp]components[/]: [data]{len(components_data)}[/]")
-    console.print(f"[base]bases[/]: [data]{len(bases_data)}[/]")
+    number_of_projects = len(projects_data) if projects_data else 0
+    number_of_components = len(components_data) if components_data else 0
+    number_of_bases = len(bases_data) if bases_data else 0
+
+    console.print(f"[proj]projects[/]: [data]{number_of_projects}[/]")
+    console.print(f"[comp]components[/]: [data]{number_of_components}[/]")
+    console.print(f"[base]bases[/]: [data]{number_of_bases}[/]")

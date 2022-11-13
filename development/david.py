@@ -35,3 +35,5 @@ if tag:
 
 info.get_bricks_in_projects(root)
 
+ns = workspace.parser.get_namespace_from_config(root)
+bases_data = bricks.base.get_bases_data(root, ns)

@@ -3,15 +3,7 @@ namespace = "polylith"
 git_tag_pattern = "v*"
 
 [tool.polylith.structure]
-bricks = "{brick}/{namespace}/{package}"
-tests = "test/{brick}/{namespace}/{package}"
+theme = "loose"
 
 [tool.polylith.test]
 enabled = false
-template = """\
-from {namespace}.{package} import {modulename}
-
-
-def test_sample():
-    assert {modulename} is not None
-"""

@@ -5,8 +5,6 @@ from polylith import log, repo
 
 template = """\
 # A Python Polylith repo
-The top namespace is `{namespace}`.
-
 
 ## Docs
 The official Polylith documentation:
