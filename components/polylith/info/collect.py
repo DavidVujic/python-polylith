@@ -24,10 +24,6 @@ def get_project_bricks(project_packages: list[dict], components, bases, namespac
     return {"components": components_in_project, "bases": bases_in_project}
 
 
-def _merge(a: dict, b: dict) -> dict:
-    return {**a, **b}
-
-
 def get_bricks_in_projects(root: Path) -> list[dict]:
     namespace = workspace.parser.get_namespace_from_config(root)
 
@@ -37,10 +33,10 @@ def get_bricks_in_projects(root: Path) -> list[dict]:
     bases = [b["name"] for b in base.get_bases_data(root, namespace)]
 
     res = [
-        merge(
-            {"name": p["name"]},
-            get_project_bricks(p["packages"], components, bases, namespace),
-        )
+        {
+            **{"name": p["name"]},
+            **get_project_bricks(p["packages"], components, bases, namespace),
+        }
         for p in packages_for_projects
     ]
 
