@@ -1,12 +1,13 @@
 [tool.polylith]
 namespace = "polylith"
+git_tag_pattern = "v*"
 
 [tool.polylith.structure]
 bricks = "{brick}/{namespace}/{package}"
 tests = "test/{brick}/{namespace}/{package}"
 
 [tool.polylith.test]
-enabled = true
+enabled = false
 template = """\
 from {namespace}.{package} import {modulename}
 
