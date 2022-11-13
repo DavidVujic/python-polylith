@@ -18,13 +18,8 @@ Add the Polylith plugin:
 poetry plugin add poetry-polylith-plugin
 ```
 
-Done!
-
-
-### Commands
-Creating a new repo.
-
-create a directory for your code, initialize it with git and create a basic Poetry setup:
+### Create a repository
+Create a directory for your code, initialize it with __git__ and create a basic __Poetry__ setup:
 
 ``` shell
 git init
@@ -32,7 +27,8 @@ git init
 poetry init
 ```
 
-This command will create a Polylith workspace, with a basic Polylith folder structure. 
+### Commands
+The `create workspace` command will create a Polylith workspace, with a basic Polylith folder structure. 
 Just define a __top namespace__ to be used when creating components and bases and the theme to use.
 
 *new* `theme` is a new Python Polylith feature and defines what kind of component structure - or theme - to use.
