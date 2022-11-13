@@ -61,7 +61,7 @@ def print_diff_summary(
     console.print(Padding(f"[data]Diff: based on the {tag} tag[/]", (1, 0, 1, 0)))
 
     if not bases and not components:
-        console.print("[data]No changes found.[/]")
+        console.print("[data]No brick changes found.[/]")
         return
 
     if components:
