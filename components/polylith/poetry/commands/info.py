@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import project, repo, workspace
+from polylith import info, repo, workspace
 from polylith.bricks import base, component
 
 
@@ -17,12 +17,11 @@ class InfoCommand(Command):
             )
 
         ns = workspace.parser.get_namespace_from_config(root)
-        project_names = project.get_project_names(root)
-        components_data = component.get_components_data(root, ns)
         bases_data = base.get_bases_data(root, ns)
+        components_data = component.get_components_data(root, ns)
+        projects_data = info.get_bricks_in_projects(root)
 
-        self.line(f"<comment>projects</>: {len(project_names)}")
-        self.line(f"<comment>components</>: {len(components_data)}")
-        self.line(f"<comment>bases</>: {len(bases_data)}")
+        info.print_workspace_summary(projects_data, bases_data, components_data)
+        info.print_bricks_in_projects(projects_data, bases_data, components_data)
 
         return 0

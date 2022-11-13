@@ -18,6 +18,12 @@ def get_namespace_from_config(path: Path) -> str:
     return toml["tool"]["polylith"]["namespace"]
 
 
+def get_git_tag_pattern_from_config(path: Path) -> str:
+    toml: dict = _load_workspace_config(path)
+
+    return toml["tool"]["polylith"]["git_tag_pattern"]
+
+
 def get_brick_structure_from_config(path: Path) -> str:
     toml: dict = _load_workspace_config(path)
 
