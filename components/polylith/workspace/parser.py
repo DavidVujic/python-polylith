@@ -24,18 +24,6 @@ def get_git_tag_pattern_from_config(path: Path) -> str:
     return toml["tool"]["polylith"]["git_tag_pattern"]
 
 
-def get_brick_structure_from_config(path: Path) -> str:
-    toml: dict = _load_workspace_config(path)
-
-    return toml["tool"]["polylith"]["structure"]["bricks"]
-
-
-def get_test_template_from_config(path: Path) -> str:
-    toml: dict = _load_workspace_config(path)
-
-    return toml["tool"]["polylith"]["test"]["template"]
-
-
 def is_test_generation_enabled(path: Path) -> bool:
     toml: dict = _load_workspace_config(path)
 
@@ -43,7 +31,25 @@ def is_test_generation_enabled(path: Path) -> bool:
     return bool(enabled)
 
 
-def get_tests_structure_from_config(path: Path) -> str:
+def get_theme_from_config(path: Path) -> str:
     toml: dict = _load_workspace_config(path)
 
-    return toml["tool"]["polylith"]["structure"]["tests"]
+    return toml["tool"]["polylith"]["structure"]["theme"] or "tdd"
+
+
+def get_brick_structure_from_config(path: Path) -> str:
+    theme = get_theme_from_config(path)
+
+    if theme == "loose":
+        return "{brick}/{namespace}/{package}"
+
+    return "{brick}/{package}/src/{namespace}/{package}"
+
+
+def get_tests_structure_from_config(path: Path) -> str:
+    theme = get_theme_from_config(path)
+
+    if theme == "loose":
+        return "test/{brick}/{namespace}/{package}"
+
+    return "{brick}/{package}/test/{namespace}/{package}"

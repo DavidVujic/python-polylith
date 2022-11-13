@@ -11,25 +11,16 @@ namespace = "{namespace}"
 git_tag_pattern = "stable-*"
 
 [tool.polylith.structure]
-bricks = "{brick}/{namespace}/{package}"
-tests = "test/{brick}/{namespace}/{package}"
+theme = "{theme}"
 
 [tool.polylith.test]
 enabled = true
-template = \"\"\"\
-from {namespace}.{package} import {modulename}
-
-
-def test_sample():
-    assert {modulename} is not None
-\"\"\"
 """
 
 
-def create_workspace_config(path: Path, namespace: str) -> None:
-    content: dict = tomlkit.loads(
-        template.replace('namespace = "{namespace}"', f'namespace = "{namespace}"')
-    )
+def create_workspace_config(path: Path, namespace: str, theme: str) -> None:
+    formatted = template.format(namespace=namespace, theme=theme)
+    content: dict = tomlkit.loads(formatted)
 
     fullpath = path / repo.workspace_file
 
@@ -37,13 +28,13 @@ def create_workspace_config(path: Path, namespace: str) -> None:
         f.write(tomlkit.dumps(content))
 
 
-def create_workspace(path: Path, namespace: str) -> None:
+def create_workspace(path: Path, namespace: str, theme: str) -> None:
     create_dir(path, repo.bases_dir, keep=True)
     create_dir(path, repo.components_dir, keep=True)
     create_dir(path, repo.projects_dir, keep=True)
 
     create_development(path, keep=True)
 
-    create_workspace_config(path, namespace)
+    create_workspace_config(path, namespace, theme)
 
     readme.create_workspace_readme(path, namespace)
