@@ -24,7 +24,7 @@ Done!
 ### Commands
 Creating a new repo.
 
-create a directory for your code and the basic Poetry setup
+create a directory for your code and the basic Poetry setup:
 
 ``` shell
 mkdir my-repo-folder
