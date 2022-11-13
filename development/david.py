@@ -1,7 +1,6 @@
 from pathlib import Path
 
 from polylith import (
-    poetry_plugin,
     bricks,
     development,
     diff,
@@ -11,6 +10,7 @@ from polylith import (
     interface,
     log,
     poetry,
+    poetry_plugin,
     project,
     readme,
     repo,

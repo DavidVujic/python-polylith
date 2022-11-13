@@ -1,5 +1,5 @@
 from polylith.project.create import create_project
-from polylith.project.get import get_project_names, get_packages_for_projects
+from polylith.project.get import get_packages_for_projects, get_project_names
 from polylith.project.parser import parse_package_paths
 
 __all__ = [

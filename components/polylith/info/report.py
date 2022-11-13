@@ -1,3 +1,5 @@
+from typing import List
+
 from rich import box
 from rich.columns import Columns
 from rich.console import Console
@@ -22,7 +24,7 @@ def brick_status(brick, bricks) -> str:
 
 
 def print_bricks_in_projects(
-    projects_data: list[dict], bases_data: list[dict], components_data: list[dict]
+    projects_data: List[dict], bases_data: List[dict], components_data: List[dict]
 ) -> None:
     if not components_data and not bases_data:
         return
@@ -50,7 +52,7 @@ def print_bricks_in_projects(
 
 
 def print_workspace_summary(
-    projects_data: list[dict], bases_data: list[dict], components_data: list[dict]
+    projects_data: List[dict], bases_data: List[dict], components_data: List[dict]
 ) -> None:
     console = Console(theme=info_theme)
 

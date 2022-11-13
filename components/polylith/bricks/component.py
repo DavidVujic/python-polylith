@@ -1,9 +1,10 @@
 from pathlib import Path
+from typing import List
 
+from polylith import workspace
 from polylith.bricks.brick import create_brick
 from polylith.repo import components_dir
 from polylith.test import create_test
-from polylith import workspace
 
 
 def create_component(path: Path, namespace: str, package: str) -> None:
@@ -25,7 +26,7 @@ def get_component_dirs(root: Path, top_dir, ns) -> list:
 
 def get_components_data(
     root: Path, ns: str, top_dir: str = components_dir
-) -> list[dict]:
+) -> List[dict]:
     dirs = get_component_dirs(root, top_dir, ns)
 
     return [{"name": d.name} for d in dirs]

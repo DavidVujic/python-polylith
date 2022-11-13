@@ -1,4 +1,3 @@
-from polylith.diff import collect
-from polylith.diff import report
+from polylith.diff import collect, report
 
 __all__ = ["collect", "report"]

@@ -2,8 +2,8 @@ from pathlib import Path
 
 import tomlkit
 from polylith import repo
-from polylith.repo import projects_dir
 from polylith.dirs import create_dir
+from polylith.repo import projects_dir
 
 template = """\
 [tool.poetry]

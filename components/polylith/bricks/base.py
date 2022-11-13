@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 from polylith.bricks import component
 from polylith.bricks.brick import create_brick
@@ -11,5 +12,5 @@ def create_base(path: Path, namespace: str, package: str) -> None:
     create_test(path, bases_dir, namespace, package)
 
 
-def get_bases_data(path: Path, ns: str) -> list[dict]:
+def get_bases_data(path: Path, ns: str) -> List[dict]:
     return component.get_components_data(path, ns, bases_dir)

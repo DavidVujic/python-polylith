@@ -1,6 +1,6 @@
 from pathlib import Path
-from polylith.files import create_file
 
+from polylith.files import create_file
 
 keep_file_name = ".keep"
 
