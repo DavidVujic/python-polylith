@@ -28,10 +28,15 @@ poetry init
 ```
 
 ### Commands
-The `create workspace` command will create a Polylith workspace, with a basic Polylith folder structure. 
-Just define a __top namespace__ to be used when creating components and bases and the theme to use.
+The `create workspace` command will create a Polylith workspace, with a basic Polylith folder structure.
 
-*new* `theme` is a new Python Polylith feature and defines what kind of component structure - or theme - to use.
+
+#### Create
+``` shell
+poetry poly create workspace --name my_namespace --theme <tdd or loose>
+```
+
+*New:* `theme` is a new Python Polylith feature and defines what kind of component structure - or theme - to use.
 
 `tdd` is the default and will set the structure according to the original Polylith Clojure implementation, such as:
 `components/<package>/src/<namespace>/<package>` with a corresponding `test` folder.
@@ -39,10 +44,6 @@ Just define a __top namespace__ to be used when creating components and bases an
 `loose` is a new theme, for a more familiar structure for Python:
 `components/<namespace>/<package>` and will put a `test` folder at the root of the repository.
 
-#### Create
-``` shell
-poetry poly create workspace --name my_namespace --theme <tdd or loose>
-```
 
 Add a component:
 
