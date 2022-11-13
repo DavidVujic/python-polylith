@@ -21,7 +21,7 @@ that will add Polylith specific tooling support to Poetry.
 Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polylith_plugin/README.md) with details about the Poetry plugin.
 
 ### Differences between the Clojure & Python implementations
-In the [official docs](https://polylith.gitbook.io/polylith/) - and in the `components` section in particular,
+In the [official docs](https://polylith.gitbook.io/polylith/) for the Clojure implementation - the `components` section in particular -
 there is a `interface.clj` file, used to separate an API from the implementation of a component.
 
 The Python implementation uses the `__init__.py` to accomplish that. In the Python implementation, the `pyproject.toml` is used to define bases and components.
