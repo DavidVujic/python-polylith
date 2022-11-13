@@ -24,18 +24,30 @@ Done!
 ### Commands
 Creating a new repo.
 
+create a directory for your code and the basic Poetry setup
+
 ``` shell
-# create a directory for your code
 mkdir my-repo-folder
 cd my-repo-folder
 git init
 
-# This command will create a basic pyproject.toml file.
 poetry init
+```
 
-# This command will create a Polylith workspace, with the basic Polylith folder structure and
-# define a top namespace to be used when creating components and bases.
-poetry poly create workspace --name my_namespace
+This command will create a Polylith workspace, with a basic Polylith folder structure. 
+Just define a __top namespace__ to be used when creating components and bases and the theme to use.
+
+*new* `theme` is a new Python Polylith feature and defines what kind of component structure - or theme - to use.
+
+`tdd` is the default and will set the structure according to the original Polylith Clojure implementation, such as:
+`components/<package>/src/<namespace>/<package>` with a corresponding `test` folder.
+
+`loose` is a new theme, for a more familiar structure for Python:
+`components/<namespace>/<package>` and will put a `test` folder at the root of the repository.
+
+#### Create
+``` shell
+poetry poly create workspace --name my_namespace --theme <tdd or loose>
 ```
 
 Add a component:
@@ -59,10 +71,39 @@ Add a project:
 poetry poly create project --name my_example_aws_lambada_project
 ```
 
+#### Info
 Show info about the workspace:
 
 ``` shell
 poetry poly info
 ```
-__Note__: the `info` command currently displays the very basic workspace info. The feature is currently developed.
-Stay tuned for upcoming versions!
+
+Shows what has changed since the most recent stable point in time:
+
+``` shell
+poetry poly diff
+```
+
+The `diff` command will compare the current state of the repository, compared to a `git tag`.
+The tool will look for the latest tag according to a certain pattern, such as `stable-*`.
+The pattern can be configured in `workspace.toml`.
+
+#### Testing
+The `create` commands will also create corresponding unit tests. It is possible to disable thi behaviour
+by setting `enabled = false` in the `workspace.toml` file.
+
+
+#### Workspace configuration
+An example of a workspace configuration:
+
+``` shell
+[tool.polylith]
+namespace = "my_namespace"
+git_tag_pattern = "stable-*"
+
+[tool.polylith.structure]
+theme = "loose"
+
+[tool.polylith.test]
+enabled = true
+```
