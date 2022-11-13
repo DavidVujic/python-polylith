@@ -35,7 +35,7 @@ This is an example of the _top level_ `pyproject.toml` used when __developing__.
 (using the `loose` theme, see more about that below)
 
 When creating a project, the _project specific_ `pyproject.toml` will include all the used components and bases.
-Note that the packages are referenced relative to the project. This is made possible by the Multiproject Poetry plugin. 
+Note that the packages are referenced relative to the project. This is made possible by the Multiproject Poetry plugin.
 
 This is where you add the bricks used by the actual project.
 
