@@ -9,7 +9,7 @@ From the [official docs](https://polylith.gitbook.io/polylith/):
 
 >... Polylith is a software architecture that applies functional thinking at the system scale. It helps us build simple, maintainable, testable, and scalable backend systems. ...
 
-Polylith is an architecture (with tooling support) originally built for Clojure. __The code in this repo brings Polylith to Python!__
+Polylith is an architecture (with tooling support) originally built for Clojure. The code in this repo brings __Polylith to Python!__
 
 ### An Architecture well suited for Monorepos
 Polylith is using a components-first architecture. Similar to LEGO, components are building blocks.
@@ -36,7 +36,7 @@ This is an example of the top level `pyproject.toml` used during __development__
     {include = "my_namespace/my_example_aws_lambda", from = "bases"},
 ]
 ```
-(using the `loose` theme, see the [Poetry Polylith Plugin docs]((projects/poetry_polylith_plugin/README.md))
+(using the `loose` theme, see the [Poetry Polylith Plugin docs](projects/poetry_polylith_plugin/README.md))
 
 When creating a project, the project specific `pyproject.toml` will include all the used components and bases.
 Note that the packages are referenced relative to the project.
