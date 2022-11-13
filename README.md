@@ -53,7 +53,7 @@ This is an example of the top level `pyproject.toml` used during __development__
 ```
 
 When creating a project, the project specific `pyproject.toml` will include all the used components and bases.
-Note that the packages are referenced relative to the project. This is enabled by the `Multiproject` plugin.
+Note that the packages are referenced relative to the project.
 
 (using the `loose` theme)
 ``` shell
