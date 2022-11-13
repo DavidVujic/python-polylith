@@ -83,6 +83,15 @@ The `diff` command will compare the current state of the repository, compared to
 The tool will look for the latest tag according to a certain pattern, such as `stable-*`.
 The pattern can be configured in `workspace.toml`.
 
+The `diff` command is usefull in a CI environment, to determine if a project should be deployed or not.
+The command has a `--short` flag that will display a comma separated list of changed projects.
+
+
+Useful for CI:
+``` shell
+poetry poly diff --short
+```
+
 #### Testing
 The `create` commands will also create corresponding unit tests. It is possible to disable thi behaviour
 by setting `enabled = false` in the `workspace.toml` file.
