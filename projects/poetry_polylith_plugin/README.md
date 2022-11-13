@@ -53,12 +53,12 @@ With the `Poetry` version 1.2 or later installed, you can add plugins.
 
 Add the [Multiproject](https://github.com/DavidVujic/poetry-multiproject-plugin) plugin, that will enable the very important __workspace__ support to Poetry.
 ``` shell
-poetry plugin add poetry-multiproject-plugin
+poetry self add poetry-multiproject-plugin
 ```
 
 Add the Polylith plugin:
 ``` shell
-poetry plugin add poetry-polylith-plugin
+poetry self add poetry-polylith-plugin
 ```
 
 ### Create a repository
