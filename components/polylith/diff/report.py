@@ -1,3 +1,5 @@
+from typing import List
+
 from rich import box
 from rich.columns import Columns
 from rich.console import Console
@@ -22,7 +24,7 @@ def brick_status(brick, bricks) -> str:
 
 
 def print_diff_details(
-    projects_data: list[dict], bases: list[str], components: list[str]
+    projects_data: List[dict], bases: List[str], components: List[str]
 ) -> None:
     console = Console(theme=info_theme)
     table = Table(box=box.SIMPLE_HEAD)
@@ -43,7 +45,7 @@ def print_diff_details(
     console.print(table, overflow="ellipsis")
 
 
-def print_detected_changes_in_projects(projects: list[str]) -> None:
+def print_detected_changes_in_projects(projects: List[str]) -> None:
     if not projects:
         return
 
@@ -53,9 +55,7 @@ def print_detected_changes_in_projects(projects: list[str]) -> None:
         console.print(f"[data]:gear: Changes found in [/][proj]{project}[/]")
 
 
-def print_diff_summary(
-    tag: str,  bases: list[str], components: list[str]
-) -> None:
+def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:
     console = Console(theme=info_theme)
 
     console.print(Padding(f"[data]Diff: based on the {tag} tag[/]", (1, 0, 1, 0)))

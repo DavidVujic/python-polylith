@@ -1,7 +1,7 @@
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith.poetry.commands.create import create
 from polylith import project
+from polylith.poetry.commands.create import create
 
 command_name = "poly create project"
 

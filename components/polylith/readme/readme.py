@@ -2,7 +2,6 @@ from pathlib import Path
 
 from polylith import log, repo
 
-
 template = """\
 # A Python Polylith repo
 
