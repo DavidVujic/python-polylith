@@ -30,17 +30,16 @@ def print_diff_details(
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]changed brick[/]")
 
-    for project in projects_data:
-        project_name = project["name"]
-        table.add_column(f"[proj]{project_name}[/]")
+    proj_cols = [f"[proj]{project['name']}[/]" for project in projects_data]
+    table.add_column(Columns(proj_cols, align="center", expand=True))
 
     for brick in sorted(components):
         cols = [brick_status(brick, p.get("components")) for p in projects_data]
-        table.add_row(f"[comp]{brick}[/]", Columns(cols))
+        table.add_row(f"[comp]{brick}[/]", Columns(cols, align="center", expand=True))
 
     for brick in sorted(bases):
         cols = [brick_status(brick, p.get("bases")) for p in projects_data]
-        table.add_row(f"[base]{brick}[/]", Columns(cols))
+        table.add_row(f"[base]{brick}[/]", Columns(cols, align="center", expand=True))
 
     console.print(table, overflow="ellipsis")
 
