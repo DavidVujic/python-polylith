@@ -68,3 +68,30 @@ def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> Non
 
     if bases:
         console.print(f"[base]Changed bases[/]: [data]{len(bases)}[/]")
+
+
+def _changed_projects(
+    projects_data: List[dict], brick_type: str, bricks: List[str]
+) -> set:
+    res = {
+        p["name"]: set(p.get(brick_type, [])).intersection(bricks)
+        for p in projects_data
+    }
+
+    return {k for k, v in res.items() if v}
+
+
+def print_short_diff(
+    projects_data: List[dict],
+    projects: List[str],
+    bases: List[str],
+    components: List[str],
+) -> None:
+
+    a = _changed_projects(projects_data, "components", components)
+    b = _changed_projects(projects_data, "bases", bases)
+
+    res = a | b | set(projects)
+
+    console = Console(theme=info_theme)
+    console.print(",".join(res))

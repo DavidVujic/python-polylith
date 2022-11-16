@@ -39,7 +39,7 @@ class DiffCommand(Command):
             short = self.option("short")
 
             if short:
-                self.line(",".join(projects))
+                diff.report.print_short_diff(projects_data, projects, bases, components)
             else:
                 diff.report.print_diff_summary(tag, bases, components)
                 diff.report.print_detected_changes_in_projects(projects)
