@@ -90,8 +90,9 @@ def print_short_diff(
 
     a = _changed_projects(projects_data, "components", components)
     b = _changed_projects(projects_data, "bases", bases)
+    c = set(projects)
 
-    res = a | b | set(projects)
+    res = {*a, *b, *c}
 
     console = Console(theme=info_theme)
     console.print(",".join(res))
