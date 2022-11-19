@@ -24,9 +24,9 @@ def brick_status(brick, bricks) -> str:
 
 
 def print_bricks_in_projects(
-    projects_data: List[dict], bases_data: List[dict], components_data: List[dict]
+    projects_data: List[dict], bases: List[str], components: List[str]
 ) -> None:
-    if not components_data and not bases_data:
+    if not components and not bases:
         return
 
     console = Console(theme=info_theme)
@@ -36,14 +36,11 @@ def print_bricks_in_projects(
     proj_cols = [f"[proj]{project['name']}[/]" for project in projects_data]
     table.add_column(Columns(proj_cols, align="center", expand=True))
 
-    components = sorted((c["name"] for c in components_data))
-    bases = sorted((b["name"] for b in bases_data))
-
-    for brick in components:
+    for brick in sorted(components):
         cols = [brick_status(brick, p.get("components")) for p in projects_data]
         table.add_row(f"[comp]{brick}[/]", Columns(cols, align="center", expand=True))
 
-    for brick in bases:
+    for brick in sorted(bases):
         cols = [brick_status(brick, p.get("bases")) for p in projects_data]
         table.add_row(f"[base]{brick}[/]", Columns(cols, align="center", expand=True))
 
@@ -51,15 +48,15 @@ def print_bricks_in_projects(
 
 
 def print_workspace_summary(
-    projects_data: List[dict], bases_data: List[dict], components_data: List[dict]
+    projects_data: List[dict], bases: List[str], components: List[str]
 ) -> None:
     console = Console(theme=info_theme)
 
     console.print(Padding("[data]Workspace summary[/]", (1, 0, 1, 0)))
 
-    number_of_projects = len(projects_data) if projects_data else 0
-    number_of_components = len(components_data) if components_data else 0
-    number_of_bases = len(bases_data) if bases_data else 0
+    number_of_projects = len(projects_data)
+    number_of_components = len(components)
+    number_of_bases = len(bases)
 
     console.print(f"[proj]projects[/]: [data]{number_of_projects}[/]")
     console.print(f"[comp]components[/]: [data]{number_of_components}[/]")
