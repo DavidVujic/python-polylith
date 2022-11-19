@@ -5,8 +5,14 @@ from typing import List, Union
 from polylith import repo, workspace
 
 
+def _parse_brick_name(folder: str, changed_file: Path) -> str:
+    file_path = Path(changed_file.as_posix().replace(folder, ""))
+
+    return next(p for p in file_path.parts if p != file_path.root)
+
+
 def _get_changed(folder: str, changed_files: List[Path]) -> set:
-    return {p.parent.name for p in changed_files if folder in p.as_posix()}
+    return {_parse_brick_name(folder, f) for f in changed_files if folder in f.as_posix()}
 
 
 def _get_changed_bricks(
