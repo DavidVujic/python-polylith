@@ -9,19 +9,22 @@ def _get_changed(folder: str, changed_files: List[Path]) -> set:
     return {p.parent.name for p in changed_files if folder in p.as_posix()}
 
 
-def _get_changed_bricks(root: Path, top_dir: str, changed_files: List[Path]) -> list:
-    namespace = workspace.parser.get_namespace_from_config(root)
+def _get_changed_bricks(
+    root: Path, top_dir: str, changed_files: List[Path], namespace: str
+) -> list:
     d = f"{top_dir}/{namespace}"
 
     return sorted(_get_changed(d, changed_files))
 
 
-def get_changed_components(root: Path, changed_files: List[Path]) -> list:
-    return _get_changed_bricks(root, repo.components_dir, changed_files)
+def get_changed_components(
+    root: Path, changed_files: List[Path], namespace: str
+) -> list:
+    return _get_changed_bricks(root, repo.components_dir, changed_files, namespace)
 
 
-def get_changed_bases(root: Path, changed_files: List[Path]) -> list:
-    return _get_changed_bricks(root, repo.bases_dir, changed_files)
+def get_changed_bases(root: Path, changed_files: List[Path], namespace: str) -> list:
+    return _get_changed_bricks(root, repo.bases_dir, changed_files, namespace)
 
 
 def get_changed_projects(changed_files: List[Path]) -> list:
