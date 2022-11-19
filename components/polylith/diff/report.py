@@ -26,6 +26,10 @@ def brick_status(brick, bricks) -> str:
 def print_diff_details(
     projects_data: List[dict], bases: List[str], components: List[str]
 ) -> None:
+
+    if not bases and not components:
+        return
+
     console = Console(theme=info_theme)
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]changed brick[/]")

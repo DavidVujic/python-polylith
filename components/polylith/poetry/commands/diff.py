@@ -2,7 +2,7 @@ from pathlib import Path
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith import diff, info, repo
+from polylith import diff, info, repo, workspace
 
 
 class DiffCommand(Command):
@@ -30,11 +30,12 @@ class DiffCommand(Command):
         if not tag:
             self.line("No tags found in repository.")
         else:
+            ns = workspace.parser.get_namespace_from_config(root)
             files = diff.collect.get_files(tag)
-            bases = diff.collect.get_changed_bases(root, files)
-            components = diff.collect.get_changed_components(root, files)
+            bases = diff.collect.get_changed_bases(root, files, ns)
+            components = diff.collect.get_changed_components(root, files, ns)
             projects = diff.collect.get_changed_projects(files)
-            projects_data = info.get_bricks_in_projects(root)
+            projects_data = info.get_bricks_in_projects(root, components, bases, ns)
 
             short = self.option("short")
 
