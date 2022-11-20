@@ -1,10 +1,10 @@
-# Python tools for the Polylith Architecture
+# :sparkles: Python tools for the Polylith Architecture :sparkles:
 
 A repo containing tooling support for the Polylith Architecture in Python.
 
 [![DavidVujic](https://circleci.com/gh/DavidVujic/python-polylith.svg?style=svg)](https://app.circleci.com/pipelines/github/DavidVujic/python-polylith?branch=main&filter=all)
 
-## What's Polylith?
+## What's Polylith? :confused:
 From the [official docs](https://polylith.gitbook.io/polylith/):
 
 >... Polylith is a software architecture that applies functional thinking at the system scale. It helps us build simple, maintainable, testable, and scalable backend systems. ...
@@ -15,10 +15,17 @@ Polylith is an architecture (with tooling support) originally built for Clojure.
 Polylith is using a components-first architecture. Similar to LEGO, components are building blocks.
 A component can be shared across apps, tools, libraries, serverless functions and services.
 
-## Polylith for Python?
-This repo contains a [Poetry plugin](https://pypi.org/project/poetry-polylith-plugin),
-that will add Polylith specific tooling support to Poetry.
+## Polylith for Python? :snake:
+This repo contains a Poetry plugin, that you can install from [PyPI](https://pypi.org/project/poetry-polylith-plugin).
+The plugin will add Polylith specific tooling support to Poetry.
 Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polylith_plugin/README.md) with details about the Poetry plugin.
+
+
+## :sparkles: Examples :sparkles:
+Have a look at the [Python Polylith Examples](https://github.com/DavidVujic/python-polylith-example) repository.
+It is a repository with an example __Python__ setup of the Polylith Architecture.
+You will find examples of sharing code between different kind of projects, and developer tooling setup such as `mypy` and the `venv`.
+
 
 ### Differences between the Clojure & Python implementations
 In the [official docs](https://polylith.gitbook.io/polylith/) for the Clojure implementation,
