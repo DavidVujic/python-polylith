@@ -26,12 +26,10 @@ Have a look at the [Python Polylith Examples](https://github.com/DavidVujic/pyth
 It is a repository with an example __Python__ setup of the Polylith Architecture.
 You will find examples of sharing code between different kind of projects, and developer tooling setup such as `mypy` and the `venv`.
 
-### Videos
-<img width="640" alt="poly-info-example" src="https://user-images.githubusercontent.com/301286/203044825-b84371e8-caa8-4f85-8c94-4a5f3af887d6.png">
-
+## Videos
 * Python with the Polylith Architecture - [an example video](https://youtu.be/3w2ffHZb6gc) (about 15 minutes)
 * Python Poetry Polylith Plugin - [a demo video](https://youtu.be/AdKpTP9pjHI) (about 13 minutes)
-
+<img width="640" alt="poly-info-example" src="https://user-images.githubusercontent.com/301286/203044825-b84371e8-caa8-4f85-8c94-4a5f3af887d6.png">
 
 ### Differences between the Clojure & Python implementations
 In the [official docs](https://polylith.gitbook.io/polylith/) for the Clojure implementation,
