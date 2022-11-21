@@ -27,6 +27,13 @@ It is a repository with an example __Python__ setup of the Polylith Architecture
 You will find examples of sharing code between different kind of projects, and developer tooling setup such as `mypy` and the `venv`.
 
 
+### Videos
+
+Python with the Polylith Architecture - an example [video](https://youtu.be/3w2ffHZb6gc) (about 15 minutes)
+
+Python Poetry Polylith Plugin - a demo [video](https://youtu.be/AdKpTP9pjHI) (about 13 minutes)
+
+
 ### Differences between the Clojure & Python implementations
 In the [official docs](https://polylith.gitbook.io/polylith/) for the Clojure implementation,
 there is a `interface.clj` file that is used to separate an API from the implementation of a component.
