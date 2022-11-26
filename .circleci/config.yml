@@ -1,17 +1,21 @@
 version: '2.1'
 orbs:
-  python: circleci/python@1.0.0
+  python: circleci/python@2.1.1
 
 jobs:
   lint:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.8"
     steps:
       - checkout
       - python/install-packages:
           pkg-manager: poetry
       - run:
           command: |
+            python --version
             poetry run flake8
+            poetry run mypy .
           name: Linting
 
 workflows:
