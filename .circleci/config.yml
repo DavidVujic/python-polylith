@@ -4,7 +4,9 @@ orbs:
 
 jobs:
   lint:
-    executor: python/default
+    executor:
+      name: python/default
+      tag: "3.8"
     steps:
       - checkout
       - python/install-packages:
