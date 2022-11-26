@@ -13,7 +13,9 @@ jobs:
           pkg-manager: poetry
       - run:
           command: |
+            python --version
             poetry run flake8
+            poetry run mypy .
           name: Linting
 
 workflows:
