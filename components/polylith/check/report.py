@@ -21,11 +21,11 @@ def run(project_data: dict):
     with console.status(f"checking [proj]{project_name}[/]", spinner="monkey"):
         result = run_command(project_path)
 
-        message = ["[proj]", project_name, "[/]"]
-        extra = [" ", ":warning:"] if result else [" ", ":heavy_check_mark:"]
+        message = ["[proj]", project_name, "[/]", " "]
+        extra = [":warning:"] if result else [":heavy_check_mark:"]
 
         output = "".join(message + extra)
-        console.print(output, height=2)
+        console.print(output)
 
         for row in result:
             console.print(f"[data]{row}[/]")
