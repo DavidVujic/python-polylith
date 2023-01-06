@@ -13,8 +13,13 @@ def run_command(project_path: Path) -> List[str]:
 
     navigate_to(project_path)
 
-    res = subprocess.run(["which", "poetry"], capture_output=True, text=True)
-    print(res)
-    navigate_to(current_dir)
+    try:
+        res = subprocess.run(
+            ["poetry", "check-project"], capture_output=True, text=True
+        )
+    finally:
+        navigate_to(current_dir)
+
+    res.check_returncode()
 
     return res.stdout.splitlines()

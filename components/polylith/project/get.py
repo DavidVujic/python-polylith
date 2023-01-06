@@ -42,3 +42,11 @@ def get_packages_for_projects(root: Path) -> List[dict]:
         {"name": get_project_name(d), "packages": get_project_package_includes(d)}
         for d in tomls
     ]
+
+
+def get_project_names_and_paths(root: Path) -> List[dict]:
+    project_files = get_project_files(root)
+
+    return [
+        {"name": get_project_name(get_toml(p)), "path": p.parent} for p in project_files
+    ]

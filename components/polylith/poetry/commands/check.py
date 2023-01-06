@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import check, repo
+from polylith import check, project, repo
 
 
 class CheckCommand(Command):
@@ -15,5 +15,9 @@ class CheckCommand(Command):
                 "Didn't find the workspace root. Expected to find a workspace.toml file."
             )
 
-        check.run_command(root)
+        projects = project.get_project_names_and_paths(root)
+
+        for proj in projects:
+            check.report.run(proj)
+
         return 0

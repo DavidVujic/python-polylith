@@ -1,3 +1,3 @@
-from polylith.check.core import run_command
+from polylith.check import report
 
-__all__ = ["run_command"]
+__all__ = ["report"]
