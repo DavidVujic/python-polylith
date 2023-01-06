@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import check, repo, workspace
+from polylith import check, repo
 
 
 class CheckCommand(Command):
