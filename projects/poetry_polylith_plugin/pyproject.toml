@@ -9,6 +9,7 @@ readme = "README.md"
 packages = [
          {include = "polylith/poetry_plugin", from = "../../bases"},
          {include = "polylith/bricks", from = "../../components"},
+         {include = "polylith/check", from = "../../components"},
          {include = "polylith/development", from = "../../components"},
          {include = "polylith/diff", from = "../../components"},
          {include = "polylith/dirs", from = "../../components"},
