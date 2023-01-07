@@ -12,7 +12,7 @@ info_theme = Theme(
 )
 
 
-def run(project_data: dict):
+def run(project_data: dict) -> bool:
     console = Console(theme=info_theme)
 
     project_name = project_data["name"]
@@ -29,3 +29,5 @@ def run(project_data: dict):
 
         for row in result:
             console.print(f"[data]{row}[/]")
+
+        return True if not result else False

@@ -17,7 +17,6 @@ class CheckCommand(Command):
 
         projects = project.get_project_names_and_paths(root)
 
-        for proj in projects:
-            check.report.run(proj)
+        res = [check.report.run(proj) for proj in projects]
 
-        return 0
+        return 0 if all(res) else 1
