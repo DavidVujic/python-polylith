@@ -72,6 +72,7 @@ Show info about the workspace:
 poetry poly info
 ```
 
+#### Diff
 Shows what has changed since the most recent stable point in time:
 
 ``` shell
@@ -90,6 +91,16 @@ Useful for CI:
 ``` shell
 poetry poly diff --short
 ```
+
+#### Check
+Validates the Polylith workspace:
+
+``` shell
+poetry poly check
+```
+
+**NOTE**: this feature is built on top of the `poetry check-project` command from the [Multiproject](https://github.com/DavidVujic/poetry-multiproject-plugin) plugin.
+Make sure that you have the latest version of poetry-multiproject-plugin installed to be able to use the `poly check` command.
 
 #### Testing
 The `create` commands will also create corresponding unit tests. It is possible to disable thi behaviour
