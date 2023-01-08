@@ -1,6 +1,7 @@
 from poetry.console.application import Application
 from poetry.plugins.application_plugin import ApplicationPlugin
 from polylith.poetry.commands import (
+    CheckCommand,
     CreateBaseCommand,
     CreateComponentCommand,
     CreateProjectCommand,
@@ -10,6 +11,7 @@ from polylith.poetry.commands import (
 )
 
 commands = [
+    CheckCommand,
     CreateBaseCommand,
     CreateComponentCommand,
     CreateProjectCommand,
