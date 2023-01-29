@@ -1,6 +1,6 @@
 import ast
 import pathlib
-from typing import List
+from typing import List, Set
 
 
 def parse_import(node: ast.Import) -> List[str]:
@@ -34,7 +34,7 @@ def extract_imports(path: pathlib.Path) -> List[str]:
     return [i for node in ast.walk(tree) for i in parse_imports(node) if i is not None]
 
 
-def list_imports(path: pathlib.Path) -> set[str]:
+def list_imports(path: pathlib.Path) -> Set[str]:
     py_modules = path.rglob("*.py")
 
     extracted = (extract_imports(m) for m in py_modules)
