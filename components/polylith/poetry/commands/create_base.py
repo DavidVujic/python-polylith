@@ -10,6 +10,13 @@ class CreateBaseCommand(Command):
 
     options = [
         option("name", None, "Name of the base.", flag=False),
+        option(
+            "description",
+            None,
+            "Description of the base.",
+            flag=False,
+            value_required=False,
+        ),
     ]
 
     def handle(self) -> int:

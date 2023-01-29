@@ -10,6 +10,13 @@ class CreateComponentCommand(Command):
 
     options = [
         option("name", None, "Name of the component.", flag=False),
+        option(
+            "description",
+            None,
+            "Description of the component.",
+            flag=False,
+            value_required=False,
+        ),
     ]
 
     def handle(self) -> int:

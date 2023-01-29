@@ -1,8 +1,9 @@
 from pathlib import Path
+from typing import Union
 
 from polylith import log, repo
 
-template = """\
+workspace_template = """\
 # A Python Polylith repo
 
 ## Docs
@@ -13,11 +14,17 @@ A Python implementation of the Polylith tool:
 [python-polylith](https://github.com/DavidVujic/python-polylith)
 """
 
+brick_template = """\
+# {name} {brick}
+
+{description}
+"""
+
 
 logger = log.getLogger()
 
 
-def create_workspace_readme(path: Path, namespace: str) -> None:
+def create_readme(path: Path, template: str, **kwargs) -> None:
     fullpath = path / repo.readme_file
 
     if fullpath.exists():
@@ -25,4 +32,16 @@ def create_workspace_readme(path: Path, namespace: str) -> None:
         return
 
     with fullpath.open("w", encoding="utf-8") as f:
-        f.write(template.format(namespace=namespace))
+        f.write(template.format(**kwargs))
+
+
+def create_workspace_readme(path: Path, namespace: str) -> None:
+    create_readme(path, workspace_template, namespace=namespace)
+
+
+def create_brick_readme(
+    path: Path, name: str, brick: str, description: Union[str, None]
+) -> None:
+    b = "component" if brick in repo.components_dir else "base"
+
+    create_readme(path, brick_template, name=name, brick=b, description=description)
