@@ -51,12 +51,18 @@ Add a component:
 poetry poly create component --name my_component
 ```
 
+##### Options
+`--description` Add a component description. Will be added as a component docstring, and in the component README (if enabled with the `with_brick_docs` workspace config).
+
 Add a base:
 
 ``` shell
 # This command will create a base - i.e. a Python package in a namespaced folder.
 poetry poly create base --name my_example_aws_lambda
 ```
+
+##### Options
+`--description` Add a base description. Will be added as a base docstring, and in the component README (if enabled with the `with_brick_docs` workspace config).
 
 Add a project:
 
@@ -117,6 +123,7 @@ git_tag_pattern = "stable-*"
 
 [tool.polylith.structure]
 theme = "loose"
+with_brick_docs = true
 
 [tool.polylith.test]
 enabled = true
