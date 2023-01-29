@@ -22,4 +22,6 @@ def create_brick(
 
     create_file(d, f"{modulename}.py")
     create_interface(d, namespace, package, modulename, description)
-    create_brick_readme(d, package, brick, description)
+
+    if parser.is_readme_generation_enabled(root):
+        create_brick_readme(d, package, brick, description)
