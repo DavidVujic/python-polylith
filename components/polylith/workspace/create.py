@@ -12,7 +12,7 @@ git_tag_pattern = "stable-*"
 
 [tool.polylith.structure]
 theme = "{theme}"
-create_brick_docs = true
+with_brick_docs = true
 
 
 [tool.polylith.test]

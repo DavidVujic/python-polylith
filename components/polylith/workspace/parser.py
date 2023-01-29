@@ -34,7 +34,7 @@ def is_test_generation_enabled(path: Path) -> bool:
 def is_readme_generation_enabled(path: Path) -> bool:
     toml: dict = _load_workspace_config(path)
 
-    enabled = toml["tool"]["polylith"]["structure"].get("create_brick_docs")
+    enabled = toml["tool"]["polylith"]["structure"].get("with_brick_docs")
     return bool(enabled)
 
 
