@@ -44,4 +44,6 @@ def create_brick_readme(
 ) -> None:
     b = "component" if brick in repo.components_dir else "base"
 
-    create_readme(path, brick_template, name=name, brick=b, description=description)
+    create_readme(
+        path, brick_template, name=name, brick=b, description=description or ""
+    )
