@@ -51,9 +51,6 @@ Add a component:
 poetry poly create component --name my_component
 ```
 
-##### Options
-`--description` Add a component description. Will be added as a component docstring, and in the component README (if enabled with the `with_brick_docs` workspace config).
-
 Add a base:
 
 ``` shell
@@ -62,7 +59,8 @@ poetry poly create base --name my_example_aws_lambda
 ```
 
 ##### Options
-`--description` Add a base description. Will be added as a base docstring, and in the component README (if enabled with the `with_brick_docs` workspace config).
+`--description`
+Add a brick description. Will be added as a brick docstring, and in the brick-sprcific README (if it is enabled in the `with_brick_docs` workspace config).
 
 Add a project:
 
