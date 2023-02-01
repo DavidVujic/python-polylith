@@ -16,12 +16,17 @@ def create_brick(
     description: Union[str, None],
     modulename: str = "core",
 ) -> None:
-    dirs_structure = parser.get_brick_structure_from_config(root)
-    dirs = dirs_structure.format(brick=brick, namespace=namespace, package=package)
-    d = create_dir(root, dirs)
+    path_kwargs = {"brick": brick, "namespace": namespace, "package": package}
 
+    brick_structure = parser.get_brick_structure_from_config(root)
+    resources_structure = parser.get_resources_structure_from_config(root)
+
+    brick_path = brick_structure.format(**path_kwargs)
+    resources_path = resources_structure.format(**path_kwargs)
+
+    d = create_dir(root, brick_path)
     create_file(d, f"{modulename}.py")
     create_interface(d, namespace, package, modulename, description)
 
     if parser.is_readme_generation_enabled(root):
-        create_brick_readme(d, package, brick, description)
+        create_brick_readme(root / resources_path, package, brick, description)

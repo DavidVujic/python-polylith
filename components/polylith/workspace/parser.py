@@ -60,3 +60,12 @@ def get_tests_structure_from_config(path: Path) -> str:
         return "test/{brick}/{namespace}/{package}"
 
     return "{brick}/{package}/test/{namespace}/{package}"
+
+
+def get_resources_structure_from_config(path: Path) -> str:
+    theme = get_theme_from_config(path)
+
+    if theme == "loose":
+        return "{brick}/{namespace}/{package}"
+
+    return "{brick}/{package}"
