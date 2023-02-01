@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Union
 
 import tomlkit
 from polylith import repo
@@ -9,7 +10,7 @@ template = """\
 [tool.poetry]
 name = "{name}"
 version = "0.1.0"
-description = ""
+description = "{description}"
 authors = {authors}
 license = ""
 
@@ -33,20 +34,31 @@ def get_workspace_toml(path: Path) -> dict:
     return data
 
 
-def create_project_toml(name, template, workspace_toml) -> tomlkit.TOMLDocument:
+def create_project_toml(
+    name: str, template: str, workspace_toml: dict, description: str
+) -> tomlkit.TOMLDocument:
     authors = workspace_toml["tool"]["poetry"]["authors"]
     python_version = workspace_toml["tool"]["poetry"]["dependencies"]["python"]
 
-    content = template.format(name=name, authors=authors, python_version=python_version)
+    content = template.format(
+        name=name,
+        description=description,
+        authors=authors,
+        python_version=python_version,
+    )
 
     return tomlkit.loads(content)
 
 
-def create_project(path: Path, namespace: str, name: str) -> None:
+def create_project(
+    path: Path, namespace: str, name: str, description: Union[str, None]
+) -> None:
     d = create_dir(path, f"{projects_dir}/{name}")
 
     workspace_toml = get_workspace_toml(path)
-    project_toml = create_project_toml(name, template, workspace_toml)
+    project_toml = create_project_toml(
+        name, template, workspace_toml, description or ""
+    )
 
     fullpath = d / repo.default_toml
 
