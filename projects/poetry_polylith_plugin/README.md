@@ -58,17 +58,18 @@ Add a base:
 poetry poly create base --name my_example_aws_lambda
 ```
 
-##### Options
-`--description`
-Add a brick description. Will be added as a docstring, and in the brick-specific README
-(if it is enabled in the `resources` section of the workspace config).
-
 Add a project:
 
 ``` shell
 # This command will create a project - i.e. a pyproject.toml in a project folder. No code in this folder.
 poetry poly create project --name my_example_aws_lambada_project
 ```
+
+##### Options
+`--description`
+Add a brick description. The description will be added as a docstring.
+Also in the brick-specific README (when set to enabled in the `resources` section of the workspace config).
+
 
 #### Info
 Show info about the workspace:
