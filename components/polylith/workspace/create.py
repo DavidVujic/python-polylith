@@ -13,6 +13,9 @@ git_tag_pattern = "stable-*"
 [tool.polylith.structure]
 theme = "{theme}"
 
+[tool.polylith.resources]
+brick_docs_enabled = false
+
 [tool.polylith.test]
 enabled = true
 """

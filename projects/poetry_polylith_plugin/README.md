@@ -58,6 +58,11 @@ Add a base:
 poetry poly create base --name my_example_aws_lambda
 ```
 
+##### Options
+`--description`
+Add a brick description. Will be added as a docstring, and in the brick-specific README
+(if it is enabled in the `resources` section of the workspace config).
+
 Add a project:
 
 ``` shell
@@ -117,6 +122,9 @@ git_tag_pattern = "stable-*"
 
 [tool.polylith.structure]
 theme = "loose"
+
+[tool.polylith.resources]
+brick_docs_enabled = false
 
 [tool.polylith.test]
 enabled = true
