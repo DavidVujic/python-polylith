@@ -26,11 +26,9 @@ Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polyl
 The main use case is to support having one or more microservices (or apps) in a Monorepo, and share code between the services.
 
 #### Libraries? :thinking:
-Polylith for Python isn't mainly for building libraries, even if it is supported.
-You will need to consider that the code in one library will likely share the same top namespace with other libraries that are
+Polylith for Python isn't mainly for building libraries published to PyPI, even if it is supported.
+Consider that the code in one library will share the same top namespace with other libraries that are
 built from the same Polylith Monorepo. This will likely be a problem when _more than one_ of your libraries would be installed into the same virtual environment.
-
-Since Python libraries by default are installed in a "flat" folder structure, two libraries with the same top namespace will collide.
 
 There is [a way to solve this](projects/poetry_polylith_plugin/README.md) issue, though.
 
