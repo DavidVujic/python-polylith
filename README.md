@@ -13,12 +13,24 @@ Polylith is an architecture (with tooling support) originally built for Clojure.
 
 ### An Architecture well suited for Monorepos
 Polylith is using a components-first architecture. Similar to LEGO, components are building blocks.
-A component can be shared across apps, tools, libraries, serverless functions and services.
+A component can be shared across apps, serverless functions and microservices.
 
 ## Polylith for Python? :snake:
 This repo contains a Poetry plugin, that you can install from [PyPI](https://pypi.org/project/poetry-polylith-plugin).
 The plugin will add Polylith specific tooling support to Poetry.
 Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polylith_plugin/README.md) with details about the Poetry plugin.
+
+### Use cases
+
+#### Microservices and apps :thumbsup:
+The main use case is to support having one or more microservices (or apps) in a Monorepo, and share code between the services.
+
+#### Libraries? :thinking:
+Polylith for Python isn't mainly for building libraries published to PyPI, even if it is supported.
+Consider that the code in one library will share the same top namespace with other libraries that are
+built from the same Polylith Monorepo. This will likely be a problem when _more than one_ of your libraries would be installed into the same virtual environment.
+
+There is [a way to solve this](https://github.com/DavidVujic/poetry-multiproject-plugin#usage-for-libraries) issue, though. :smiley:
 
 
 ## :sparkles: Examples :sparkles:
