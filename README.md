@@ -30,7 +30,7 @@ Polylith for Python isn't mainly for building libraries published to PyPI, even 
 Consider that the code in one library will share the same top namespace with other libraries that are
 built from the same Polylith Monorepo. This will likely be a problem when _more than one_ of your libraries would be installed into the same virtual environment.
 
-There is [a way to solve this](projects/poetry_polylith_plugin/README.md) issue, though. :smiley:
+There is [a way to solve this](https://github.com/DavidVujic/poetry-multiproject-plugin#usage-for-libraries) issue, though. :smiley:
 
 
 ## :sparkles: Examples :sparkles:
