@@ -1,8 +1,9 @@
+from pathlib import Path
 from test import params
 
 import pytest
 
-from components.polylith.bricks.base import create_base
+from components.polylith.bricks.base import create_base, get_bases_data
 
 
 @pytest.mark.parametrize(
@@ -29,3 +30,9 @@ def test_create_base(handle_workspace_files, id, expected_dirs, expected_dir_str
         == expected_dirs
     )
     assert all([item.exists for item in expected_dir_structure])
+
+
+def test_get_bases_data_valid_with_test_file_structure(create_test_base):
+
+    result = get_bases_data(create_test_base, "test_namespace")
+    assert result == [{"name": "test_package"}]
