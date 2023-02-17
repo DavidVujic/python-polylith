@@ -16,7 +16,8 @@ jobs:
             python --version
             poetry run flake8
             poetry run mypy .
-          name: Linting
+            poetry run pytest
+          name: Linting and testing
 
 workflows:
   main:
