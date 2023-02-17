@@ -1,8 +1,7 @@
 from pathlib import Path
 
 import pytest
-
-from components.polylith.bricks.base import create_base, get_bases_data
+from polylith.bricks.base import create_base, get_bases_data
 
 create_base_params = [
     (

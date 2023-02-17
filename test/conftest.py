@@ -2,8 +2,7 @@ import shutil
 from pathlib import Path
 
 import pytest
-
-from components.polylith.bricks.base import create_base
+from polylith.bricks.base import create_base
 
 
 @pytest.fixture(scope="function")
