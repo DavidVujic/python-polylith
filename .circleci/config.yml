@@ -3,7 +3,7 @@ orbs:
   python: circleci/python@2.1.1
 
 jobs:
-  lint:
+  test:
     executor:
       name: python/default
       tag: "3.8"
