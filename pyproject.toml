@@ -37,6 +37,8 @@ black = "^22.10.0"
 isort = "^5.10.1"
 mypy = "^0.982"
 flake8 = "^5.0.4"
+pytest = "^7.2.1"
+pytest-cov = "^4.0.0"
 
 [tool.isort]
 profile = "black"
@@ -44,3 +46,6 @@ profile = "black"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "-v --cov=components --cov-branch --cov-report=term-missing"
