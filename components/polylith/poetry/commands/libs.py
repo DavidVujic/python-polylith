@@ -12,13 +12,19 @@ def get_projects_data(root: Path, ns: str) -> List[dict]:
     return info.get_bricks_in_projects(root, components, bases, ns)
 
 
-def get_third_party_imports(root: Path, ns: str, projects_data: List[dict]):
-    bases = [b for data in projects_data for b in data.get("bases", [])]
-    components = [c for data in projects_data for c in data.get("components", [])]
+def get_third_party_imports(
+    root: Path, ns: str, projects_data: List[dict]
+) -> dict[str, dict[str, Set]]:
+    bases = {b for data in projects_data for b in data.get("bases", [])}
+    components = {c for data in projects_data for c in data.get("components", [])}
 
-    brick_paths = list(workspace.paths.collect_brick_paths(root, ns, bases, components))
+    bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
+    components_paths = workspace.paths.collect_components_paths(root, ns, components)
 
-    return libs.get_all_third_party_imports(root, brick_paths)
+    bases_imports = libs.get_third_party_imports(root, bases_paths)
+    components_imports = libs.get_third_party_imports(root, components_paths)
+
+    return {"bases": bases_imports, "components": components_imports}
 
 
 class LibsCommand(Command):
@@ -55,8 +61,10 @@ class LibsCommand(Command):
 
         res = get_third_party_imports(root, ns, projects_data)
 
-        diff = res.difference(third_party_libs)
+        # diff = res.difference(third_party_libs)
 
-        print(diff or "nada")
+        from pprint import pprint
+
+        pprint(res)
 
         return 0

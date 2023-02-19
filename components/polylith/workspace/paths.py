@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Set
+from typing import Set
 
 from polylith import repo
 from polylith.workspace import parser
@@ -9,18 +9,21 @@ def get_path(structure: str, brick: str, ns: str, package: str) -> str:
     return structure.format(brick=brick, namespace=ns, package=package)
 
 
-def get_paths(structure: str, brick: str, ns: str, packages: List[str]) -> Set[str]:
+def get_paths(structure: str, brick: str, ns: str, packages: Set[str]) -> Set[str]:
     return {get_path(structure, brick, ns, p) for p in packages}
 
 
-def collect_brick_paths(
-    root: Path, ns: str, bases: List[str], components: List[str]
-) -> Set[Path]:
+def collect_paths(root: Path, ns: str, brick: str, packages: Set[str]) -> Set[Path]:
     structure = parser.get_brick_structure_from_config(root)
 
-    a = get_paths(structure, repo.bases_dir, ns, bases)
-    b = get_paths(structure, repo.components_dir, ns, components)
+    paths = get_paths(structure, brick, ns, packages)
 
-    brick_paths = set().union(a, b)
+    return {Path(root / p) for p in paths}
 
-    return {Path(root / p) for p in brick_paths}
+
+def collect_bases_paths(root: Path, ns: str, bases: Set[str]) -> Set[Path]:
+    return collect_paths(root, ns, repo.bases_dir, bases)
+
+
+def collect_components_paths(root: Path, ns: str, components: Set[str]) -> Set[Path]:
+    return collect_paths(root, ns, repo.components_dir, components)
