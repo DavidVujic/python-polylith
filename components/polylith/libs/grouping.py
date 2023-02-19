@@ -25,19 +25,19 @@ def extract_top_ns_from_imports(imports: Set[str]) -> Set:
     return {imp.split(".")[0] for imp in imports}
 
 
-def extract_top_ns(import_data: dict[str, Set]) -> dict[str, Set]:
+def extract_top_ns(import_data: dict) -> dict:
     return {k: extract_top_ns_from_imports(v) for k, v in import_data.items()}
 
 
-def exclude_libs(import_data: dict[str, Set], to_exclude: Set) -> dict[str, Set]:
+def exclude_libs(import_data: dict, to_exclude: Set) -> dict:
     return {k: v - to_exclude for k, v in import_data.items()}
 
 
-def exclude_empty(import_data: dict[str, Set]) -> dict[str, Set]:
+def exclude_empty(import_data: dict) -> dict:
     return {k: v for k, v in import_data.items() if v}
 
 
-def get_third_party_imports(root: Path, paths: Set[Path]) -> dict[str, Set]:
+def get_third_party_imports(root: Path, paths: Set[Path]) -> dict:
     python_version = get_python_version()
     std_libs = get_standard_libs(python_version)
     top_ns = workspace.parser.get_namespace_from_config(root)

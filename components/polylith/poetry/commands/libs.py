@@ -1,9 +1,16 @@
 from pathlib import Path
-from typing import Set
+from typing import List, Set
 
 from poetry.console.commands.command import Command
-from polylith import repo, workspace
+from polylith import info, repo, workspace
 from polylith.libs import report
+
+
+def get_projects_data(root: Path, ns: str) -> List[dict]:
+    bases = info.get_bases(root, ns)
+    components = info.get_components(root, ns)
+
+    return info.get_bricks_in_projects(root, components, bases, ns)
 
 
 class LibsCommand(Command):
@@ -29,7 +36,7 @@ class LibsCommand(Command):
         third_party_libs = self.find_third_party_libs()
 
         ns = workspace.parser.get_namespace_from_config(root)
-        projects_data = report.get_projects_data(root, ns)
+        projects_data = get_projects_data(root, ns)
 
         # TODO: filter out current project name from projects data,
         # to make sense when passing the --directory flag
