@@ -59,12 +59,19 @@ class LibsCommand(Command):
         # TODO: filter out current project name from projects data,
         # to make sense when passing the --directory flag
 
-        res = get_third_party_imports(root, ns, projects_data)
+        brick_imports = get_third_party_imports(root, ns, projects_data)
 
-        # diff = res.difference(third_party_libs)
+        bases_imports = set().union(*brick_imports.get("bases", {}).values())
+        components_imports = set().union(*brick_imports.get("components", {}).values())
+
+        diff = (
+            set().union(bases_imports, components_imports).difference(third_party_libs)
+        )
 
         from pprint import pprint
 
-        pprint(res)
+        pprint(bases_imports)
+        pprint(components_imports)
+        pprint(diff)
 
         return 0
