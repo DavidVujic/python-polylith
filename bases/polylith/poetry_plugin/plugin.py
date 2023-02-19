@@ -8,6 +8,7 @@ from polylith.poetry.commands import (
     CreateWorkspaceCommand,
     DiffCommand,
     InfoCommand,
+    LibsCommand,
 )
 
 commands = [
@@ -18,6 +19,7 @@ commands = [
     CreateWorkspaceCommand,
     DiffCommand,
     InfoCommand,
+    LibsCommand,
 ]
 
 
