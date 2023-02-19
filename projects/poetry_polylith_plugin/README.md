@@ -98,6 +98,25 @@ Useful for CI:
 poetry poly diff --short
 ```
 
+#### Libs
+Show info about the third-party libraries used in the workspace:
+
+``` shell
+poetry poly libs
+```
+
+**NOTE**: this feature relies on installed project dependencies, and expects a `poetry.lock` of a project to be present.
+If missing, there is a Poetry command available: `poetry lock --directory path/to-project`.
+
+The very nice dependency lookup features of `Poetry` is used behind the scenes in this particular command.
+
+
+##### Options
+`--directory` or `-C`
+Show info about libraries used in a specific project.
+
+
+
 #### Check
 Validates the Polylith workspace:
 
