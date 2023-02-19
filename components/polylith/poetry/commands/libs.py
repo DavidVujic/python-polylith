@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Set
 
 from poetry.console.commands.command import Command
-from polylith import info, repo, workspace
+from polylith import info, project, repo, workspace
 from polylith.libs import report
 
 
@@ -11,6 +11,14 @@ def get_projects_data(root: Path, ns: str) -> List[dict]:
     components = info.get_components(root, ns)
 
     return info.get_bricks_in_projects(root, components, bases, ns)
+
+
+def get_project_data(root: Path, ns: str, project_name: str) -> List[dict]:
+    projects_data = get_projects_data(root, ns)
+
+    filtered = next((p for p in projects_data if p["name"] == project_name), None)
+
+    return [filtered] if filtered else projects_data
 
 
 class LibsCommand(Command):
@@ -36,16 +44,19 @@ class LibsCommand(Command):
         third_party_libs = self.find_third_party_libs()
 
         ns = workspace.parser.get_namespace_from_config(root)
-        projects_data = get_projects_data(root, ns)
 
-        # TODO: filter out current project name from projects data,
-        # to make sense when passing the --directory flag
+        project_name = project.get_project_name(self.poetry.pyproject.data)
 
-        brick_imports = report.get_third_party_imports(root, ns, projects_data)
-        diff = report.calculate_diff(brick_imports, third_party_libs)
+        projects_data = get_project_data(root, ns, project_name)
 
-        from pprint import pprint
+        for project_data in projects_data:
+            brick_imports = report.get_third_party_imports(root, ns, project_data)
 
-        pprint(diff)
+            report.print_libs_summary(brick_imports, project_data["name"])
+            report.print_libs_in_bricks(brick_imports)
+
+            report.print_missing_installed_libs(
+                brick_imports, third_party_libs, project_data
+            )
 
         return 0
