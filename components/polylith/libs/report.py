@@ -60,13 +60,20 @@ def print_libs_summary(brick_imports: dict, project_name: str) -> None:
 
 
 def print_libs_in_bricks(brick_imports: dict) -> None:
+    bases_imports = flatten_imports(brick_imports, "bases")
+    components_imports = flatten_imports(brick_imports, "components")
+
+    if not bases_imports and not components_imports:
+        return
+
     console = Console(theme=info_theme)
     table = Table(box=box.SIMPLE_HEAD)
-    table.add_column("[data]brick[/]")
-    table.add_column("[data]libraries[/]")
 
     bases = brick_imports.get("bases", {})
     components = brick_imports.get("components", {})
+
+    table.add_column("[data]brick[/]")
+    table.add_column("[data]libraries[/]")
 
     for brick, imports in bases.items():
         table.add_row(f"[base]{brick}[/]", ", ".join(sorted(imports)))
