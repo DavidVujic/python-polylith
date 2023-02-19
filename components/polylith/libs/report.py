@@ -5,9 +5,7 @@ from polylith import workspace
 from polylith.libs import grouping
 
 
-def get_third_party_imports(
-    root: Path, ns: str, projects_data: List[dict]
-) -> dict[str, dict]:
+def get_third_party_imports(root: Path, ns: str, projects_data: List[dict]) -> dict:
     bases = {b for data in projects_data for b in data.get("bases", [])}
     components = {c for data in projects_data for c in data.get("components", [])}
 
