@@ -1,3 +1,3 @@
-from polylith.workspace import create, parser
+from polylith.workspace import create, parser, paths
 
-__all__ = ["create", "parser"]
+__all__ = ["create", "parser", "paths"]
