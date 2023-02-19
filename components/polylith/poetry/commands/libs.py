@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Set
 
 from poetry.console.commands.command import Command
 from polylith import info, libs, repo, workspace
@@ -25,7 +25,7 @@ class LibsCommand(Command):
     name = "poly libs"
     description = "Show third-party libraries used in the workspace."
 
-    def find_third_party_libs(self) -> set[str]:
+    def find_third_party_libs(self) -> Set[str]:
         packages = self.poetry.locker.locked_repository().packages
 
         return {p.name for p in packages if p.category == "main"}
