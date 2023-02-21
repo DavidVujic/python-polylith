@@ -40,9 +40,9 @@ class LibsCommand(Command):
         try:
             third_party_libs = self.find_third_party_libs(path)
 
-            report.print_missing_installed_libs(brick_imports, third_party_libs, name)
-
-            return True
+            return report.print_missing_installed_libs(
+                brick_imports, third_party_libs, name
+            )
         except ValueError as e:
             self.line_error(f"{name}: <error>{e}</error>")
             return False
@@ -72,6 +72,7 @@ class LibsCommand(Command):
             result_code = 0 if res else 1
         else:
             results = {self.print_report(root, ns, data) for data in projects_data}
+
             result_code = 0 if all(results) else 1
 
         return result_code
