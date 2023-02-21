@@ -87,7 +87,7 @@ def print_libs_in_bricks(brick_imports: dict) -> None:
 
 
 def print_missing_installed_libs(
-    brick_imports: dict, third_party_libs: Set[str], project_data: dict
+    brick_imports: dict, third_party_libs: Set[str], project_name: str
 ) -> None:
     diff = calculate_diff(brick_imports, third_party_libs)
 
@@ -96,7 +96,6 @@ def print_missing_installed_libs(
 
     console = Console(theme=info_theme)
 
-    project_name = project_data["name"]
     missing = ", ".join(sorted(diff))
 
     console.print(

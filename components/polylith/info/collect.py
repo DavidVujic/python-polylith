@@ -39,7 +39,7 @@ def get_bricks_in_projects(
 
     res = [
         {
-            **{"name": p["name"]},
+            **{"name": p["name"], "path": p["path"]},
             **get_project_bricks(p["packages"], components, bases, namespace),
         }
         for p in packages_for_projects
