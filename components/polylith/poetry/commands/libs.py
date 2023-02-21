@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Set
+from typing import List, Set, Union
 
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
@@ -18,7 +18,7 @@ class LibsCommand(Command):
     name = "poly libs"
     description = "Show third-party libraries used in the workspace."
 
-    def find_third_party_libs(self, path: Path | None) -> Set:
+    def find_third_party_libs(self, path: Union[Path, None]) -> Set:
         project_poetry = Factory().create_poetry(path) if path else self.poetry
 
         if not project_poetry.locker.is_locked():
