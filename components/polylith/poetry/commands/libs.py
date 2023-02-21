@@ -1,7 +1,8 @@
 from pathlib import Path
-from typing import List, Set
+from typing import List, Set, Union
 
 from poetry.console.commands.command import Command
+from poetry.factory import Factory
 from polylith import info, project, repo, workspace
 from polylith.libs import report
 
@@ -13,22 +14,38 @@ def get_projects_data(root: Path, ns: str) -> List[dict]:
     return info.get_bricks_in_projects(root, components, bases, ns)
 
 
-def get_project_data(root: Path, ns: str, project_name: str) -> List[dict]:
-    projects_data = get_projects_data(root, ns)
-
-    filtered = next((p for p in projects_data if p["name"] == project_name), None)
-
-    return [filtered] if filtered else projects_data
-
-
 class LibsCommand(Command):
     name = "poly libs"
     description = "Show third-party libraries used in the workspace."
 
-    def find_third_party_libs(self) -> Set[str]:
-        packages = self.poetry.locker.locked_repository().packages
+    def find_third_party_libs(self, path: Union[Path, None]) -> Set:
+        project_poetry = Factory().create_poetry(path) if path else self.poetry
 
-        return {p.name for p in packages if p.category == "main"}
+        if not project_poetry.locker.is_locked():
+            raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")
+
+        packages = project_poetry.locker.locked_repository().packages
+
+        return {p.name for p in packages}
+
+    def print_report(self, root: Path, ns: str, data: dict) -> bool:
+        name = data["name"]
+        path = data["path"]
+
+        brick_imports = report.get_third_party_imports(root, ns, data)
+
+        report.print_libs_summary(brick_imports, name)
+        report.print_libs_in_bricks(brick_imports)
+
+        try:
+            third_party_libs = self.find_third_party_libs(path)
+
+            return report.print_missing_installed_libs(
+                brick_imports, third_party_libs, name
+            )
+        except ValueError as e:
+            self.line_error(f"{name}: <error>{e}</error>")
+            return False
 
     def handle(self) -> int:
         root = repo.find_workspace_root(Path.cwd())
@@ -38,25 +55,24 @@ class LibsCommand(Command):
                 "Didn't find the workspace root. Expected to find a workspace.toml file."
             )
 
-        if not self.poetry.locker.is_locked():
-            raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")
-
-        third_party_libs = self.find_third_party_libs()
-
         ns = workspace.parser.get_namespace_from_config(root)
 
-        project_name = project.get_project_name(self.poetry.pyproject.data)
+        projects_data = get_projects_data(root, ns)
 
-        projects_data = get_project_data(root, ns, project_name)
+        if self.option("directory"):
+            self.line("in directory!")
+            project_name = project.get_project_name(self.poetry.pyproject.data)
 
-        for project_data in projects_data:
-            brick_imports = report.get_third_party_imports(root, ns, project_data)
+            data = next((p for p in projects_data if p["name"] == project_name), None)
 
-            report.print_libs_summary(brick_imports, project_data["name"])
-            report.print_libs_in_bricks(brick_imports)
+            if not data:
+                raise ValueError(f"Didn't find project in {self.option('directory')}")
 
-            report.print_missing_installed_libs(
-                brick_imports, third_party_libs, project_data
-            )
+            res = self.print_report(root, ns, data)
+            result_code = 0 if res else 1
+        else:
+            results = {self.print_report(root, ns, data) for data in projects_data}
 
-        return 0
+            result_code = 0 if all(results) else 1
+
+        return result_code

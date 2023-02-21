@@ -40,7 +40,9 @@ def calculate_diff(brick_imports: dict, third_party_libs: Set[str]) -> Set[str]:
     bases_imports = flatten_imports(brick_imports, "bases")
     components_imports = flatten_imports(brick_imports, "components")
 
-    return set().union(bases_imports, components_imports).difference(third_party_libs)
+    normalized_libs = {t.replace("-", "_") for t in third_party_libs}
+
+    return set().union(bases_imports, components_imports).difference(normalized_libs)
 
 
 def print_libs_summary(brick_imports: dict, project_name: str) -> None:
@@ -85,16 +87,15 @@ def print_libs_in_bricks(brick_imports: dict) -> None:
 
 
 def print_missing_installed_libs(
-    brick_imports: dict, third_party_libs: Set[str], project_data: dict
-) -> None:
+    brick_imports: dict, third_party_libs: Set[str], project_name: str
+) -> bool:
     diff = calculate_diff(brick_imports, third_party_libs)
 
     if not diff:
-        return
+        return True
 
     console = Console(theme=info_theme)
 
-    project_name = project_data["name"]
     missing = ", ".join(sorted(diff))
 
     console.print(
@@ -102,3 +103,4 @@ def print_missing_installed_libs(
     )
 
     console.print(f":thinking_face: {missing}")
+    return False

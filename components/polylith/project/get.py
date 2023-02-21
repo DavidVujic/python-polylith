@@ -23,23 +23,21 @@ def get_project_files(root: Path) -> Generator:
     return root.glob(f"projects/**/{default_toml}")
 
 
-def get_toml_files(root: Path) -> List[tomlkit.TOMLDocument]:
+def get_toml_files(root: Path) -> List[dict]:
     project_files = get_project_files(root)
 
-    return [get_toml(p) for p in project_files]
-
-
-def get_project_names(root: Path) -> List[str]:
-    tomls = get_toml_files(root)
-
-    return [get_project_name(d) for d in tomls]
+    return [{"toml": get_toml(p), "path": p.parent} for p in project_files]
 
 
 def get_packages_for_projects(root: Path) -> List[dict]:
     tomls = get_toml_files(root)
 
     return [
-        {"name": get_project_name(d), "packages": get_project_package_includes(d)}
+        {
+            "name": get_project_name(d["toml"]),
+            "packages": get_project_package_includes(d["toml"]),
+            "path": d["path"],
+        }
         for d in tomls
     ]
 
