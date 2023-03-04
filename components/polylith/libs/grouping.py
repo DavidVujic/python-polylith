@@ -37,14 +37,19 @@ def exclude_empty(import_data: dict) -> dict:
     return {k: v for k, v in import_data.items() if v}
 
 
-def get_third_party_imports(root: Path, paths: Set[Path]) -> dict:
+def extract_third_party_imports(all_imports: dict, top_ns: str) -> dict:
     python_version = get_python_version()
     std_libs = get_standard_libs(python_version)
-    top_ns = workspace.parser.get_namespace_from_config(root)
 
-    all_imports = fetch_all_imports(paths)
     top_level_imports = extract_top_ns(all_imports)
-
     with_third_party = exclude_libs(top_level_imports, std_libs.union({top_ns}))
 
     return exclude_empty(with_third_party)
+
+
+def get_third_party_imports(root: Path, paths: Set[Path]) -> dict:
+    top_ns = workspace.parser.get_namespace_from_config(root)
+
+    all_imports = fetch_all_imports(paths)
+
+    return extract_third_party_imports(all_imports, top_ns)

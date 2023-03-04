@@ -36,13 +36,13 @@ def flatten_imports(brick_imports: dict, brick: str) -> Set[str]:
     return set().union(*brick_imports.get(brick, {}).values())
 
 
-def calculate_diff(brick_imports: dict, third_party_libs: Set[str]) -> Set[str]:
+def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
     bases_imports = flatten_imports(brick_imports, "bases")
     components_imports = flatten_imports(brick_imports, "components")
 
-    normalized_libs = {t.replace("-", "_") for t in third_party_libs}
+    normalized_deps = {t.replace("-", "_") for t in deps}
 
-    return set().union(bases_imports, components_imports).difference(normalized_libs)
+    return set().union(bases_imports, components_imports).difference(normalized_deps)
 
 
 def print_libs_summary(brick_imports: dict, project_name: str) -> None:
