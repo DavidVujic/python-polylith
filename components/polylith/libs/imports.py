@@ -7,8 +7,16 @@ def parse_import(node: ast.Import) -> List[str]:
     return [name.name for name in node.names]
 
 
+def extract_import_from(node: ast.ImportFrom) -> List:
+    return (
+        [f"{node.module}.{name.name}" for name in node.names]
+        if node.names
+        else [node.module]
+    )
+
+
 def parse_import_from(node: ast.ImportFrom) -> List[str]:
-    return [node.module] if node.module and node.level == 0 else []
+    return extract_import_from(node) if node.module and node.level == 0 else []
 
 
 def parse_imports(node: ast.AST) -> List[str]:
