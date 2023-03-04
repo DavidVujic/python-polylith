@@ -137,7 +137,7 @@ Show info about libraries used in a specific project.
 
 
 #### Testing
-The `create` commands will also create corresponding unit tests. It is possible to disable thi behaviour
+The `create` commands will also create corresponding unit tests. It is possible to disable this behaviour
 by setting `enabled = false` in the `workspace.toml` file.
 
 
