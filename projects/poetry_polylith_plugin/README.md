@@ -98,6 +98,7 @@ Useful for CI:
 poetry poly diff --short
 ```
 
+
 #### Libs
 Show info about the third-party libraries used in the workspace:
 
@@ -117,19 +118,26 @@ The very nice dependency lookup features of `Poetry` is used behind the scenes b
 Show info about libraries used in a specific project.
 
 
-
 #### Check
-Validates the Polylith workspace:
+Validates the Polylith workspace, checking for any missing dependencies (bricks and third-party libraries):
 
 ``` shell
 poetry poly check
 ```
 
-**NOTE**: this feature is built on top of the `poetry check-project` command from the [Multiproject](https://github.com/DavidVujic/poetry-multiproject-plugin) plugin.
-Make sure that you have the latest version of poetry-multiproject-plugin installed to be able to use the `poly check` command.
+**NOTE**: this feature is built on top of the `poetry poly libs` command,
+and (just like the `poetry poly libs` command) it expects a `poetry.lock` of a project to be present.
+If missing, there is a Poetry command available: `poetry lock --directory path/to-project`.
+
+
+##### Options
+`--directory` or `-C`
+
+Show info about libraries used in a specific project.
+
 
 #### Testing
-The `create` commands will also create corresponding unit tests. It is possible to disable thi behaviour
+The `create` commands will also create corresponding unit tests. It is possible to disable this behaviour
 by setting `enabled = false` in the `workspace.toml` file.
 
 

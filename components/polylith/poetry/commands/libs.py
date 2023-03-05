@@ -60,7 +60,6 @@ class LibsCommand(Command):
         projects_data = get_projects_data(root, ns)
 
         if self.option("directory"):
-            self.line("in directory!")
             project_name = project.get_project_name(self.poetry.pyproject.data)
 
             data = next((p for p in projects_data if p["name"] == project_name), None)
