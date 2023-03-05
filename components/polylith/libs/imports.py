@@ -9,7 +9,7 @@ def parse_import(node: ast.Import) -> List[str]:
 
 def extract_import_from(node: ast.ImportFrom) -> List:
     return (
-        [f"{node.module}.{name.name}" for name in node.names]
+        [f"{node.module}.{alias.name}" for alias in node.names]
         if node.names
         else [node.module]
     )
