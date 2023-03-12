@@ -9,13 +9,18 @@ A repo containing tooling support for the Polylith Architecture in Python.
 
 
 ## What's Polylith? :thinking:
-From the [official docs](https://polylith.gitbook.io/polylith/):
+Polylith is an architecture (with tooling support) originally built for Clojure. The code in this repo brings __Polylith to Python__.
 
+From the [official Polylith Architecture docs](https://polylith.gitbook.io/polylith/):
 >... Polylith is a software architecture that applies functional thinking at the system scale. It helps us build simple, maintainable, testable, and scalable backend systems. ...
 
-Polylith is an architecture (with tooling support) originally built for Clojure. The code in this repo brings __Polylith to Python!__
 
-### An Architecture well suited for Monorepos
+## Documentation :books:
+Have a look at the [Python-specific documentation](https://davidvujic.github.io/python-polylith-docs/).
+You will find installation, setup and usage guides in there.
+
+
+### Well suited for Monorepos
 Polylith is using a components-first architecture. Similar to LEGO, components are building blocks.
 A component can be shared across apps, serverless functions and microservices.
 
