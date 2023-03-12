@@ -4,6 +4,10 @@ A repo containing tooling support for the Polylith Architecture in Python.
 
 [![DavidVujic](https://circleci.com/gh/DavidVujic/python-polylith.svg?style=svg)](https://app.circleci.com/pipelines/github/DavidVujic/python-polylith?branch=main&filter=all)
 
+
+[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/36630)
+
+
 ## What's Polylith? :confused:
 From the [official docs](https://polylith.gitbook.io/polylith/):
 
