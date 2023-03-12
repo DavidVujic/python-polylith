@@ -8,7 +8,7 @@ A repo containing tooling support for the Polylith Architecture in Python.
 [![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/36630)
 
 
-## What's Polylith? :confused:
+## What's Polylith? :thinking:
 From the [official docs](https://polylith.gitbook.io/polylith/):
 
 >... Polylith is a software architecture that applies functional thinking at the system scale. It helps us build simple, maintainable, testable, and scalable backend systems. ...
