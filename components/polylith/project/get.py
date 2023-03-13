@@ -1,4 +1,3 @@
-from collections.abc import Generator
 from pathlib import Path
 from typing import List
 
@@ -19,8 +18,8 @@ def get_toml(root: Path) -> tomlkit.TOMLDocument:
         return tomlkit.loads(f.read())
 
 
-def get_project_files(root: Path) -> Generator:
-    return root.glob(f"projects/**/{default_toml}")
+def get_project_files(root: Path) -> List[Path]:
+    return sorted(root.glob(f"projects/**/{default_toml}"))
 
 
 def get_toml_files(root: Path) -> List[dict]:
