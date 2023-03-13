@@ -7,9 +7,15 @@ from polylith.repo import components_dir
 from polylith.test import create_test
 
 
-def create_component(path: Path, namespace: str, package: str, description: Union[str, None]) -> None:
+def create_component(
+    path: Path, namespace: str, package: str, description: Union[str, None]
+) -> None:
     create_brick(path, components_dir, namespace, package, description)
     create_test(path, components_dir, namespace, package)
+
+
+def is_brick_dir(p: Path) -> bool:
+    return p.is_dir() and p.name not in {"__pycache__", ".venv", ".mypy_cache"}
 
 
 def get_component_dirs(root: Path, top_dir, ns) -> list:
@@ -21,7 +27,7 @@ def get_component_dirs(root: Path, top_dir, ns) -> list:
     if not component_dir.exists():
         return []
 
-    return [f for f in component_dir.iterdir() if f.is_dir()]
+    return [f for f in component_dir.iterdir() if is_brick_dir(f)]
 
 
 def get_components_data(
