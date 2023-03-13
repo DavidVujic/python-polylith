@@ -78,7 +78,7 @@ def _changed_projects(
     projects_data: List[dict], brick_type: str, bricks: List[str]
 ) -> set:
     res = {
-        p["name"]: set(p.get(brick_type, [])).intersection(bricks)
+        p["path"].name: set(p.get(brick_type, [])).intersection(bricks)
         for p in projects_data
     }
 
