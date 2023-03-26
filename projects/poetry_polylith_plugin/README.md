@@ -42,9 +42,9 @@ Time to start coding. Add components, bases and projects:
 ``` shell
 poetry poly create component --name my_component
 
-poetry poly create base --name my_example_aws_lambda
+poetry poly create base --name my_example_endpoint
 
-poetry poly create project --name my_example_aws_lambada_project
+poetry poly create project --name my_example_project
 ```
 
 Make sure to read the [documentation](https://davidvujic.github.io/python-polylith-docs/).
