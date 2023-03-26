@@ -27,7 +27,7 @@ class LibsCommand(Command):
 
         brick_imports = report.get_third_party_imports(root, ns, data)
 
-        report.print_libs_summary(brick_imports, name)
+        report.print_libs_summary(brick_imports, data)
         report.print_libs_in_bricks(brick_imports)
 
         try:

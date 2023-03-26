@@ -6,7 +6,6 @@ from polylith.poetry.commands.create_workspace import CreateWorkspaceCommand
 from polylith.poetry.commands.diff import DiffCommand
 from polylith.poetry.commands.info import InfoCommand
 from polylith.poetry.commands.libs import LibsCommand
-from polylith.poetry.commands.sync import SyncCommand
 
 __all__ = [
     "CheckCommand",
@@ -17,5 +16,4 @@ __all__ = [
     "DiffCommand",
     "InfoCommand",
     "LibsCommand",
-    "SyncCommand",
 ]

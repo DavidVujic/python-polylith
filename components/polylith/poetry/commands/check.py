@@ -41,7 +41,8 @@ class CheckCommand(Command):
 
         ns = workspace.parser.get_namespace_from_config(root)
 
-        projects_data = info.get_projects_data(root, ns)
+        all_projects_data = info.get_projects_data(root, ns)
+        projects_data = [p for p in all_projects_data if info.is_project(p)]
 
         if self.option("directory"):
             project_name = project.get_project_name(self.poetry.pyproject.data)

@@ -18,14 +18,27 @@ def get_toml(root: Path) -> tomlkit.TOMLDocument:
         return tomlkit.loads(f.read())
 
 
-def get_project_files(root: Path) -> List[Path]:
-    return sorted(root.glob(f"projects/**/{default_toml}"))
+def get_project_files(root: Path) -> dict:
+    projects = sorted(root.glob(f"projects/**/{default_toml}"))
+    development = Path(root / default_toml)
+
+    proj = {"projects": projects}
+    dev = {"development": [development]}
+
+    return {**proj, **dev}
+
+
+def toml_data(path: Path, project_type: str) -> dict:
+    return {"toml": get_toml(path), "path": path.parent, "type": project_type}
 
 
 def get_toml_files(root: Path) -> List[dict]:
     project_files = get_project_files(root)
 
-    return [{"toml": get_toml(p), "path": p.parent} for p in project_files]
+    proj = [toml_data(p, "project") for p in project_files["projects"]]
+    dev = [toml_data(d, "development") for d in project_files["development"]]
+
+    return proj + dev
 
 
 def get_packages_for_projects(root: Path) -> List[dict]:
@@ -36,6 +49,7 @@ def get_packages_for_projects(root: Path) -> List[dict]:
             "name": get_project_name(d["toml"]),
             "packages": get_project_package_includes(d["toml"]),
             "path": d["path"],
+            "type": d["type"],
         }
         for d in tomls
     ]

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Set
 
-from polylith import workspace
+from polylith import info, workspace
 from polylith.libs import grouping
 from rich import box
 from rich.console import Console
@@ -45,11 +45,15 @@ def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
     return set().union(bases_imports, components_imports).difference(normalized_deps)
 
 
-def print_libs_summary(brick_imports: dict, project_name: str) -> None:
+def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
     console = Console(theme=info_theme)
 
+    name = project_data["name"]
+    is_project = info.is_project(project_data)
+
+    printable_name = f"[proj]{name}[/]" if is_project else "[data]development[/]"
     console.print(
-        Padding(f"[data]Libraries summary for [/][proj]{project_name}[/]", (1, 0, 1, 0))
+        Padding(f"[data]Libraries summary for [/]{printable_name}", (1, 0, 1, 0))
     )
 
     bases_imports = flatten_imports(brick_imports, "bases")
