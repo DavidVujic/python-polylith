@@ -9,7 +9,6 @@ from polylith.poetry.commands import (
     DiffCommand,
     InfoCommand,
     LibsCommand,
-    SyncCommand,
 )
 
 commands = [
@@ -21,7 +20,6 @@ commands = [
     DiffCommand,
     InfoCommand,
     LibsCommand,
-    SyncCommand,
 ]
 
 
