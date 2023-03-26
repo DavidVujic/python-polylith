@@ -46,3 +46,10 @@ def get_bricks_in_projects(
     ]
 
     return res
+
+
+def get_projects_data(root: Path, ns: str) -> List[dict]:
+    bases = get_bases(root, ns)
+    components = get_components(root, ns)
+
+    return get_bricks_in_projects(root, components, bases, ns)

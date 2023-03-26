@@ -1,13 +1,13 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import repo
+from polylith import repo, sync
 
 
 class SyncCommand(Command):
     name = "poly sync"
     description = (
-        "Add missing bricks to the <comment>Polylith</> development pyproject.toml."
+        "Add missing bricks to the <comment>Polylith development</> pyproject.toml."
     )
 
     def handle(self) -> int:
@@ -16,6 +16,8 @@ class SyncCommand(Command):
             raise ValueError(
                 "Didn't find the workspace root. Expected to find a workspace.toml file."
             )
+
+        res = sync.get_missing_bricks(root)
 
         self.line("Hello world from the poly sync command")
 
