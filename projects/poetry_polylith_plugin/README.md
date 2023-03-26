@@ -47,6 +47,5 @@ poetry poly create base --name my_example_endpoint
 poetry poly create project --name my_example_project
 ```
 
-Make sure to read the [documentation](https://davidvujic.github.io/python-polylith-docs/).
-
-There, you will find guides for setup, migrations, packaging, available commands and code examples.
+For details, have a look at the [documentation](https://davidvujic.github.io/python-polylith-docs/).
+There, you will find guides for setup, migration, packaging, available commands, code examples and more
