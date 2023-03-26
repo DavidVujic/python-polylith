@@ -10,6 +10,6 @@ def to_path(package: dict) -> Path:
 
 
 def parse_package_paths(packages: List[dict]) -> List[Path]:
-    sorted_packages = sorted(packages, key=lambda p: (p["from"], p["include"]))
+    sorted_packages = sorted(packages, key=lambda p: (p.get("from", "."), p["include"]))
 
     return [to_path(p) for p in sorted_packages]

@@ -1,17 +1,10 @@
 from pathlib import Path
-from typing import List, Set, Union
+from typing import Set, Union
 
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
 from polylith import info, project, repo, workspace
 from polylith.libs import report
-
-
-def get_projects_data(root: Path, ns: str) -> List[dict]:
-    bases = info.get_bases(root, ns)
-    components = info.get_components(root, ns)
-
-    return info.get_bricks_in_projects(root, components, bases, ns)
 
 
 class LibsCommand(Command):
@@ -34,7 +27,7 @@ class LibsCommand(Command):
 
         brick_imports = report.get_third_party_imports(root, ns, data)
 
-        report.print_libs_summary(brick_imports, name)
+        report.print_libs_summary(brick_imports, data)
         report.print_libs_in_bricks(brick_imports)
 
         try:
@@ -57,7 +50,7 @@ class LibsCommand(Command):
 
         ns = workspace.parser.get_namespace_from_config(root)
 
-        projects_data = get_projects_data(root, ns)
+        projects_data = info.get_projects_data(root, ns)
 
         if self.option("directory"):
             project_name = project.get_project_name(self.poetry.pyproject.data)

@@ -35,7 +35,8 @@ class DiffCommand(Command):
             bases = diff.collect.get_changed_bases(root, files, ns)
             components = diff.collect.get_changed_components(root, files, ns)
             projects = diff.collect.get_changed_projects(files)
-            projects_data = info.get_bricks_in_projects(root, components, bases, ns)
+            all_projects_data = info.get_bricks_in_projects(root, components, bases, ns)
+            projects_data = [p for p in all_projects_data if info.is_project(p)]
 
             short = self.option("short")
 
