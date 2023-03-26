@@ -48,4 +48,4 @@ poetry poly create project --name my_example_project
 ```
 
 For details, have a look at the [documentation](https://davidvujic.github.io/python-polylith-docs/).
-There, you will find guides for setup, migration, packaging, available commands, code examples and more
+There, you will find guides for setup, migration, packaging, available commands, code examples and more.
