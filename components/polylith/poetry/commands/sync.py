@@ -27,17 +27,16 @@ class SyncCommand(Command):
             project_name = project.get_project_name(self.poetry.pyproject.data)
 
             data = next((p for p in projects_data if p["name"] == project_name), None)
-
-            if not data:
-                raise ValueError(f"Didn't find project in {self.option('directory')}")
-
-            res = 0
-            result_code = 0 if res else 1
         else:
-            # dev_data = [p for p in projects_data if not info.is_project(p)]
+            data = next((p for p in projects_data if not info.is_project(p)))
 
-            results = [True]
+        if not data:
+            raise ValueError("Didn't find the project.")
 
-            result_code = 0 if all(results) else 1
+        components_diff = set(components).difference(data["components"])
+        bases_diff = set(bases).difference(data["bases"])
 
-        return result_code
+        print(components_diff)
+        print(bases_diff)
+
+        return 0
