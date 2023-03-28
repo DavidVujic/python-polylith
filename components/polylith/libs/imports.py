@@ -30,7 +30,7 @@ def parse_imports(node: ast.AST) -> List[str]:
 
 
 def parse_module(path: pathlib.Path) -> ast.AST:
-    with open(path.as_posix(), "r") as f:
+    with open(path.as_posix(), "r", encoding="utf-8", errors="ignore") as f:
         tree = ast.parse(f.read(), path.name)
 
     return tree

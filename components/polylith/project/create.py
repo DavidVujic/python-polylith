@@ -28,7 +28,7 @@ build-backend = "poetry.core.masonry.api"
 
 
 def get_workspace_toml(path: Path) -> dict:
-    with open(str(path / repo.default_toml), "r") as f:
+    with open(str(path / repo.default_toml), "r", errors="ignore") as f:
         data: dict = tomlkit.loads(f.read())
 
     return data

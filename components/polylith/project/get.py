@@ -14,7 +14,7 @@ def get_project_name(data) -> str:
 
 
 def get_toml(root: Path) -> tomlkit.TOMLDocument:
-    with root.open() as f:
+    with root.open(encoding="utf-8", errors="ignore") as f:
         return tomlkit.loads(f.read())
 
 
