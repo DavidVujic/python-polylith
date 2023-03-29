@@ -1,3 +1,4 @@
+import difflib
 from pathlib import Path
 from typing import Set
 
@@ -36,13 +37,22 @@ def flatten_imports(brick_imports: dict, brick: str) -> Set[str]:
     return set().union(*brick_imports.get(brick, {}).values())
 
 
-def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
+def flatten_brick_imports(brick_imports: dict) -> Set[str]:
     bases_imports = flatten_imports(brick_imports, "bases")
     components_imports = flatten_imports(brick_imports, "components")
 
-    normalized_deps = {t.replace("-", "_") for t in deps}
+    return set().union(bases_imports, components_imports)
 
-    return set().union(bases_imports, components_imports).difference(normalized_deps)
+
+def filter_close_matches(imports: Set[str], deps: Set[str]) -> Set[str]:
+    return {i for i in imports if not difflib.get_close_matches(i, deps)}
+
+
+def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
+    imports = flatten_brick_imports(brick_imports)
+    unknown = imports.difference(deps)
+
+    return filter_close_matches(unknown, imports)
 
 
 def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
