@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import project, repo, sync
+from polylith import project, repo, sync, workspace
 
 
 class SyncCommand(Command):
@@ -22,7 +22,9 @@ class SyncCommand(Command):
             else None
         )
 
-        res = sync.calculate_difference(root, project_name)
+        ns = workspace.parser.get_namespace_from_config(root)
+
+        res = sync.calculate_difference(root, ns, project_name)
 
         print(res)
         return 0
