@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import info, project, repo, workspace
+from polylith import project, repo, sync
 
 
 class SyncCommand(Command):
@@ -16,27 +16,13 @@ class SyncCommand(Command):
                 "Didn't find the workspace root. Expected to find a workspace.toml file."
             )
 
-        ns = workspace.parser.get_namespace_from_config(root)
+        project_name = (
+            project.get_project_name(self.poetry.pyproject.data)
+            if self.option("directory")
+            else None
+        )
 
-        bases = info.get_bases(root, ns)
-        components = info.get_components(root, ns)
+        res = sync.calculate_difference(root, project_name)
 
-        projects_data = info.get_bricks_in_projects(root, components, bases, ns)
-
-        if self.option("directory"):
-            project_name = project.get_project_name(self.poetry.pyproject.data)
-
-            data = next((p for p in projects_data if p["name"] == project_name), None)
-        else:
-            data = next((p for p in projects_data if not info.is_project(p)))
-
-        if not data:
-            raise ValueError("Didn't find the project.")
-
-        components_diff = set(components).difference(data["components"])
-        bases_diff = set(bases).difference(data["bases"])
-
-        print(components_diff)
-        print(bases_diff)
-
+        print(res)
         return 0
