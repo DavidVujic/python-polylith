@@ -31,7 +31,7 @@ packages = [
 python = "^3.8"
 poetry = "^1.2"
 tomlkit = "^0.11.5"
-rich = "^12.6.0"
+rich = "^13.3.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"
