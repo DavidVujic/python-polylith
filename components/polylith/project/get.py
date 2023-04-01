@@ -13,8 +13,8 @@ def get_project_name(data) -> str:
     return data["tool"]["poetry"]["name"]
 
 
-def get_toml(root: Path) -> tomlkit.TOMLDocument:
-    with root.open(encoding="utf-8", errors="ignore") as f:
+def get_toml(path: Path) -> tomlkit.TOMLDocument:
+    with path.open(encoding="utf-8", errors="ignore") as f:
         return tomlkit.loads(f.read())
 
 
