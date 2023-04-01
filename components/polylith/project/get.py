@@ -6,7 +6,7 @@ from polylith.repo import default_toml
 
 
 def get_project_package_includes(data) -> List[dict]:
-    return data["tool"]["poetry"]["packages"]
+    return data["tool"]["poetry"].get("packages", [])
 
 
 def get_project_name(data) -> str:
