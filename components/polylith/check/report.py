@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Set
 
-from polylith import libs, workspace
+from polylith import imports, libs, workspace
 from polylith.check import grouping
 from rich.console import Console
 from rich.theme import Theme
@@ -41,8 +41,8 @@ def print_report(
     bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
     components_paths = workspace.paths.collect_components_paths(root, ns, components)
 
-    all_imports_in_bases = libs.fetch_all_imports(bases_paths)
-    all_imports_in_components = libs.fetch_all_imports(components_paths)
+    all_imports_in_bases = imports.fetch_all_imports(bases_paths)
+    all_imports_in_components = imports.fetch_all_imports(components_paths)
 
     brick_imports = {
         "bases": grouping.extract_brick_imports(all_imports_in_bases, ns),
