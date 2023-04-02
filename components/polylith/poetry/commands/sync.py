@@ -16,15 +16,17 @@ class SyncCommand(Command):
                 "Didn't find the workspace root. Expected to find a workspace.toml file."
             )
 
+        directory = self.option("directory")
+        is_project = True if directory else False
         project_name = (
-            project.get_project_name(self.poetry.pyproject.data)
-            if self.option("directory")
-            else None
+            project.get_project_name(self.poetry.pyproject.data) if is_project else None
         )
 
         ns = workspace.parser.get_namespace_from_config(root)
 
-        res = sync.calculate_difference(root, ns, project_name)
+        diff = sync.calculate_difference(root, ns, project_name)
+        packages = sync.to_packages(ns, diff["bases"], diff["components"], is_project)
 
-        print(res)
+        if packages:
+            sync.update_project(directory or root, packages)
         return 0

@@ -27,7 +27,7 @@ def test_bricks_to_pyproject_packages():
         {"include": f"{ns}/{component}", "from": "components"},
     ]
 
-    res = update.to_project_packages(ns, {base}, {component}, False)
+    res = update.to_packages(ns, {base}, {component}, False)
 
     assert res == expected
 
