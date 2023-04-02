@@ -6,8 +6,8 @@ from polylith import project, repo
 from tomlkit.toml_document import TOMLDocument
 
 
-def to_package(namespace: str, brick: str, brick_type: str, is_project: bool) -> dict:
-    from_path = f"../../{brick_type}" if is_project else brick_type
+def to_package(namespace: str, brick: str, brick_folder: str, is_project: bool) -> dict:
+    from_path = f"../../{brick_folder}" if is_project else brick_folder
 
     return {"include": f"{namespace}/{brick}", "from": from_path}
 
