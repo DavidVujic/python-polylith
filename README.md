@@ -6,6 +6,8 @@ A repo containing tooling support for the Polylith Architecture in Python.
 
 [![CodeScene Code Health](https://codescene.io/projects/36630/status-badges/code-health)](https://codescene.io/projects/36630)
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DavidVujic_python-polylith&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DavidVujic_python-polylith)
+
 ## What's Polylith? :thinking:
 Polylith is an architecture (with tooling support) originally built for Clojure. The code in this repo brings __Polylith to Python__.
 
