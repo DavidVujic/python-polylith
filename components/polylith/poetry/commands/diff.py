@@ -32,8 +32,8 @@ class DiffCommand(Command):
         else:
             ns = workspace.parser.get_namespace_from_config(root)
             files = diff.collect.get_files(tag)
-            bases = diff.collect.get_changed_bases(root, files, ns)
-            components = diff.collect.get_changed_components(root, files, ns)
+            bases = diff.collect.get_changed_bases(files, ns)
+            components = diff.collect.get_changed_components(files, ns)
             projects = diff.collect.get_changed_projects(files)
             all_projects_data = info.get_bricks_in_projects(root, components, bases, ns)
             projects_data = [p for p in all_projects_data if info.is_project(p)]

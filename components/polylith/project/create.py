@@ -51,7 +51,7 @@ def create_project_toml(
 
 
 def create_project(
-    path: Path, namespace: str, name: str, description: Union[str, None]
+    path: Path, _namespace: str, name: str, description: Union[str, None]
 ) -> None:
     d = create_dir(path, f"{projects_dir}/{name}")
 

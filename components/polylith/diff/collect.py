@@ -18,7 +18,7 @@ def _get_changed(folder: str, changed_files: List[Path]) -> set:
 
 
 def _get_changed_bricks(
-    root: Path, top_dir: str, changed_files: List[Path], namespace: str
+    top_dir: str, changed_files: List[Path], namespace: str
 ) -> list:
     d = f"{top_dir}/{namespace}"
 
@@ -26,13 +26,13 @@ def _get_changed_bricks(
 
 
 def get_changed_components(
-    root: Path, changed_files: List[Path], namespace: str
+    changed_files: List[Path], namespace: str
 ) -> list:
-    return _get_changed_bricks(root, repo.components_dir, changed_files, namespace)
+    return _get_changed_bricks(repo.components_dir, changed_files, namespace)
 
 
-def get_changed_bases(root: Path, changed_files: List[Path], namespace: str) -> list:
-    return _get_changed_bricks(root, repo.bases_dir, changed_files, namespace)
+def get_changed_bases(changed_files: List[Path], namespace: str) -> list:
+    return _get_changed_bricks(repo.bases_dir, changed_files, namespace)
 
 
 def get_changed_projects(changed_files: List[Path]) -> list:
