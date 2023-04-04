@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from polylith import log, repo
+from polylith import repo
 
 workspace_template = """\
 # A Python Polylith repo
@@ -21,14 +21,10 @@ brick_template = """\
 """
 
 
-logger = log.getLogger()
-
-
 def create_readme(path: Path, template: str, **kwargs) -> None:
     fullpath = path / repo.readme_file
 
     if fullpath.exists():
-        logger.info(f"A {repo.readme_file} already exists. Skipping this step.")
         return
 
     with fullpath.open("w", encoding="utf-8") as f:
