@@ -17,7 +17,6 @@ packages = [
          {include = "polylith/info", from = "components"},
          {include = "polylith/interface", from = "components"},
          {include = "polylith/libs", from = "components"},
-         {include = "polylith/log", from = "components"},
          {include = "polylith/poetry", from = "components"},
          {include = "polylith/project", from = "components"},
          {include = "polylith/readme", from = "components"},

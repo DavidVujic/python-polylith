@@ -8,7 +8,6 @@ from polylith import (
     files,
     info,
     interface,
-    log,
     poetry,
     poetry_plugin,
     project,
