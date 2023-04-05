@@ -1,6 +1,13 @@
 from polylith.libs import stdlib
 
 
+def test_stdlib_extras() -> None:
+    py = stdlib.standard_libs["3.11"]
+
+    assert "__future__" in py
+    assert "pkg_resources" in py
+
+
 def test_stdlib_3_9() -> None:
     py38 = stdlib.standard_libs["3.8"]
     py39 = stdlib.standard_libs["3.9"]
