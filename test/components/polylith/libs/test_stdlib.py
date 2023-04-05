@@ -1,14 +1,14 @@
 from polylith.libs import stdlib
 
 
-def test_stdlib_extras() -> None:
+def test_stdlib_extras():
     py = stdlib.standard_libs["3.11"]
 
     assert "__future__" in py
     assert "pkg_resources" in py
 
 
-def test_stdlib_3_9() -> None:
+def test_stdlib_3_9():
     py38 = stdlib.standard_libs["3.8"]
     py39 = stdlib.standard_libs["3.9"]
 
@@ -16,7 +16,7 @@ def test_stdlib_3_9() -> None:
     assert py39.difference(py38) == {"graphlib", "zoneinfo"}
 
 
-def test_stdlib_3_10() -> None:
+def test_stdlib_3_10():
     py39 = stdlib.standard_libs["3.9"]
     py310 = stdlib.standard_libs["3.10"]
 
@@ -24,7 +24,7 @@ def test_stdlib_3_10() -> None:
     assert py310.difference(py39) == {"idlelib"}
 
 
-def test_stdlib_3_11() -> None:
+def test_stdlib_3_11():
     py310 = stdlib.standard_libs["3.10"]
     py311 = stdlib.standard_libs["3.11"]
 
