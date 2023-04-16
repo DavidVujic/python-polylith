@@ -27,8 +27,7 @@ class SyncCommand(Command):
         diff = sync.calculate_difference(root, ns, project_name)
         packages = sync.to_packages(root, ns, diff, is_project)
 
-        print(diff)
-        print(packages)
-        # if packages:
-        # sync.update_project(directory or root, packages)
+        if packages:
+            sync.update_project(directory or root, packages)
+
         return 0

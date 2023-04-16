@@ -4,11 +4,12 @@ from typing import List, Set, Union
 from polylith import check, imports, info, workspace
 
 
-def find_project_data(project_name: str, projects_data: List[dict]) -> dict:
-    return next(p for p in projects_data if p["name"] == project_name)
+def find_project_data(
+    projects_data: List[dict], project_name: Union[str, None]
+) -> dict:
+    if project_name:
+        return next(p for p in projects_data if p["name"] == project_name)
 
-
-def find_development_data(projects_data: List[dict]) -> dict:
     return next(p for p in projects_data if not info.is_project(p))
 
 
@@ -30,8 +31,11 @@ def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
     }
 
 
-def diff(imported_bricks: dict, project_data: dict) -> Set[str]:
-    flattened = set().union(*imported_bricks.values())
+def diff(brick_imports: dict, project_data: dict) -> Set[str]:
+    flattened_bases = set().union(*brick_imports["bases"].values())
+    flattened_components = set().union(*brick_imports["components"].values())
+
+    flattened = set().union(flattened_bases, flattened_components)
 
     b = set(project_data["bases"])
     c = set(project_data["components"])
@@ -42,23 +46,22 @@ def diff(imported_bricks: dict, project_data: dict) -> Set[str]:
 
 
 def calculate_difference(
-    root: Path, namespace: str, project_name: Union[str, None]
+    root: Path,
+    namespace: str,
+    project_name: Union[str, None],
 ) -> dict:
-    bases = info.get_bases(root, namespace)
-    components = info.get_components(root, namespace)
-    projects_data = info.get_bricks_in_projects(root, components, bases, namespace)
+    all_bases = info.get_bases(root, namespace)
+    all_components = info.get_components(root, namespace)
+    all_projects_data = info.get_bricks_in_projects(
+        root, all_components, all_bases, namespace
+    )
 
-    if project_name:
-        data = find_project_data(project_name, projects_data)
-    else:
-        data = find_development_data(projects_data)
+    project_data = find_project_data(all_projects_data, project_name)
 
-    brick_imports = get_brick_imports(root, namespace, data)
-
-    bases_diff = diff(brick_imports["bases"], data)
-    components_diff = diff(brick_imports["components"], data)
+    brick_imports = get_brick_imports(root, namespace, project_data)
+    brick_diff = diff(brick_imports, project_data)
 
     return {
-        "bases": bases_diff,
-        "components": components_diff,
+        "bases": {b for b in brick_diff if b in all_bases},
+        "components": {b for b in brick_diff if b in all_components},
     }

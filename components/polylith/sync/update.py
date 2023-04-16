@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Set
+from typing import List
 
 import tomlkit
 from polylith import project, repo, workspace

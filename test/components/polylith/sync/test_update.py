@@ -9,9 +9,11 @@ def test_brick_to_pyproject_package():
     brick = "greet"
     loose_theme = "loose"
     tdd_theme = "tdd"
+    brick_path_dev = "components"
+    brick_path_proj = "../../components"
 
-    expected_dev = {"include": f"{ns}/{brick}", "from": "components"}
-    expected_proj = {"include": f"{ns}/{brick}", "from": "../../components"}
+    expected_dev = {"include": f"{ns}/{brick}", "from": brick_path_dev}
+    expected_proj = {"include": f"{ns}/{brick}", "from": brick_path_proj}
 
     expected_tdd_dev = {"include": f"{ns}/{brick}", "from": f"components/{brick}/src"}
     expected_tdd_proj = {
@@ -19,11 +21,11 @@ def test_brick_to_pyproject_package():
         "from": f"../../components/{brick}/src",
     }
 
-    res_dev = update.to_package(ns, brick, "components", loose_theme)
-    res_proj = update.to_package(ns, brick, "../../components", loose_theme)
+    res_dev = update.to_package(ns, brick, brick_path_dev, loose_theme)
+    res_proj = update.to_package(ns, brick, brick_path_proj, loose_theme)
 
-    res_tdd_dev = update.to_package(ns, brick, "components", tdd_theme)
-    res_tdd_proj = update.to_package(ns, brick, "../../components", tdd_theme)
+    res_tdd_dev = update.to_package(ns, brick, brick_path_dev, tdd_theme)
+    res_tdd_proj = update.to_package(ns, brick, brick_path_proj, tdd_theme)
 
     assert res_dev == expected_dev
     assert res_proj == expected_proj
