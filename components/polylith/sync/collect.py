@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Set, Union
 
-from polylith import info
+from polylith import check, imports, info, workspace
 
 
 def find_project_data(project_name: str, projects_data: List[dict]) -> dict:
@@ -12,8 +12,33 @@ def find_development_data(projects_data: List[dict]) -> dict:
     return next(p for p in projects_data if not info.is_project(p))
 
 
-def diff(bricks: List[str], bricks_in_project: Set[str]) -> Set[str]:
-    return set(bricks).difference(bricks_in_project)
+def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
+    bases = {b for b in project_data.get("bases", [])}
+    components = {c for c in project_data.get("components", [])}
+
+    bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
+    components_paths = workspace.paths.collect_components_paths(root, ns, components)
+
+    all_imports_in_bases = imports.fetch_all_imports(bases_paths)
+    all_imports_in_components = imports.fetch_all_imports(components_paths)
+
+    return {
+        "bases": check.grouping.extract_brick_imports(all_imports_in_bases, ns),
+        "components": check.grouping.extract_brick_imports(
+            all_imports_in_components, ns
+        ),
+    }
+
+
+def diff(imported_bricks: dict, project_data: dict) -> Set[str]:
+    flattened = set().union(*imported_bricks.values())
+
+    b = set(project_data["bases"])
+    c = set(project_data["components"])
+
+    project_bricks = set().union(b, c)
+
+    return flattened.difference(project_bricks)
 
 
 def calculate_difference(
@@ -28,7 +53,12 @@ def calculate_difference(
     else:
         data = find_development_data(projects_data)
 
+    brick_imports = get_brick_imports(root, namespace, data)
+
+    bases_diff = diff(brick_imports["bases"], data)
+    components_diff = diff(brick_imports["components"], data)
+
     return {
-        "bases": diff(bases, data["bases"]),
-        "components": diff(components, data["components"]),
+        "bases": bases_diff,
+        "components": components_diff,
     }
