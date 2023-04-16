@@ -6,11 +6,10 @@ from polylith import project, repo, workspace
 from tomlkit.toml_document import TOMLDocument
 
 
-def to_package(namespace: str, brick: str, brick_type: str, theme: str, is_project: bool) -> dict:
-    folder = f"{brick_type}" if theme == "loose" else f"{brick_type}/{brick}/src"
-    from_path = f"../../{folder}" if is_project else folder
+def to_package(namespace: str, brick: str, brick_path: str, theme: str) -> dict:
+    folder = f"{brick_path}" if theme == "loose" else f"{brick_path}/{brick}/src"
 
-    return {"include": f"{namespace}/{brick}", "from": from_path}
+    return {"include": f"{namespace}/{brick}", "from": folder}
 
 
 def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> str:
@@ -33,8 +32,11 @@ def to_packages(
 ) -> List[dict]:
     theme = workspace.parser.get_theme_from_config(root)
 
-    a = [to_package(namespace, b, "bases", theme, is_project) for b in bases]
-    b = [to_package(namespace, c, "components", theme, is_project) for c in components]
+    bases_path = "../../bases" if is_project else "bases"
+    components_path = "../../components" if is_project else "components"
+
+    a = [to_package(namespace, b, bases_path, theme) for b in bases]
+    b = [to_package(namespace, c, components_path, theme) for c in components]
 
     return a + b
 
