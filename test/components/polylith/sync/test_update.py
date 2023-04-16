@@ -7,7 +7,6 @@ from polylith.sync import update
 def test_brick_to_pyproject_package():
     ns = "unit_test"
     brick = "greet"
-    brick_type = "components"
     loose_theme = "loose"
     tdd_theme = "tdd"
 
