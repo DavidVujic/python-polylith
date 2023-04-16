@@ -27,16 +27,14 @@ def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> str:
     return tomlkit.dumps(copy)
 
 
-def to_packages(
-    root: Path, namespace: str, bases: Set[str], components: Set[str], is_project: bool
-) -> List[dict]:
+def to_packages(root: Path, namespace: str, diff: dict, is_project: bool) -> List[dict]:
     theme = workspace.parser.get_theme_from_config(root)
 
     bases_path = "../../bases" if is_project else "bases"
     components_path = "../../components" if is_project else "components"
 
-    a = [to_package(namespace, b, bases_path, theme) for b in bases]
-    b = [to_package(namespace, c, components_path, theme) for c in components]
+    a = [to_package(namespace, b, bases_path, theme) for b in diff["bases"]]
+    b = [to_package(namespace, c, components_path, theme) for c in diff["components"]]
 
     return a + b
 
