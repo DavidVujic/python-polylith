@@ -25,7 +25,7 @@ class SyncCommand(Command):
         ns = workspace.parser.get_namespace_from_config(root)
 
         diff = sync.calculate_difference(root, ns, project_name)
-        packages = sync.to_packages(ns, diff["bases"], diff["components"], is_project)
+        packages = sync.to_packages(root, ns, diff["bases"], diff["components"], is_project)
 
         print(diff)
         print(packages)

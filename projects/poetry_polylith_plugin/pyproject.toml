@@ -14,6 +14,7 @@ packages = [
          {include = "polylith/diff", from = "../../components"},
          {include = "polylith/dirs", from = "../../components"},
          {include = "polylith/files", from = "../../components"},
+         {include = "polylith/imports", from = "../../components"},
          {include = "polylith/info", from = "../../components"},
          {include = "polylith/interface", from = "../../components"},
          {include = "polylith/libs", from = "../../components"},
