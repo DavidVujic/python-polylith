@@ -45,9 +45,15 @@ def test_bricks_to_pyproject_packages():
         {"include": f"{ns}/{component}", "from": "components"},
     ]
 
-    res = update.to_packages(
-        root, ns, {"bases": {base}, "components": {component}}, False
-    )
+    diff = {
+        "name": "unit-test",
+        "path": Path.cwd(),
+        "is_project": False,
+        "bases": {base},
+        "components": {component},
+    }
+
+    res = update.to_packages(root, ns, diff)
 
     assert res == expected
 

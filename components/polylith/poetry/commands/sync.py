@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import project, repo, sync, workspace
+from polylith import info, project, repo, sync, workspace
 
 
 class SyncCommand(Command):
@@ -16,18 +16,31 @@ class SyncCommand(Command):
                 "Didn't find the workspace root. Expected to find a workspace.toml file."
             )
 
-        directory = self.option("directory")
-        is_project = True if directory else False
-        project_name = (
-            project.get_project_name(self.poetry.pyproject.data) if is_project else None
-        )
-
         ns = workspace.parser.get_namespace_from_config(root)
 
-        diff = sync.calculate_difference(root, ns, project_name)
-        packages = sync.to_packages(root, ns, diff, is_project)
+        bases = info.get_bases(root, ns)
+        components = info.get_components(root, ns)
 
-        if packages:
-            sync.update_project(directory or root, packages)
+        projects_data = info.get_bricks_in_projects(root, components, bases, ns)
+        workspace_data = {"bases": bases, "components": components}
+
+        if self.option("directory"):
+            project_name = project.get_project_name(self.poetry.pyproject.data)
+
+            data = next((p for p in projects_data if p["name"] == project_name), None)
+
+            if not data:
+                raise ValueError(f"Didn't find project in {self.option('directory')}")
+
+            diffs = [sync.calculate_diff(root, ns, data, workspace_data)]
+        else:
+            diffs = [
+                sync.calculate_diff(root, ns, data, workspace_data)
+                for data in projects_data
+            ]
+
+        for diff in diffs:
+            sync.report.print_summary(diff)
+            sync.update_project(root, ns, diff)
 
         return 0

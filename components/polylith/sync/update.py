@@ -27,8 +27,10 @@ def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> str:
     return tomlkit.dumps(copy)
 
 
-def to_packages(root: Path, namespace: str, diff: dict, is_project: bool) -> List[dict]:
+def to_packages(root: Path, namespace: str, diff: dict) -> List[dict]:
     theme = workspace.parser.get_theme_from_config(root)
+
+    is_project = diff["is_project"]
 
     bases_path = "../../bases" if is_project else "bases"
     components_path = "../../components" if is_project else "components"
@@ -39,7 +41,7 @@ def to_packages(root: Path, namespace: str, diff: dict, is_project: bool) -> Lis
     return a + b
 
 
-def update_project(path: Path, packages: List[dict]) -> None:
+def rewrite_project_file(path: Path, packages: List[dict]):
     fullpath = path / repo.default_toml
     project_toml = project.get_toml(fullpath)
 
@@ -47,3 +49,10 @@ def update_project(path: Path, packages: List[dict]) -> None:
 
     with fullpath.open("w", encoding="utf-8") as f:
         f.write(generated)
+
+
+def update_project(path: Path, namespace: str, diff: dict):
+    packages = to_packages(path, namespace, diff)
+
+    if packages:
+        rewrite_project_file(diff["path"], packages)
