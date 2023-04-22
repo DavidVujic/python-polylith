@@ -1,18 +1,9 @@
+from polylith.reporting import theme
 from rich.console import Console
-from rich.theme import Theme
-
-info_theme = Theme(
-    {
-        "data": "#999966",
-        "proj": "#8A2BE2",
-        "comp": "#32CD32",
-        "base": "#6495ED",
-    }
-)
 
 
 def print_summary(diff: dict):
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
 
     name = diff["name"] if diff["is_project"] else "development"
     bases = diff["bases"]

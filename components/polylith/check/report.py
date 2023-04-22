@@ -3,17 +3,8 @@ from typing import Set
 
 from polylith import imports, libs, workspace
 from polylith.check import grouping
+from polylith.reporting import theme
 from rich.console import Console
-from rich.theme import Theme
-
-info_theme = Theme(
-    {
-        "data": "#999966",
-        "proj": "#8A2BE2",
-        "comp": "#32CD32",
-        "base": "#6495ED",
-    }
-)
 
 
 def print_missing_deps(brick_imports: dict, deps: Set[str], project_name: str) -> bool:
@@ -22,7 +13,7 @@ def print_missing_deps(brick_imports: dict, deps: Set[str], project_name: str) -
     if not diff:
         return True
 
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
 
     missing = ", ".join(sorted(diff))
 

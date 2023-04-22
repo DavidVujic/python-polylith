@@ -22,6 +22,7 @@ packages = [
     {include = "polylith/project",from = "components"},
     {include = "polylith/readme",from = "components"},
     {include = "polylith/repo",from = "components"},
+    {include = "polylith/reporting",from = "components"}
     {include = "polylith/sync",from = "components"},
     {include = "polylith/test",from = "components"},
     {include = "polylith/workspace",from = "components"},
