@@ -5,19 +5,17 @@ from rich.console import Console
 def print_summary(diff: dict):
     console = Console(theme=theme.poly_theme)
 
-    name = diff["name"] if diff["is_project"] else "development"
+    is_project = diff["is_project"]
+    name = diff["name"] if is_project else "development"
     bases = diff["bases"]
     components = diff["components"]
 
     anything_to_sync = bases or components
 
-    header = (
-        f":point_right: [proj]{name}[/]"
-        if anything_to_sync
-        else f":heavy_check_mark: [proj]{name}[/]"
-    )
+    emoji = ":point_right:" if anything_to_sync else ":heavy_check_mark:"
+    printable_name = f"[proj]{name}[/]" if is_project else f"[data]{name}[/]"
 
-    console.print(header)
+    console.print(f"{emoji} {printable_name}")
 
     for b in bases:
         console.print(f"adding [base]{b}[/] base to [proj]{name}[/]")
