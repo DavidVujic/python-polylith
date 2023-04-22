@@ -34,4 +34,5 @@ def print_summary(diff: dict):
     for c in components:
         console.print(f"adding [comp]{c}[/] component to [proj]{name}[/]")
 
-    console.print("")
+    if anything_to_sync:
+        console.print("")
