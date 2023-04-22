@@ -1,20 +1,11 @@
 from typing import List
 
+from polylith.reporting import theme
 from rich import box
 from rich.columns import Columns
 from rich.console import Console
 from rich.padding import Padding
 from rich.table import Table
-from rich.theme import Theme
-
-info_theme = Theme(
-    {
-        "data": "#999966",
-        "proj": "#8A2BE2",
-        "comp": "#32CD32",
-        "base": "#6495ED",
-    }
-)
 
 
 def brick_status(brick, bricks) -> str:
@@ -30,7 +21,7 @@ def print_diff_details(
     if not bases and not components:
         return
 
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]changed brick[/]")
 
@@ -52,14 +43,14 @@ def print_detected_changes_in_projects(projects: List[str]) -> None:
     if not projects:
         return
 
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
 
     for project in sorted(projects):
         console.print(f"[data]:gear: Changes found in [/][proj]{project}[/]")
 
 
 def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
 
     console.print(Padding(f"[data]Diff: based on the {tag} tag[/]", (1, 0, 1, 0)))
 
@@ -98,5 +89,5 @@ def print_short_diff(
 
     res = {*a, *b, *c}
 
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
     console.print(",".join(res))

@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Set
 
 from polylith import workspace
-from polylith.libs.imports import list_imports
+from polylith.imports import extract_top_ns, fetch_all_imports
 from polylith.libs.stdlib import standard_libs
 
 
@@ -13,20 +13,6 @@ def get_python_version() -> str:
 
 def get_standard_libs(python_version: str) -> Set[str]:
     return standard_libs.get(python_version, set())
-
-
-def fetch_all_imports(paths: Set[Path]) -> dict:
-    rows = [{p.name: list_imports(p)} for p in paths]
-
-    return {k: v for row in rows for k, v in row.items()}
-
-
-def extract_top_ns_from_imports(imports: Set[str]) -> Set:
-    return {imp.split(".")[0] for imp in imports}
-
-
-def extract_top_ns(import_data: dict) -> dict:
-    return {k: extract_top_ns_from_imports(v) for k, v in import_data.items()}
 
 
 def exclude_libs(import_data: dict, to_exclude: Set) -> dict:

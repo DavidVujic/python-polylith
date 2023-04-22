@@ -4,20 +4,11 @@ from typing import Set
 
 from polylith import info, workspace
 from polylith.libs import grouping
+from polylith.reporting import theme
 from rich import box
 from rich.console import Console
 from rich.padding import Padding
 from rich.table import Table
-from rich.theme import Theme
-
-info_theme = Theme(
-    {
-        "data": "#999966",
-        "proj": "#8A2BE2",
-        "comp": "#32CD32",
-        "base": "#6495ED",
-    }
-)
 
 
 def get_third_party_imports(root: Path, ns: str, project_data: dict) -> dict:
@@ -56,7 +47,7 @@ def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
 
 
 def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
 
     name = project_data["name"]
     is_project = info.is_project(project_data)
@@ -82,7 +73,7 @@ def print_libs_in_bricks(brick_imports: dict) -> None:
     if not bases_imports and not components_imports:
         return
 
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
     table = Table(box=box.SIMPLE_HEAD)
 
     bases = brick_imports.get("bases", {})
@@ -108,7 +99,7 @@ def print_missing_installed_libs(
     if not diff:
         return True
 
-    console = Console(theme=info_theme)
+    console = Console(theme=theme.poly_theme)
 
     missing = ", ".join(sorted(diff))
 
