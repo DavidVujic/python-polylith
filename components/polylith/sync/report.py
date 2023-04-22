@@ -14,7 +14,7 @@ info_theme = Theme(
 def print_summary(diff: dict):
     console = Console(theme=info_theme)
 
-    name = diff["name"]
+    name = diff["name"] if diff["is_project"] else "development"
     bases = diff["bases"]
     components = diff["components"]
 

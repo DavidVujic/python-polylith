@@ -22,17 +22,19 @@ def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
     }
 
 
-def diff(imports: dict, bases: List, components: List) -> Set[str]:
+def diff(known_bricks: Set[str], bases: List[str], components: List[str]) -> Set[str]:
+    bricks = set().union(bases, components)
+
+    return known_bricks.difference(bricks)
+
+
+def imports_diff(imports: dict, bases: List, components: List) -> Set[str]:
     flattened_bases = set().union(*imports["bases"].values())
     flattened_components = set().union(*imports["components"].values())
 
     flattened_imports = set().union(flattened_bases, flattened_components)
 
-    b = set(bases)
-    c = set(components)
-    bricks = set().union(b, c)
-
-    return flattened_imports.difference(bricks)
+    return diff(flattened_imports, bases, components)
 
 
 def calculate_diff(
@@ -46,12 +48,16 @@ def calculate_diff(
     all_bases = workspace_data["bases"]
     all_components = workspace_data["components"]
 
+    bases = project_data["bases"]
+    components = project_data["components"]
+
     is_project = info.is_project(project_data)
 
-    bases = project_data["bases"] if is_project else all_bases
-    components = project_data["components"] if is_project else all_components
-
-    brick_diff = diff(imports, bases, components)
+    if is_project:
+        brick_diff = imports_diff(imports, bases, components)
+    else:
+        all_bricks = set().union(all_bases, all_components)
+        brick_diff = diff(all_bricks, bases, components)
 
     return {
         "name": project_data["name"],
