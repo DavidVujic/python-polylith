@@ -28,9 +28,9 @@ def diff(known_bricks: Set[str], bases: List[str], components: List[str]) -> Set
     return known_bricks.difference(bricks)
 
 
-def imports_diff(imports: dict, bases: List, components: List) -> Set[str]:
-    flattened_bases = set().union(*imports["bases"].values())
-    flattened_components = set().union(*imports["components"].values())
+def imports_diff(brick_imports: dict, bases: List, components: List) -> Set[str]:
+    flattened_bases = set().union(*brick_imports["bases"].values())
+    flattened_components = set().union(*brick_imports["components"].values())
 
     flattened_imports = set().union(flattened_bases, flattened_components)
 
@@ -43,7 +43,7 @@ def calculate_diff(
     project_data: dict,
     workspace_data: dict,
 ) -> dict:
-    imports = get_brick_imports(root, namespace, project_data)
+    brick_imports = get_brick_imports(root, namespace, project_data)
 
     all_bases = workspace_data["bases"]
     all_components = workspace_data["components"]
@@ -54,7 +54,7 @@ def calculate_diff(
     is_project = info.is_project(project_data)
 
     if is_project:
-        brick_diff = imports_diff(imports, bases, components)
+        brick_diff = imports_diff(brick_imports, bases, components)
     else:
         all_bricks = set().union(all_bases, all_components)
         brick_diff = diff(all_bricks, bases, components)
