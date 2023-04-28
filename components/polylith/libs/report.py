@@ -36,7 +36,13 @@ def flatten_brick_imports(brick_imports: dict) -> Set[str]:
 
 
 def filter_close_matches(unknown_imports: Set[str], deps: Set[str]) -> Set[str]:
-    return {u for u in unknown_imports if not difflib.get_close_matches(u, deps)}
+    exemptions = {"PyPDF2": "pypdf2"}
+    matches = {u for u in unknown_imports if not difflib.get_close_matches(u, deps)}
+    true_matches = set()
+    for m in matches:
+        if not (m in exemptions and exemptions[m] in deps):
+            true_matches.add(m)
+    return true_matches
 
 
 def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
