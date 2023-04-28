@@ -6,11 +6,11 @@ from polylith.bricks.base import create_base, get_bases_data
 create_base_params = [
     (
         "1. Creates expected directories and files",
-        set(["bases", "test"]),
+        set(["bases"]),
         set(
             [
-                Path("test/temp/bases/test_namespace/test_package/core.py"),
-                Path("test/temp/test/bases/test_namespace/test_package/test_core.py"),
+                Path("test/temp/bases/test_namespace/test_package/interface.py"),
+                Path("test/temp/bases/test_namespace/test_package/test_interface.py"),
             ]
         ),
     )

@@ -10,12 +10,7 @@ template_docstring = """\
 
 """
 
-template_content = """\
-from {namespace}.{package} import {modulename}
-
-__all__ = ["{modulename}"]
-
-"""
+template_content = """"""
 
 
 def to_namespaced_path(package: str) -> str:

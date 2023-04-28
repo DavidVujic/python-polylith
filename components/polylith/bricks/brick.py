@@ -14,7 +14,7 @@ def create_brick(
     namespace: str,
     package: str,
     description: Union[str, None],
-    modulename: str = "core",
+    modulename: str = "interface",
 ) -> None:
     path_kwargs = {"brick": brick, "namespace": namespace, "package": package}
 
