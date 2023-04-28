@@ -43,6 +43,18 @@ flake8 = "^5.0.4"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 
+[tool.poetry.group.emacs]
+optional = true
+
+[tool.poetry.group.emacs.dependencies]
+python-lsp-server = "^1.7.1"
+python-lsp-black = "^1.2.1"
+pylsp-mypy = "^0.6.6"
+importmagic = "^0.1.7"
+epc = "^0.0.5"
+werkzeug = "^2.2.3"
+debugpy = "^1.6.6"
+
 [tool.isort]
 profile = "black"
 
