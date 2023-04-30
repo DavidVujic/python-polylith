@@ -59,10 +59,13 @@ def calculate_diff(
         all_bricks = set().union(all_bases, all_components)
         brick_diff = diff(all_bricks, bases, components)
 
+    bases_diff = {b for b in brick_diff if b in all_bases}
+    components_diff = {b for b in brick_diff if b in all_components}
+
     return {
         "name": project_data["name"],
         "path": project_data["path"],
         "is_project": is_project,
-        "bases": {b for b in brick_diff if b in all_bases},
-        "components": {b for b in brick_diff if b in all_components},
+        "bases": bases_diff,
+        "components": components_diff,
     }
