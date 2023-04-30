@@ -1,6 +1,5 @@
 from pathlib import Path
 
-from polylith.dirs import create_dir
 from polylith.files import create_file
 from polylith.workspace import parser
 
