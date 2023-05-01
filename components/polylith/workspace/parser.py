@@ -1,9 +1,11 @@
+from functools import lru_cache
 from pathlib import Path
 
 import tomlkit
 from polylith import repo
 
 
+@lru_cache
 def _load_workspace_config(path: Path) -> tomlkit.TOMLDocument:
     fullpath = path / repo.workspace_file
 

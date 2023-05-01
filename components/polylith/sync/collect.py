@@ -4,6 +4,33 @@ from typing import List, Set
 from polylith import check, imports, info, workspace
 
 
+def extract_bricks(paths: Set[Path], ns: str) -> dict:
+    all_imports = imports.fetch_all_imports(paths)
+
+    return check.grouping.extract_brick_imports(all_imports, ns)
+
+
+def with_unknown_components(root: Path, ns: str, brick_imports: dict) -> dict:
+    keys = set(brick_imports.keys())
+    values = set().union(*brick_imports.values())
+
+    unknowns = values.difference(keys)
+
+    if not unknowns:
+        return brick_imports
+
+    paths = workspace.paths.collect_components_paths(root, ns, unknowns)
+
+    extracted = extract_bricks(paths, ns)
+
+    if not extracted:
+        return brick_imports
+
+    collected = {**brick_imports, **extracted}
+
+    return with_unknown_components(root, ns, collected)
+
+
 def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
     bases = {b for b in project_data.get("bases", [])}
     components = {c for c in project_data.get("components", [])}
@@ -11,14 +38,12 @@ def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
     bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
     components_paths = workspace.paths.collect_components_paths(root, ns, components)
 
-    all_imports_in_bases = imports.fetch_all_imports(bases_paths)
-    all_imports_in_components = imports.fetch_all_imports(components_paths)
+    brick_imports_in_bases = extract_bricks(bases_paths, ns)
+    brick_imports_in_components = extract_bricks(components_paths, ns)
 
     return {
-        "bases": check.grouping.extract_brick_imports(all_imports_in_bases, ns),
-        "components": check.grouping.extract_brick_imports(
-            all_imports_in_components, ns
-        ),
+        "bases": with_unknown_components(root, ns, brick_imports_in_bases),
+        "components": with_unknown_components(root, ns, brick_imports_in_components),
     }
 
 
@@ -28,9 +53,9 @@ def diff(known_bricks: Set[str], bases: List[str], components: List[str]) -> Set
     return known_bricks.difference(bricks)
 
 
-def imports_diff(imports: dict, bases: List, components: List) -> Set[str]:
-    flattened_bases = set().union(*imports["bases"].values())
-    flattened_components = set().union(*imports["components"].values())
+def imports_diff(brick_imports: dict, bases: List, components: List) -> Set[str]:
+    flattened_bases = set().union(*brick_imports["bases"].values())
+    flattened_components = set().union(*brick_imports["components"].values())
 
     flattened_imports = set().union(flattened_bases, flattened_components)
 
@@ -43,7 +68,7 @@ def calculate_diff(
     project_data: dict,
     workspace_data: dict,
 ) -> dict:
-    imports = get_brick_imports(root, namespace, project_data)
+    brick_imports = get_brick_imports(root, namespace, project_data)
 
     all_bases = workspace_data["bases"]
     all_components = workspace_data["components"]
@@ -54,15 +79,18 @@ def calculate_diff(
     is_project = info.is_project(project_data)
 
     if is_project:
-        brick_diff = imports_diff(imports, bases, components)
+        brick_diff = imports_diff(brick_imports, bases, components)
     else:
         all_bricks = set().union(all_bases, all_components)
         brick_diff = diff(all_bricks, bases, components)
+
+    bases_diff = {b for b in brick_diff if b in all_bases}
+    components_diff = {b for b in brick_diff if b in all_components}
 
     return {
         "name": project_data["name"],
         "path": project_data["path"],
         "is_project": is_project,
-        "bases": {b for b in brick_diff if b in all_bases},
-        "components": {b for b in brick_diff if b in all_components},
+        "bases": bases_diff,
+        "components": components_diff,
     }
