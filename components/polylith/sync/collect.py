@@ -4,6 +4,31 @@ from typing import List, Set
 from polylith import check, imports, info, workspace
 
 
+def extract_bricks(paths: Set[Path], ns: str) -> dict:
+    all_imports = imports.fetch_all_imports(paths)
+
+    return check.grouping.extract_brick_imports(all_imports, ns)
+
+
+def with_unknown_components(root: Path, ns: str, brick_imports: dict) -> dict:
+    keys = set(brick_imports.keys())
+    values = set().union(*brick_imports.values())
+
+    unknowns = values.difference(keys)
+
+    if not unknowns:
+        return brick_imports
+
+    paths = workspace.paths.collect_components_paths(root, ns, unknowns)
+
+    extracted = extract_bricks(paths, ns)
+
+    if not extracted:
+        return brick_imports
+
+    return with_unknown_components(root, ns, brick_imports | extracted)
+
+
 def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
     bases = {b for b in project_data.get("bases", [])}
     components = {c for c in project_data.get("components", [])}
@@ -11,14 +36,12 @@ def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
     bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
     components_paths = workspace.paths.collect_components_paths(root, ns, components)
 
-    all_imports_in_bases = imports.fetch_all_imports(bases_paths)
-    all_imports_in_components = imports.fetch_all_imports(components_paths)
+    brick_imports_in_bases = extract_bricks(bases_paths, ns)
+    brick_imports_in_components = extract_bricks(components_paths, ns)
 
     return {
-        "bases": check.grouping.extract_brick_imports(all_imports_in_bases, ns),
-        "components": check.grouping.extract_brick_imports(
-            all_imports_in_components, ns
-        ),
+        "bases": with_unknown_components(root, ns, brick_imports_in_bases),
+        "components": with_unknown_components(root, ns, brick_imports_in_components),
     }
 
 
