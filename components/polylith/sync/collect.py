@@ -26,7 +26,9 @@ def with_unknown_components(root: Path, ns: str, brick_imports: dict) -> dict:
     if not extracted:
         return brick_imports
 
-    return with_unknown_components(root, ns, brick_imports | extracted)
+    collected = {**brick_imports, **extracted}
+
+    return with_unknown_components(root, ns, collected)
 
 
 def get_brick_imports(root: Path, ns: str, project_data: dict) -> dict:
