@@ -1,0 +1,23 @@
+name: "Test Suite"
+description: "Run tests."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up python 3.10
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10.5"
+
+    - name: Setup Poetry
+      uses: abatilo/actions-poetry@v2
+      with:
+        poetry-version: "1.4.2"
+
+    - name: Install dependencies
+      run: poetry install --with dev --no-interaction
+      shell: bash
+
+    - name: Pytest
+      run: poetry run pytest .
+      shell: bash
