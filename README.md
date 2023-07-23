@@ -63,4 +63,7 @@ You will find examples of sharing code between different kind of projects, and d
 - [GCP Cloud Functions with Python and Polylith](https://davidvujic.blogspot.com/2023/07/gcp-cloud-functions-with-python-and-polylith.html)
 - [Python FastAPI Microservices with Polylith](https://davidvujic.blogspot.com/2023/07/python-fastapi-microservices-with-polylith.html)
 
-<img width="640" alt="poly-info-example" src="https://user-images.githubusercontent.com/301286/203044825-b84371e8-caa8-4f85-8c94-4a5f3af887d6.png">
+<img width="800" alt="poetry-poly-info-example" src="https://github.com/DavidVujic/python-polylith/assets/301286/67df68ed-8fa7-4b25-8e4e-beb71a2024cd">
+
+
+
