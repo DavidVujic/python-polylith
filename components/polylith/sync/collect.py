@@ -93,4 +93,5 @@ def calculate_diff(
         "is_project": is_project,
         "bases": bases_diff,
         "components": components_diff,
+        "brick_imports": brick_imports,
     }
