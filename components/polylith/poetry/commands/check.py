@@ -27,9 +27,18 @@ class CheckCommand(Command):
 
         try:
             third_party_libs = self.find_third_party_libs(path)
-            return check.report.print_report(
-                root, ns, project_data, third_party_libs, is_verbose
+            res, brick_imports, third_party_imports = check.report.print_report(
+                root,
+                ns,
+                project_data,
+                third_party_libs,
             )
+
+            if is_verbose:
+                check.report.print_brick_imports(brick_imports)
+                check.report.print_brick_imports(third_party_imports)
+
+            return res
         except ValueError as e:
             self.line_error(f"{name}: <error>{e}</error>")
             return False

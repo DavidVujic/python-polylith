@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Set
+from typing import Set, Tuple
 
 from polylith import imports, libs, workspace
 from polylith.check import collect, grouping
@@ -19,7 +19,9 @@ def print_brick_imports(brick_imports: dict) -> None:
         imports_in_brick = values.difference({key})
 
         if imports_in_brick:
-            console.print(f":information: [data]{key}[/] is importing [data]{', '.join(imports_in_brick)}[/]")
+            console.print(
+                f":information: [data]{key}[/] is importing [data]{', '.join(imports_in_brick)}[/]"
+            )
 
     console.print("")
 
@@ -43,8 +45,11 @@ def fetch_brick_imports(root: Path, ns: str, all_imports: dict) -> dict:
 
 
 def print_report(
-    root: Path, ns: str, project_data: dict, third_party_libs: Set, is_verbose: bool,
-) -> bool:
+    root: Path,
+    ns: str,
+    project_data: dict,
+    third_party_libs: Set,
+) -> Tuple[bool, dict, dict]:
     name = project_data["name"]
 
     bases = {b for b in project_data.get("bases", [])}
@@ -69,10 +74,7 @@ def print_report(
     brick_diff = collect.imports_diff(brick_imports, list(bases), list(components))
     brick_result = print_missing_deps(brick_diff, name)
 
-    if is_verbose:
-        print_brick_imports(brick_imports)
-
     libs_diff = libs.report.calculate_diff(third_party_imports, third_party_libs)
     libs_result = print_missing_deps(libs_diff, name)
 
-    return all([brick_result, libs_result])
+    return all([brick_result, libs_result]), brick_imports, third_party_imports
