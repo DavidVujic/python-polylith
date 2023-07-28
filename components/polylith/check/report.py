@@ -2,14 +2,12 @@ from pathlib import Path
 from typing import Set
 
 from polylith import imports, libs, workspace
-from polylith.check import grouping
+from polylith.check import collect, grouping
 from polylith.reporting import theme
 from rich.console import Console
 
 
-def print_missing_deps(brick_imports: dict, deps: Set[str], project_name: str) -> bool:
-    diff = libs.report.calculate_diff(brick_imports, deps)
-
+def print_missing_deps(diff: Set[str], project_name: str) -> bool:
     if not diff:
         return True
 
@@ -19,6 +17,12 @@ def print_missing_deps(brick_imports: dict, deps: Set[str], project_name: str) -
 
     console.print(f":thinking_face: Cannot locate {missing} in {project_name}")
     return False
+
+
+def fetch_brick_imports(root: Path, ns: str, all_imports: dict) -> dict:
+    extracted = grouping.extract_brick_imports(all_imports, ns)
+
+    return collect.with_unknown_components(root, ns, extracted)
 
 
 def print_report(
@@ -36,8 +40,8 @@ def print_report(
     all_imports_in_components = imports.fetch_all_imports(components_paths)
 
     brick_imports = {
-        "bases": grouping.extract_brick_imports(all_imports_in_bases, ns),
-        "components": grouping.extract_brick_imports(all_imports_in_components, ns),
+        "bases": fetch_brick_imports(root, ns, all_imports_in_bases),
+        "components": fetch_brick_imports(root, ns, all_imports_in_components),
     }
 
     third_party_imports = {
@@ -45,9 +49,10 @@ def print_report(
         "components": libs.extract_third_party_imports(all_imports_in_components, ns),
     }
 
-    packages = set().union(bases, components)
+    brick_diff = collect.imports_diff(brick_imports, list(bases), list(components))
+    brick_result = print_missing_deps(brick_diff, name)
 
-    brick_result = print_missing_deps(brick_imports, packages, name)
-    libs_result = print_missing_deps(third_party_imports, third_party_libs, name)
+    libs_diff = libs.report.calculate_diff(third_party_imports, third_party_libs)
+    libs_result = print_missing_deps(libs_diff, name)
 
     return all([brick_result, libs_result])
