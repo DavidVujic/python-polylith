@@ -7,6 +7,23 @@ from polylith.reporting import theme
 from rich.console import Console
 
 
+def print_brick_imports(brick_imports: dict) -> None:
+    console = Console(theme=theme.poly_theme)
+
+    bases = brick_imports["bases"]
+    components = brick_imports["components"]
+
+    bricks = bases | components
+
+    for key, values in bricks.items():
+        imports_in_brick = values.difference({key})
+
+        if imports_in_brick:
+            console.print(f":information: [data]{key}[/] is importing [data]{', '.join(imports_in_brick)}[/]")
+
+    console.print("")
+
+
 def print_missing_deps(diff: Set[str], project_name: str) -> bool:
     if not diff:
         return True
@@ -26,7 +43,7 @@ def fetch_brick_imports(root: Path, ns: str, all_imports: dict) -> dict:
 
 
 def print_report(
-    root: Path, ns: str, project_data: dict, third_party_libs: Set
+    root: Path, ns: str, project_data: dict, third_party_libs: Set, is_verbose: bool,
 ) -> bool:
     name = project_data["name"]
 
@@ -51,6 +68,9 @@ def print_report(
 
     brick_diff = collect.imports_diff(brick_imports, list(bases), list(components))
     brick_result = print_missing_deps(brick_diff, name)
+
+    if is_verbose:
+        print_brick_imports(brick_imports)
 
     libs_diff = libs.report.calculate_diff(third_party_imports, third_party_libs)
     libs_result = print_missing_deps(libs_diff, name)

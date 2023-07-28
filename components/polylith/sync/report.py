@@ -1,20 +1,12 @@
+from polylith import check
 from polylith.reporting import theme
 from rich.console import Console
 
 
 def print_brick_imports(diff: dict) -> None:
-    console = Console(theme=theme.poly_theme)
-
     brick_imports = diff["brick_imports"]
-    bricks = brick_imports["bases"] | brick_imports["components"]
 
-    for key, values in bricks.items():
-        imports_in_brick = values.difference({key})
-
-        if imports_in_brick:
-            console.print(f":information: [data]{key}[/] is importing [data]{', '.join(imports_in_brick)}[/]")
-
-    console.print("")
+    check.report.print_brick_imports(brick_imports)
 
 
 def print_summary(diff: dict) -> None:

@@ -21,12 +21,15 @@ class CheckCommand(Command):
         return {p.name for p in packages}
 
     def print_report(self, root: Path, ns: str, project_data: dict) -> bool:
+        is_verbose = self.option("verbose")
         path = project_data["path"]
         name = project_data["name"]
 
         try:
             third_party_libs = self.find_third_party_libs(path)
-            return check.report.print_report(root, ns, project_data, third_party_libs)
+            return check.report.print_report(
+                root, ns, project_data, third_party_libs, is_verbose
+            )
         except ValueError as e:
             self.line_error(f"{name}: <error>{e}</error>")
             return False
