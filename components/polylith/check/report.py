@@ -1,15 +1,30 @@
 from pathlib import Path
-from typing import Set
+from typing import Set, Tuple
 
 from polylith import imports, libs, workspace
-from polylith.check import grouping
+from polylith.check import collect, grouping
 from polylith.reporting import theme
 from rich.console import Console
 
 
-def print_missing_deps(brick_imports: dict, deps: Set[str], project_name: str) -> bool:
-    diff = libs.report.calculate_diff(brick_imports, deps)
+def print_brick_imports(brick_imports: dict) -> None:
+    console = Console(theme=theme.poly_theme)
 
+    bases = brick_imports["bases"]
+    components = brick_imports["components"]
+
+    bricks = {**bases, **components}
+
+    for key, values in bricks.items():
+        imports_in_brick = values.difference({key})
+
+        if imports_in_brick:
+            console.print(
+                f":information: [data]{key}[/] is importing [data]{', '.join(imports_in_brick)}[/]"
+            )
+
+
+def print_missing_deps(diff: Set[str], project_name: str) -> bool:
     if not diff:
         return True
 
@@ -21,9 +36,18 @@ def print_missing_deps(brick_imports: dict, deps: Set[str], project_name: str) -
     return False
 
 
+def fetch_brick_imports(root: Path, ns: str, all_imports: dict) -> dict:
+    extracted = grouping.extract_brick_imports(all_imports, ns)
+
+    return collect.with_unknown_components(root, ns, extracted)
+
+
 def print_report(
-    root: Path, ns: str, project_data: dict, third_party_libs: Set
-) -> bool:
+    root: Path,
+    ns: str,
+    project_data: dict,
+    third_party_libs: Set,
+) -> Tuple[bool, dict, dict]:
     name = project_data["name"]
 
     bases = {b for b in project_data.get("bases", [])}
@@ -36,8 +60,8 @@ def print_report(
     all_imports_in_components = imports.fetch_all_imports(components_paths)
 
     brick_imports = {
-        "bases": grouping.extract_brick_imports(all_imports_in_bases, ns),
-        "components": grouping.extract_brick_imports(all_imports_in_components, ns),
+        "bases": fetch_brick_imports(root, ns, all_imports_in_bases),
+        "components": fetch_brick_imports(root, ns, all_imports_in_components),
     }
 
     third_party_imports = {
@@ -45,9 +69,10 @@ def print_report(
         "components": libs.extract_third_party_imports(all_imports_in_components, ns),
     }
 
-    packages = set().union(bases, components)
+    brick_diff = collect.imports_diff(brick_imports, list(bases), list(components))
+    brick_result = print_missing_deps(brick_diff, name)
 
-    brick_result = print_missing_deps(brick_imports, packages, name)
-    libs_result = print_missing_deps(third_party_imports, third_party_libs, name)
+    libs_diff = libs.report.calculate_diff(third_party_imports, third_party_libs)
+    libs_result = print_missing_deps(libs_diff, name)
 
-    return all([brick_result, libs_result])
+    return all([brick_result, libs_result]), brick_imports, third_party_imports

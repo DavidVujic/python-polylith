@@ -1,4 +1,5 @@
 import ast
+from functools import lru_cache
 from pathlib import Path
 from typing import List, Set
 
@@ -29,6 +30,7 @@ def parse_imports(node: ast.AST) -> List[str]:
     return []
 
 
+@lru_cache
 def parse_module(path: Path) -> ast.AST:
     with open(path.as_posix(), "r", encoding="utf-8", errors="ignore") as f:
         tree = ast.parse(f.read(), path.name)

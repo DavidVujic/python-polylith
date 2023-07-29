@@ -1,8 +1,15 @@
+from polylith import check
 from polylith.reporting import theme
 from rich.console import Console
 
 
-def print_summary(diff: dict):
+def print_brick_imports(diff: dict) -> None:
+    brick_imports = diff["brick_imports"]
+
+    check.report.print_brick_imports(brick_imports)
+
+
+def print_summary(diff: dict) -> None:
     console = Console(theme=theme.poly_theme)
 
     is_project = diff["is_project"]

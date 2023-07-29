@@ -25,6 +25,8 @@ class SyncCommand(Command):
         return all_projects_data
 
     def handle(self) -> int:
+        is_verbose = self.option("verbose")
+
         root = repo.find_workspace_root(Path.cwd())
 
         if not root:
@@ -49,5 +51,8 @@ class SyncCommand(Command):
         for diff in diffs:
             sync.report.print_summary(diff)
             sync.update_project(root, ns, diff)
+
+            if is_verbose:
+                sync.report.print_brick_imports(diff)
 
         return 0
