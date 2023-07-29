@@ -23,8 +23,6 @@ def print_brick_imports(brick_imports: dict) -> None:
                 f":information: [data]{key}[/] is importing [data]{', '.join(imports_in_brick)}[/]"
             )
 
-    console.print("")
-
 
 def print_missing_deps(diff: Set[str], project_name: str) -> bool:
     if not diff:
