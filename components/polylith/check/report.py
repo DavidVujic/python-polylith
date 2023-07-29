@@ -13,7 +13,7 @@ def print_brick_imports(brick_imports: dict) -> None:
     bases = brick_imports["bases"]
     components = brick_imports["components"]
 
-    bricks = bases | components
+    bricks = {**bases, **components}
 
     for key, values in bricks.items():
         imports_in_brick = values.difference({key})
