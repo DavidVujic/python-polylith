@@ -31,12 +31,6 @@ def printable_name(project: dict, short: bool) -> str:
     return template.format(name=name)
 
 
-def construct_brick_columns(brick: str, brick_type: str, projects_data: List[dict]):
-    statuses = [brick_status(brick, p.get(brick_type)) for p in projects_data]
-
-    return [f"[comp]{brick}[/]"] + statuses
-
-
 def print_bricks_in_projects(
     projects_data: List[dict], bases: List[str], components: List[str], short: bool
 ) -> None:
@@ -53,11 +47,15 @@ def print_bricks_in_projects(
         table.add_column(col, justify="center")
 
     for brick in sorted(components):
-        cols = construct_brick_columns(brick, "components", projects_data)
+        statuses = [brick_status(brick, p.get("components")) for p in projects_data]
+        cols = [f"[comp]{brick}[/]"] + statuses
+
         table.add_row(*cols)
 
     for brick in sorted(bases):
-        cols = construct_brick_columns(brick, "bases", projects_data)
+        statuses = [brick_status(brick, p.get("bases")) for p in projects_data]
+        cols = [f"[base]{brick}[/]"] + statuses
+
         table.add_row(*cols)
 
     console.print(table, overflow="ellipsis")
