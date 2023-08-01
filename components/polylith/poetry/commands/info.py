@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import info, repo, workspace
 
@@ -8,7 +9,18 @@ class InfoCommand(Command):
     name = "poly info"
     description = "Info about the <comment>Polylith</> workspace."
 
+    options = [
+        option(
+            long_name="short",
+            short_name="s",
+            description="Display Workspace Info adjusted for many projects",
+            flag=True,
+        ),
+    ]
+
     def handle(self) -> int:
+        short = self.option("short")
+
         root = repo.find_workspace_root(Path.cwd())
         if not root:
             raise ValueError(
@@ -21,6 +33,6 @@ class InfoCommand(Command):
         projects_data = info.get_bricks_in_projects(root, components, bases, ns)
 
         info.print_workspace_summary(projects_data, bases, components)
-        info.print_bricks_in_projects(projects_data, bases, components)
+        info.print_bricks_in_projects(projects_data, bases, components, short)
 
         return 0

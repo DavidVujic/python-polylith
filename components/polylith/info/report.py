@@ -2,7 +2,6 @@ from typing import List
 
 from polylith.reporting import theme
 from rich import box
-from rich.columns import Columns
 from rich.console import Console
 from rich.padding import Padding
 from rich.table import Table
@@ -18,17 +17,28 @@ def is_project(project: dict) -> bool:
     return project["type"] == "project"
 
 
-def printable_name(project: dict) -> str:
-    name = project["name"]
-
+def printable_name(project: dict, short: bool) -> str:
     if is_project(project):
-        return f"[proj]{name}[/]"
+        template = "[proj]{name}[/]"
+        name = project["name"]
+    else:
+        template = "[data]{name}[/]"
+        name = "development"
 
-    return "[data]development[/]"
+    if short:
+        return template.format(name="\n".join(name))
+
+    return template.format(name=name)
+
+
+def construct_brick_columns(brick: str, brick_type: str, projects_data: List[dict]):
+    statuses = [brick_status(brick, p.get(brick_type)) for p in projects_data]
+
+    return [f"[comp]{brick}[/]"] + statuses
 
 
 def print_bricks_in_projects(
-    projects_data: List[dict], bases: List[str], components: List[str]
+    projects_data: List[dict], bases: List[str], components: List[str], short: bool
 ) -> None:
     if not components and not bases:
         return
@@ -37,16 +47,18 @@ def print_bricks_in_projects(
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
 
-    proj_cols = [printable_name(project) for project in projects_data]
-    table.add_column(Columns(proj_cols, align="center", expand=True))
+    proj_cols = [printable_name(project, short) for project in projects_data]
+
+    for col in proj_cols:
+        table.add_column(col, justify="center")
 
     for brick in sorted(components):
-        cols = [brick_status(brick, p.get("components")) for p in projects_data]
-        table.add_row(f"[comp]{brick}[/]", Columns(cols, align="center", expand=True))
+        cols = construct_brick_columns(brick, "components", projects_data)
+        table.add_row(*cols)
 
     for brick in sorted(bases):
-        cols = [brick_status(brick, p.get("bases")) for p in projects_data]
-        table.add_row(f"[base]{brick}[/]", Columns(cols, align="center", expand=True))
+        cols = construct_brick_columns(brick, "bases", projects_data)
+        table.add_row(*cols)
 
     console.print(table, overflow="ellipsis")
 
