@@ -1,22 +1,11 @@
 from typing import List
 
+from polylith import info
 from polylith.reporting import theme
 from rich import box
 from rich.console import Console
 from rich.padding import Padding
 from rich.table import Table
-
-
-def brick_status(brick, bricks) -> str:
-    status = ":gear:" if brick in bricks else "-"
-
-    return f"[data]{status}[/]"
-
-
-def printable_name(project: dict) -> str:
-    name = project["name"]
-
-    return f"[proj]{name}[/]"
 
 
 def print_diff_details(
@@ -26,25 +15,9 @@ def print_diff_details(
         return
 
     console = Console(theme=theme.poly_theme)
-    table = Table(box=box.SIMPLE_HEAD)
-    table.add_column("[data]changed brick[/]", overflow="ellipsis")
-
-    proj_cols = [printable_name(project) for project in projects_data]
-
-    for col in proj_cols:
-        table.add_column(col, justify="center")
-
-    for brick in sorted(components):
-        statuses = [brick_status(brick, p.get("components")) for p in projects_data]
-        cols = [f"[comp]{brick}[/]"] + statuses
-
-        table.add_row(*cols)
-
-    for brick in sorted(bases):
-        statuses = [brick_status(brick, p.get("bases")) for p in projects_data]
-        cols = [f"[base]{brick}[/]"] + statuses
-
-        table.add_row(*cols)
+    table = info.report.build_bricks_in_projects_table(
+        projects_data, bases, components, False, "diff"
+    )
 
     console.print(table, overflow="ellipsis")
 

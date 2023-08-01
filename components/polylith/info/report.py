@@ -7,8 +7,10 @@ from rich.padding import Padding
 from rich.table import Table
 
 
-def brick_status(brick, bricks) -> str:
-    status = ":heavy_check_mark:" if brick in bricks else "-"
+def brick_status(brick, bricks, command: str) -> str:
+    emoji = ":heavy_check_mark:" if command == "info" else ":gear:"
+
+    status = emoji if brick in bricks else "-"
 
     return f"[data]{status}[/]"
 
@@ -31,13 +33,13 @@ def printable_name(project: dict, short: bool) -> str:
     return template.format(name=name)
 
 
-def print_bricks_in_projects(
-    projects_data: List[dict], bases: List[str], components: List[str], short: bool
-) -> None:
-    if not components and not bases:
-        return
-
-    console = Console(theme=theme.poly_theme)
+def build_bricks_in_projects_table(
+    projects_data: List[dict],
+    bases: List[str],
+    components: List[str],
+    short: bool,
+    command: str,
+) -> Table:
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
 
@@ -47,16 +49,30 @@ def print_bricks_in_projects(
         table.add_column(col, justify="center")
 
     for brick in sorted(components):
-        statuses = [brick_status(brick, p.get("components")) for p in projects_data]
+        statuses = [
+            brick_status(brick, p.get("components"), command) for p in projects_data
+        ]
         cols = [f"[comp]{brick}[/]"] + statuses
 
         table.add_row(*cols)
 
     for brick in sorted(bases):
-        statuses = [brick_status(brick, p.get("bases")) for p in projects_data]
+        statuses = [brick_status(brick, p.get("bases"), command) for p in projects_data]
         cols = [f"[base]{brick}[/]"] + statuses
 
         table.add_row(*cols)
+
+    return table
+
+
+def print_bricks_in_projects(
+    projects_data: List[dict], bases: List[str], components: List[str], short: bool
+) -> None:
+    if not components and not bases:
+        return
+
+    console = Console(theme=theme.poly_theme)
+    table = build_bricks_in_projects_table(projects_data, bases, components, short, "info")
 
     console.print(table, overflow="ellipsis")
 
