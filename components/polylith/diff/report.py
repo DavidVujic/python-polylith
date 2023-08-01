@@ -1,40 +1,23 @@
 from typing import List
 
+from polylith import info
 from polylith.reporting import theme
-from rich import box
-from rich.columns import Columns
 from rich.console import Console
 from rich.padding import Padding
-from rich.table import Table
-
-
-def brick_status(brick, bricks) -> str:
-    status = ":gear:" if brick in bricks else "-"
-
-    return f"[data]{status}[/]"
 
 
 def print_diff_details(
     projects_data: List[dict], bases: List[str], components: List[str]
 ) -> None:
-
     if not bases and not components:
         return
 
     console = Console(theme=theme.poly_theme)
-    table = Table(box=box.SIMPLE_HEAD)
-    table.add_column("[data]changed brick[/]")
 
-    proj_cols = [f"[proj]{project['name']}[/]" for project in projects_data]
-    table.add_column(Columns(proj_cols, align="center", expand=True))
-
-    for brick in sorted(components):
-        cols = [brick_status(brick, p.get("components")) for p in projects_data]
-        table.add_row(f"[comp]{brick}[/]", Columns(cols, align="center", expand=True))
-
-    for brick in sorted(bases):
-        cols = [brick_status(brick, p.get("bases")) for p in projects_data]
-        table.add_row(f"[base]{brick}[/]", Columns(cols, align="center", expand=True))
+    options = {"command": "diff"}
+    table = info.report.build_bricks_in_projects_table(
+        projects_data, bases, components, options
+    )
 
     console.print(table, overflow="ellipsis")
 
@@ -82,7 +65,6 @@ def print_short_diff(
     bases: List[str],
     components: List[str],
 ) -> None:
-
     a = _changed_projects(projects_data, "components", components)
     b = _changed_projects(projects_data, "bases", bases)
     c = set(projects)

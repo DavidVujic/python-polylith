@@ -7,8 +7,10 @@ from rich.padding import Padding
 from rich.table import Table
 
 
-def brick_status(brick, bricks) -> str:
-    status = ":heavy_check_mark:" if brick in bricks else "-"
+def brick_status(brick, bricks, command: str) -> str:
+    emoji = ":heavy_check_mark:" if command == "info" else ":gear:"
+
+    status = emoji if brick in bricks else "-"
 
     return f"[data]{status}[/]"
 
@@ -31,19 +33,15 @@ def printable_name(project: dict, short: bool) -> str:
     return template.format(name=name)
 
 
-def construct_brick_columns(brick: str, brick_type: str, projects_data: List[dict]):
-    statuses = [brick_status(brick, p.get(brick_type)) for p in projects_data]
+def build_bricks_in_projects_table(
+    projects_data: List[dict],
+    bases: List[str],
+    components: List[str],
+    options: dict,
+) -> Table:
+    short = options.get("short", False)
+    command = options.get("command", "info")
 
-    return [f"[comp]{brick}[/]"] + statuses
-
-
-def print_bricks_in_projects(
-    projects_data: List[dict], bases: List[str], components: List[str], short: bool
-) -> None:
-    if not components and not bases:
-        return
-
-    console = Console(theme=theme.poly_theme)
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
 
@@ -53,14 +51,44 @@ def print_bricks_in_projects(
         table.add_column(col, justify="center")
 
     for brick in sorted(components):
-        cols = construct_brick_columns(brick, "components", projects_data)
+        statuses = [
+            brick_status(brick, p.get("components"), command) for p in projects_data
+        ]
+        cols = [f"[comp]{brick}[/]"] + statuses
+
         table.add_row(*cols)
 
     for brick in sorted(bases):
-        cols = construct_brick_columns(brick, "bases", projects_data)
+        statuses = [brick_status(brick, p.get("bases"), command) for p in projects_data]
+        cols = [f"[base]{brick}[/]"] + statuses
+
         table.add_row(*cols)
 
+    return table
+
+
+def print_table(table: Table) -> None:
+    console = Console(theme=theme.poly_theme)
+
     console.print(table, overflow="ellipsis")
+
+
+def print_compressed_view_for_bricks_in_projects(
+    projects_data: List[dict], bases: List[str], components: List[str]
+) -> None:
+    options = {"short": True}
+    table = build_bricks_in_projects_table(projects_data, bases, components, options)
+
+    print_table(table)
+
+
+def print_bricks_in_projects(
+    projects_data: List[dict], bases: List[str], components: List[str]
+) -> None:
+    options = {"short": False}
+    table = build_bricks_in_projects_table(projects_data, bases, components, options)
+
+    print_table(table)
 
 
 def print_workspace_summary(
