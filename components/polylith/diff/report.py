@@ -2,10 +2,8 @@ from typing import List
 
 from polylith import info
 from polylith.reporting import theme
-from rich import box
 from rich.console import Console
 from rich.padding import Padding
-from rich.table import Table
 
 
 def print_diff_details(
