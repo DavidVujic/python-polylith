@@ -33,6 +33,15 @@ class InfoCommand(Command):
         projects_data = info.get_bricks_in_projects(root, components, bases, ns)
 
         info.print_workspace_summary(projects_data, bases, components)
-        info.print_bricks_in_projects(projects_data, bases, components, short)
+
+        if not components and not bases:
+            return 0
+
+        if short:
+            info.print_compressed_view_for_bricks_in_projects(
+                projects_data, bases, components
+            )
+        else:
+            info.print_bricks_in_projects(projects_data, bases, components)
 
         return 0

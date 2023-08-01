@@ -65,16 +65,30 @@ def build_bricks_in_projects_table(
     return table
 
 
-def print_bricks_in_projects(
-    projects_data: List[dict], bases: List[str], components: List[str], short: bool
-) -> None:
-    if not components and not bases:
-        return
-
+def print_table(table: Table) -> None:
     console = Console(theme=theme.poly_theme)
-    table = build_bricks_in_projects_table(projects_data, bases, components, short, "info")
 
     console.print(table, overflow="ellipsis")
+
+
+def print_compressed_view_for_bricks_in_projects(
+    projects_data: List[dict], bases: List[str], components: List[str]
+) -> None:
+    table = build_bricks_in_projects_table(
+        projects_data, bases, components, True, "info"
+    )
+
+    print_table(table)
+
+
+def print_bricks_in_projects(
+    projects_data: List[dict], bases: List[str], components: List[str]
+) -> None:
+    table = build_bricks_in_projects_table(
+        projects_data, bases, components, False, "info"
+    )
+
+    print_table(table)
 
 
 def print_workspace_summary(
