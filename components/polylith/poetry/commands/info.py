@@ -34,14 +34,12 @@ class InfoCommand(Command):
 
         info.print_workspace_summary(projects_data, bases, components)
 
-        if not components and not bases:
-            return 0
-
-        if short:
-            info.print_compressed_view_for_bricks_in_projects(
-                projects_data, bases, components
-            )
-        else:
-            info.print_bricks_in_projects(projects_data, bases, components)
+        if components or bases:
+            if short:
+                info.print_compressed_view_for_bricks_in_projects(
+                    projects_data, bases, components
+                )
+            else:
+                info.print_bricks_in_projects(projects_data, bases, components)
 
         return 0
