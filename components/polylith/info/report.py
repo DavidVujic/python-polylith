@@ -37,9 +37,11 @@ def build_bricks_in_projects_table(
     projects_data: List[dict],
     bases: List[str],
     components: List[str],
-    short: bool,
-    command: str,
+    options: dict,
 ) -> Table:
+    short = options.get("short", False)
+    command = options.get("command", "info")
+
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
 
@@ -74,9 +76,8 @@ def print_table(table: Table) -> None:
 def print_compressed_view_for_bricks_in_projects(
     projects_data: List[dict], bases: List[str], components: List[str]
 ) -> None:
-    table = build_bricks_in_projects_table(
-        projects_data, bases, components, True, "info"
-    )
+    options = {"short": True}
+    table = build_bricks_in_projects_table(projects_data, bases, components, options)
 
     print_table(table)
 
@@ -84,9 +85,8 @@ def print_compressed_view_for_bricks_in_projects(
 def print_bricks_in_projects(
     projects_data: List[dict], bases: List[str], components: List[str]
 ) -> None:
-    table = build_bricks_in_projects_table(
-        projects_data, bases, components, False, "info"
-    )
+    options = {"short": False}
+    table = build_bricks_in_projects_table(projects_data, bases, components, options)
 
     print_table(table)
 

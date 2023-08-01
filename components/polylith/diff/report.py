@@ -13,8 +13,10 @@ def print_diff_details(
         return
 
     console = Console(theme=theme.poly_theme)
+
+    options = {"command": "diff"}
     table = info.report.build_bricks_in_projects_table(
-        projects_data, bases, components, False, "diff"
+        projects_data, bases, components, options
     )
 
     console.print(table, overflow="ellipsis")
