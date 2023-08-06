@@ -33,12 +33,9 @@ Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polyl
 #### Microservices and apps :thumbsup:
 The main use case is to support having one or more microservices (or apps) in a Monorepo, and share code between the services.
 
-#### Libraries?
-Polylith for Python isn't mainly for building libraries published to PyPI, even if it is supported.
-Consider that the code in one library will share the same top namespace with other libraries that are
-built from the same Polylith Monorepo. This will likely be a problem when _more than one_ of your libraries would be installed into the same virtual environment.
-
-There is [solution](https://github.com/DavidVujic/poetry-multiproject-plugin#usage-for-libraries) avaiable for this. :smiley:
+#### Libraries
+Polylith for Python has support for building libraries to be published at PyPI, even if it isn't the main use case.
+More details about how to package libraries in the docs about [Packaging & deploying](https://davidvujic.github.io/python-polylith-docs/deployment/#packaging-a-library).
 
 ## :sparkles: Examples :sparkles:
 Have a look at the [Python Polylith Examples](https://github.com/DavidVujic/python-polylith-example) repository.
@@ -46,8 +43,9 @@ It is a repository with an example __Python__ setup of the Polylith Architecture
 You will find examples of sharing code between different kind of projects, and developer tooling setup such as `mypy` and the `venv`.
 
 ## Videos
-* Python with the Polylith Architecture - [an overview](https://youtu.be/3w2ffHZb6gc) (about 15 minutes)
-* Python Poetry Polylith Plugin - [the tooling support & commands](https://youtu.be/AdKpTP9pjHI) (about 13 minutes)
+- Python with the Polylith Architecture - [an overview](https://youtu.be/3w2ffHZb6gc) (about 15 minutes)
+- Python Poetry Polylith Plugin - [the tooling support & commands](https://youtu.be/AdKpTP9pjHI) (about 13 minutes)
+- The Developer Experience - [developing a Dad Joke Service with Polylith](https://youtu.be/oG4OFEer3Tk) (about 27 minutes)
 
 ## Talks
 - __Python Web Conference 2023__ - Microservices, Monolith, Monorepos: the differences & how nicely Polylith solves the trade offs - [A Fresh Take on Monorepos in Python](https://youtu.be/HU61vjZPPfQ) (about 36 minutes)
@@ -62,6 +60,7 @@ You will find examples of sharing code between different kind of projects, and d
 - [Aws CDK App with polylith code architecture](https://dev.to/ybenitezf/aws-cdk-app-with-polylith-code-architecture-30e3) by Yoel Benítez Fonseca
 - [GCP Cloud Functions with Python and Polylith](https://davidvujic.blogspot.com/2023/07/gcp-cloud-functions-with-python-and-polylith.html)
 - [Python FastAPI Microservices with Polylith](https://davidvujic.blogspot.com/2023/07/python-fastapi-microservices-with-polylith.html)
+- [Kafka messaging with Python & Polylith](https://davidvujic.blogspot.com/2023/08/kafka-messaging-with-python-and-polylith.html)
 
 <img width="800" alt="poetry-poly-info-example" src="https://github.com/DavidVujic/python-polylith/assets/301286/67df68ed-8fa7-4b25-8e4e-beb71a2024cd">
 
