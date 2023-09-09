@@ -35,8 +35,11 @@ def flatten_brick_imports(brick_imports: dict) -> Set[str]:
     return set().union(bases_imports, components_imports)
 
 
-def filter_close_matches(unknown_imports: Set[str], deps: Set[str]) -> Set[str]:
-    return {u for u in unknown_imports if not difflib.get_close_matches(u, deps)}
+def filter_close_matches(unknown_imports: Set[str], dependencies: Set[str]) -> Set[str]:
+    unknowns = {str.lower(u) for u in unknown_imports}
+    deps = {str.lower(d) for d in dependencies}
+
+    return {u for u in unknowns if not difflib.get_close_matches(u, deps)}
 
 
 def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
