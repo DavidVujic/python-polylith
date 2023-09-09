@@ -68,3 +68,18 @@ def test_calculate_diff_should_identify_close_match():
     res = report.calculate_diff(brick_imports, third_party_libs)
 
     assert len(res) == 0
+
+
+def test_calculate_diff_should_identify_close_match_case_insensitive():
+    brick_imports = {
+        "bases": {"my_base": {}},
+        "components": {
+            "one": {"pillow"},
+        },
+    }
+
+    third_party_libs = {"PIL"}
+
+    res = report.calculate_diff(brick_imports, third_party_libs)
+
+    assert len(res) == 0
