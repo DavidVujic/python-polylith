@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetry-polylith-plugin"
-version = "1.8.3"
+version = "1.9.0"
 description = "A Poetry plugin that adds tooling support for the Polylith Architecture"
 authors = ["David Vujic"]
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
@@ -25,7 +25,8 @@ packages = [
     {include = "polylith/reporting",from = "../../components"},
     {include = "polylith/sync",from = "../../components"},
     {include = "polylith/test",from = "../../components"},
-    {include = "polylith/workspace",from = "../../components"}
+    {include = "polylith/workspace",from = "../../components"},
+    {include = "polylith/alias",from = "../../components"},
 ]
 
 [tool.poetry.plugins."poetry.application.plugin"]

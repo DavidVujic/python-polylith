@@ -26,7 +26,8 @@ packages = [
     {include = "polylith/sync",from = "components"},
     {include = "polylith/test",from = "components"},
     {include = "polylith/workspace",from = "components"},
-    {include = "development"}
+    {include = "polylith/alias",from = "components"},
+    {include = "development"},
 ]
 
 [tool.poetry.dependencies]

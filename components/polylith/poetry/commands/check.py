@@ -4,30 +4,41 @@ from typing import Set, Union
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
-from polylith import check, info, project, repo, workspace
+from polylith import alias, check, info, project, repo, workspace
+from poetry.poetry import Poetry
+
+
+command_options = [
+        option(
+            long_name="strict",
+            description="More strict checks when matching name of third-party libraries and imports",
+            flag=True,
+        ),
+        option(
+            long_name="alias",
+            description="alias for a third-party library, useful when an import differ from the library name",
+            flag=False,
+            multiple=True,
+        ),
+    ]
+
+
+def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
+    project_poetry = Factory().create_poetry(path) if path else poetry
+
+    if not project_poetry.locker.is_locked():
+        raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")
+
+    packages = project_poetry.locker.locked_repository().packages
+
+    return {p.name for p in packages}
 
 
 class CheckCommand(Command):
     name = "poly check"
     description = "Validates the <comment>Polylith</> workspace."
 
-    options = [
-        option(
-            long_name="strict",
-            description="More strict checks when matching name of third-party libraries and imports",
-            flag=True,
-        ),
-    ]
-
-    def find_third_party_libs(self, path: Union[Path, None]) -> Set:
-        project_poetry = Factory().create_poetry(path) if path else self.poetry
-
-        if not project_poetry.locker.is_locked():
-            raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")
-
-        packages = project_poetry.locker.locked_repository().packages
-
-        return {p.name for p in packages}
+    options = command_options
 
     def print_report(self, root: Path, ns: str, project_data: dict) -> bool:
         is_verbose = self.option("verbose")
@@ -39,12 +50,17 @@ class CheckCommand(Command):
 
         try:
             collected_imports = check.report.collect_all_imports(root, ns, project_data)
-            third_party_libs = self.find_third_party_libs(path)
+            third_party_libs = find_third_party_libs(self.poetry, path)
+
+            library_aliases = alias.parse(self.option("alias"))
+            extra = alias.pick(library_aliases, third_party_libs)
+
+            libs = third_party_libs.union(extra)
 
             details = check.report.create_report(
                 project_data,
                 collected_imports,
-                third_party_libs,
+                libs,
                 is_strict,
             )
 
