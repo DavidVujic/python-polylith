@@ -38,14 +38,17 @@ class CheckCommand(Command):
         name = project_data["name"]
 
         try:
+            collected_imports = check.report.collect_all_imports(root, ns, project_data)
             third_party_libs = self.find_third_party_libs(path)
-            res, details = check.report.create_report(
-                root,
-                ns,
+
+            details = check.report.create_report(
                 project_data,
+                collected_imports,
                 third_party_libs,
                 is_strict,
             )
+
+            res = all([not details["brick_diff"], not details["libs_diff"]])
 
             if is_quiet:
                 return res

@@ -41,13 +41,7 @@ def fetch_brick_imports(root: Path, ns: str, all_imports: dict) -> dict:
     return collect.with_unknown_components(root, ns, extracted)
 
 
-def create_report(
-    root: Path,
-    ns: str,
-    project_data: dict,
-    third_party_libs: Set,
-    is_strict: bool = False
-) -> Tuple[bool, dict]:
+def collect_all_imports(root: Path, ns: str, project_data: dict) -> dict:
     bases = {b for b in project_data.get("bases", [])}
     components = {c for c in project_data.get("components", [])}
 
@@ -67,16 +61,29 @@ def create_report(
         "components": libs.extract_third_party_imports(all_imports_in_components, ns),
     }
 
+    return {"brick_imports": brick_imports, "third_party_imports": third_party_imports}
+
+
+def create_report(
+    project_data: dict,
+    collected_imports: dict,
+    third_party_libs: Set,
+    is_strict: bool = False,
+) -> dict:
+    bases = {b for b in project_data.get("bases", [])}
+    components = {c for c in project_data.get("components", [])}
+
+    brick_imports = collected_imports["brick_imports"]
+    third_party_imports = collected_imports["third_party_imports"]
+
     brick_diff = collect.imports_diff(brick_imports, list(bases), list(components))
-    libs_diff = libs.report.calculate_diff(third_party_imports, third_party_libs, is_strict)
+    libs_diff = libs.report.calculate_diff(
+        third_party_imports, third_party_libs, is_strict
+    )
 
-    res = all([not brick_diff, not libs_diff])
-
-    report_details = {
+    return {
         "brick_imports": brick_imports,
         "third_party_imports": third_party_imports,
         "brick_diff": brick_diff,
         "libs_diff": libs_diff,
     }
-
-    return res, report_details
