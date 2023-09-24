@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Set, Tuple
+from typing import Set
 
 from polylith import imports, libs, workspace
 from polylith.check import collect, grouping
