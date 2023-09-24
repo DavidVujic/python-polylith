@@ -26,6 +26,7 @@ class SyncCommand(Command):
 
     def handle(self) -> int:
         is_verbose = self.option("verbose")
+        is_quiet = self.option("quiet")
 
         root = repo.find_workspace_root(Path.cwd())
 
@@ -49,8 +50,12 @@ class SyncCommand(Command):
         ]
 
         for diff in diffs:
-            sync.report.print_summary(diff)
             sync.update_project(root, ns, diff)
+
+            if is_quiet:
+                continue
+
+            sync.report.print_summary(diff)
 
             if is_verbose:
                 sync.report.print_brick_imports(diff)

@@ -22,21 +22,29 @@ class CheckCommand(Command):
 
     def print_report(self, root: Path, ns: str, project_data: dict) -> bool:
         is_verbose = self.option("verbose")
+        is_quiet = self.option("quiet")
+
         path = project_data["path"]
         name = project_data["name"]
 
         try:
             third_party_libs = self.find_third_party_libs(path)
-            res, brick_imports, third_party_imports = check.report.print_report(
+            res, details = check.report.create_report(
                 root,
                 ns,
                 project_data,
                 third_party_libs,
             )
 
+            if is_quiet:
+                return res
+
+            check.report.print_missing_deps(details["brick_diff"], name)
+            check.report.print_missing_deps(details["libs_diff"], name)
+
             if is_verbose:
-                check.report.print_brick_imports(brick_imports)
-                check.report.print_brick_imports(third_party_imports)
+                check.report.print_brick_imports(details["brick_imports"])
+                check.report.print_brick_imports(details["third_party_imports"])
 
             return res
         except ValueError as e:
