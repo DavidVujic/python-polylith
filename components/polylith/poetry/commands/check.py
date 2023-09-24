@@ -4,7 +4,7 @@ from typing import Set, Union
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
-from polylith import check, info, project, repo, workspace
+from polylith import alias, check, info, project, repo, workspace
 
 
 class CheckCommand(Command):
@@ -16,6 +16,12 @@ class CheckCommand(Command):
             long_name="strict",
             description="More strict checks when matching name of third-party libraries and imports",
             flag=True,
+        ),
+        option(
+            long_name="alias",
+            description="alias for a third-party library, useful when an import differ from the library name",
+            flag=False,
+            multiple=True,
         ),
     ]
 
@@ -41,10 +47,15 @@ class CheckCommand(Command):
             collected_imports = check.report.collect_all_imports(root, ns, project_data)
             third_party_libs = self.find_third_party_libs(path)
 
+            library_aliases = alias.parse(self.option("alias"))
+            extra = alias.pick(library_aliases, third_party_libs)
+
+            libs = third_party_libs.union(extra)
+
             details = check.report.create_report(
                 project_data,
                 collected_imports,
-                third_party_libs,
+                libs,
                 is_strict,
             )
 

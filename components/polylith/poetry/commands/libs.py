@@ -4,7 +4,7 @@ from typing import Set, Union
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
-from polylith import info, project, repo, workspace
+from polylith import alias, info, project, repo, workspace
 from polylith.libs import report
 
 
@@ -17,6 +17,12 @@ class LibsCommand(Command):
             long_name="strict",
             description="More strict checks when matching name of third-party libraries and imports",
             flag=True,
+        ),
+        option(
+            long_name="alias",
+            description="alias for a third-party library, useful when an import differ from the library name",
+            flag=False,
+            multiple=True,
         ),
     ]
 
@@ -44,9 +50,14 @@ class LibsCommand(Command):
         try:
             third_party_libs = self.find_third_party_libs(path)
 
+            library_aliases = alias.parse(self.option("alias"))
+            extra = alias.pick(library_aliases, third_party_libs)
+
+            libs = third_party_libs.union(extra)
+
             return report.print_missing_installed_libs(
                 brick_imports,
-                third_party_libs,
+                libs,
                 name,
                 is_strict,
             )

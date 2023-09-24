@@ -25,7 +25,8 @@ packages = [
     {include = "polylith/reporting",from = "../../components"},
     {include = "polylith/sync",from = "../../components"},
     {include = "polylith/test",from = "../../components"},
-    {include = "polylith/workspace",from = "../../components"}
+    {include = "polylith/workspace",from = "../../components"},
+    {include = "polylith/alias",from = "../../components"},
 ]
 
 [tool.poetry.plugins."poetry.application.plugin"]
