@@ -2,8 +2,8 @@ from pathlib import Path
 
 from poetry.console.commands.command import Command
 from polylith import alias, info, project, repo, workspace
-from polylith.commands.create import command_options, find_third_party_libs
 from polylith.libs import report
+from polylith.poetry.commands.check import command_options, find_third_party_libs
 
 
 class LibsCommand(Command):
