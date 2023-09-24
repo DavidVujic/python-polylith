@@ -1,10 +1,8 @@
 from pathlib import Path
-from typing import Set, Union
 
-from cleo.helpers import option
 from poetry.console.commands.command import Command
-from poetry.factory import Factory
 from polylith import alias, info, project, repo, workspace
+from polylith.commands.create import command_options, find_third_party_libs
 from polylith.libs import report
 
 
@@ -12,29 +10,7 @@ class LibsCommand(Command):
     name = "poly libs"
     description = "Show third-party libraries used in the workspace."
 
-    options = [
-        option(
-            long_name="strict",
-            description="More strict checks when matching name of third-party libraries and imports",
-            flag=True,
-        ),
-        option(
-            long_name="alias",
-            description="alias for a third-party library, useful when an import differ from the library name",
-            flag=False,
-            multiple=True,
-        ),
-    ]
-
-    def find_third_party_libs(self, path: Union[Path, None]) -> Set:
-        project_poetry = Factory().create_poetry(path) if path else self.poetry
-
-        if not project_poetry.locker.is_locked():
-            raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")
-
-        packages = project_poetry.locker.locked_repository().packages
-
-        return {p.name for p in packages}
+    options = command_options
 
     def print_report(self, root: Path, ns: str, data: dict) -> bool:
         is_strict = self.option("strict")
@@ -48,7 +24,7 @@ class LibsCommand(Command):
         report.print_libs_in_bricks(brick_imports)
 
         try:
-            third_party_libs = self.find_third_party_libs(path)
+            third_party_libs = find_third_party_libs(self.poetry, path)
 
             library_aliases = alias.parse(self.option("alias"))
             extra = alias.pick(library_aliases, third_party_libs)
