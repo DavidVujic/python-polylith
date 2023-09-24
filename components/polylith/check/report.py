@@ -46,6 +46,7 @@ def create_report(
     ns: str,
     project_data: dict,
     third_party_libs: Set,
+    is_strict: bool = False
 ) -> Tuple[bool, dict]:
     bases = {b for b in project_data.get("bases", [])}
     components = {c for c in project_data.get("components", [])}
@@ -67,7 +68,7 @@ def create_report(
     }
 
     brick_diff = collect.imports_diff(brick_imports, list(bases), list(components))
-    libs_diff = libs.report.calculate_diff(third_party_imports, third_party_libs)
+    libs_diff = libs.report.calculate_diff(third_party_imports, third_party_libs, is_strict)
 
     res = all([not brick_diff, not libs_diff])
 

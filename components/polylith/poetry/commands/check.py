@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Set, Union
 
+from cleo.helpers import option
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
 from polylith import check, info, project, repo, workspace
@@ -9,6 +10,14 @@ from polylith import check, info, project, repo, workspace
 class CheckCommand(Command):
     name = "poly check"
     description = "Validates the <comment>Polylith</> workspace."
+
+    options = [
+        option(
+            long_name="strict",
+            description="More strict checks when matching name of third-party libraries and imports",
+            flag=True,
+        ),
+    ]
 
     def find_third_party_libs(self, path: Union[Path, None]) -> Set:
         project_poetry = Factory().create_poetry(path) if path else self.poetry
@@ -23,6 +32,7 @@ class CheckCommand(Command):
     def print_report(self, root: Path, ns: str, project_data: dict) -> bool:
         is_verbose = self.option("verbose")
         is_quiet = self.option("quiet")
+        is_strict = self.option("strict")
 
         path = project_data["path"]
         name = project_data["name"]
@@ -34,6 +44,7 @@ class CheckCommand(Command):
                 ns,
                 project_data,
                 third_party_libs,
+                is_strict,
             )
 
             if is_quiet:
