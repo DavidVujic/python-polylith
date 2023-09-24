@@ -35,18 +35,31 @@ def flatten_brick_imports(brick_imports: dict) -> Set[str]:
     return set().union(bases_imports, components_imports)
 
 
-def filter_close_matches(unknown_imports: Set[str], dependencies: Set[str]) -> Set[str]:
+def filter_close_matches(
+    unknown_imports: Set[str], dependencies: Set[str], cutoff: float
+) -> Set[str]:
     unknowns = {str.lower(u) for u in unknown_imports}
     deps = {str.lower(d) for d in dependencies}
 
-    return {u for u in unknowns if not difflib.get_close_matches(u, deps)}
+    return {
+        u for u in unknowns if not difflib.get_close_matches(u, deps, cutoff=cutoff)
+    }
 
 
-def calculate_diff(brick_imports: dict, deps: Set[str]) -> Set[str]:
+def get_unknowns(brick_imports: dict, deps: Set[str]) -> Set[str]:
     imports = flatten_brick_imports(brick_imports)
-    unknown_imports = imports.difference(deps)
 
-    return filter_close_matches(unknown_imports, deps)
+    return imports.difference(deps)
+
+
+def calculate_diff(
+    brick_imports: dict, deps: Set[str], is_strict: bool = False
+) -> Set[str]:
+    unknown_imports = get_unknowns(brick_imports, deps)
+
+    cutoff = 0.6 if not is_strict else 0.9
+
+    return filter_close_matches(unknown_imports, deps, cutoff)
 
 
 def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
@@ -95,9 +108,9 @@ def print_libs_in_bricks(brick_imports: dict) -> None:
 
 
 def print_missing_installed_libs(
-    brick_imports: dict, third_party_libs: Set[str], project_name: str
+    brick_imports: dict, third_party_libs: Set[str], project_name: str, is_strict: bool = False
 ) -> bool:
-    diff = calculate_diff(brick_imports, third_party_libs)
+    diff = calculate_diff(brick_imports, third_party_libs, is_strict)
 
     if not diff:
         return True
