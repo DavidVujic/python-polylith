@@ -5,34 +5,35 @@ from typing import List, Set, Union
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
+from poetry.poetry import Poetry
 from poetry.utils.env import EnvManager
 from polylith import alias, check, info, project, repo, workspace
-from poetry.poetry import Poetry
-
 
 command_options = [
-        option(
-            long_name="strict",
-            description="More strict checks when matching name of third-party libraries and imports",
-            flag=True,
-        ),
-        option(
-            long_name="alias",
-            description="alias for a third-party library, useful when an import differ from the library name",
-            flag=False,
-            multiple=True,
-        ),
-    ]
+    option(
+        long_name="strict",
+        description="More strict checks when matching name of third-party libraries and imports",
+        flag=True,
+    ),
+    option(
+        long_name="alias",
+        description="alias for a third-party library, useful when an import differ from the library name",
+        flag=False,
+        multiple=True,
+    ),
+]
 
 
-def packages_distributions(poetry: Poetry, path: Union[Path, None]) -> defaultdict[str, List[str]]:
+def packages_distributions(
+    poetry: Poetry, path: Union[Path, None]
+) -> defaultdict[str, List[str]]:
     project_poetry = Factory().create_poetry(path) if path else poetry
-    
+
     env = EnvManager(project_poetry).get()
     pkg_to_dist = defaultdict(list)
     for dist in env.site_packages.distributions():
-        for pkg in (dist.read_text('top_level.txt') or '').split():
-            pkg_to_dist[dist.metadata['Name']].append(pkg)
+        for pkg in (dist.read_text("top_level.txt") or "").split():
+            pkg_to_dist[dist.metadata["Name"]].append(pkg)
 
     return pkg_to_dist
 
