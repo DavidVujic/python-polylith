@@ -1,9 +1,11 @@
+from collections import defaultdict
 from pathlib import Path
-from typing import Set, Union
+from typing import List, Set, Union
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from poetry.factory import Factory
+from poetry.utils.env import EnvManager
 from polylith import alias, check, info, project, repo, workspace
 from poetry.poetry import Poetry
 
@@ -21,6 +23,18 @@ command_options = [
             multiple=True,
         ),
     ]
+
+
+def packages_distributions(poetry: Poetry, path: Union[Path, None]) -> defaultdict[str, List[str]]:
+    project_poetry = Factory().create_poetry(path) if path else poetry
+    
+    env = EnvManager(project_poetry).get()
+    pkg_to_dist = defaultdict(list)
+    for dist in env.site_packages.distributions():
+        for pkg in (dist.read_text('top_level.txt') or '').split():
+            pkg_to_dist[dist.metadata['Name']].append(pkg)
+
+    return pkg_to_dist
 
 
 def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
@@ -52,8 +66,10 @@ class CheckCommand(Command):
             collected_imports = check.report.collect_all_imports(root, ns, project_data)
             third_party_libs = find_third_party_libs(self.poetry, path)
 
-            library_aliases = alias.parse(self.option("alias"))
-            extra = alias.pick(library_aliases, third_party_libs)
+            known_aliases = packages_distributions(self.poetry, path)
+            known_aliases.update(alias.parse(self.option("alias")))
+
+            extra = alias.pick(known_aliases, third_party_libs)
 
             libs = third_party_libs.union(extra)
 
