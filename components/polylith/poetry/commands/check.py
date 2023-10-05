@@ -1,6 +1,6 @@
 from collections import defaultdict
 from pathlib import Path
-from typing import List, Set, Union
+from typing import DefaultDict, List, Set, Union
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
@@ -26,7 +26,7 @@ command_options = [
 
 def packages_distributions(
     poetry: Poetry, path: Union[Path, None]
-) -> defaultdict[str, List[str]]:
+) -> DefaultDict[str, List[str]]:
     project_poetry = Factory().create_poetry(path) if path else poetry
 
     env = EnvManager(project_poetry).get()
