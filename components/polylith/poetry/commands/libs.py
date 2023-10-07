@@ -43,13 +43,7 @@ class LibsCommand(Command):
             return False
 
     def handle(self) -> int:
-        root = repo.find_workspace_root(Path.cwd())
-
-        if not root:
-            raise ValueError(
-                "Didn't find the workspace root. Expected to find a workspace.toml file."
-            )
-
+        root = repo.get_workspace_root(Path.cwd())
         ns = workspace.parser.get_namespace_from_config(root)
 
         projects_data = info.get_projects_data(root, ns)
