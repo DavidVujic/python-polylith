@@ -1,7 +1,6 @@
-from collections import defaultdict
 from functools import reduce
 from pathlib import Path
-from typing import DefaultDict, Dict, Iterable, List, Set, Union
+from typing import Dict, Iterable, List, Set, Union
 
 from poetry.factory import Factory
 from poetry.poetry import Poetry
@@ -35,20 +34,6 @@ def distributions(poetry: Poetry, path: Union[Path, None]) -> Iterable:
     env = EnvManager(project_poetry).get()
 
     return env.site_packages.distributions()
-
-
-def packages_distributions(
-    poetry: Poetry, path: Union[Path, None]
-) -> DefaultDict[str, List[str]]:
-    project_poetry = Factory().create_poetry(path) if path else poetry
-
-    env = EnvManager(project_poetry).get()
-    pkg_to_dist = defaultdict(list)
-    for dist in env.site_packages.distributions():
-        for pkg in (dist.read_text("top_level.txt") or "").split():
-            pkg_to_dist[dist.metadata["Name"]].append(pkg)
-
-    return pkg_to_dist
 
 
 def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
