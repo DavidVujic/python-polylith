@@ -57,7 +57,7 @@ def calculate_diff(
 ) -> Set[str]:
     unknown_imports = get_unknowns(brick_imports, deps)
 
-    cutoff = 0.6 if not is_strict else 0.9
+    cutoff = 0.6 if not is_strict else 1
 
     return filter_close_matches(unknown_imports, deps, cutoff)
 
