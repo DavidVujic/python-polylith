@@ -50,17 +50,14 @@ class LibsCommand(Command):
 
         if self.option("directory"):
             project_name = project.get_project_name(self.poetry.pyproject.data)
-
             data = next((p for p in projects_data if p["name"] == project_name), None)
 
             if not data:
                 raise ValueError(f"Didn't find project in {self.option('directory')}")
 
             res = self.print_report(root, ns, data)
-            result_code = 0 if res else 1
-        else:
-            results = {self.print_report(root, ns, data) for data in projects_data}
+            return 0 if res else 1
 
-            result_code = 0 if all(results) else 1
+        results = {self.print_report(root, ns, data) for data in projects_data}
 
-        return result_code
+        return 0 if all(results) else 1
