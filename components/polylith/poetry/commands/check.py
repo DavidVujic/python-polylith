@@ -1,13 +1,9 @@
-from collections import defaultdict
 from pathlib import Path
-from typing import DefaultDict, List, Set, Union
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from poetry.factory import Factory
-from poetry.poetry import Poetry
-from poetry.utils.env import EnvManager
 from polylith import alias, check, info, project, repo, workspace
+from polylith.poetry import internals
 
 command_options = [
     option(
@@ -22,31 +18,6 @@ command_options = [
         multiple=True,
     ),
 ]
-
-
-def packages_distributions(
-    poetry: Poetry, path: Union[Path, None]
-) -> DefaultDict[str, List[str]]:
-    project_poetry = Factory().create_poetry(path) if path else poetry
-
-    env = EnvManager(project_poetry).get()
-    pkg_to_dist = defaultdict(list)
-    for dist in env.site_packages.distributions():
-        for pkg in (dist.read_text("top_level.txt") or "").split():
-            pkg_to_dist[dist.metadata["Name"]].append(pkg)
-
-    return pkg_to_dist
-
-
-def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
-    project_poetry = Factory().create_poetry(path) if path else poetry
-
-    if not project_poetry.locker.is_locked():
-        raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")
-
-    packages = project_poetry.locker.locked_repository().packages
-
-    return {p.name for p in packages}
 
 
 class CheckCommand(Command):
@@ -65,9 +36,10 @@ class CheckCommand(Command):
 
         try:
             collected_imports = check.report.collect_all_imports(root, ns, project_data)
-            third_party_libs = find_third_party_libs(self.poetry, path)
+            third_party_libs = internals.find_third_party_libs(self.poetry, path)
 
-            known_aliases = packages_distributions(self.poetry, path)
+            dists = internals.distributions(self.poetry, path)
+            known_aliases = internals.distributions_packages(dists)
             known_aliases.update(alias.parse(self.option("alias")))
 
             extra = alias.pick(known_aliases, third_party_libs)
