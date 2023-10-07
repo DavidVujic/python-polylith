@@ -1,7 +1,7 @@
 from collections import defaultdict
 from functools import reduce
 from pathlib import Path
-from typing import DefaultDict, Dict, List, Set, Union
+from typing import DefaultDict, Dict, Iterable, List, Set, Union
 
 from poetry.factory import Factory
 from poetry.poetry import Poetry
@@ -18,7 +18,7 @@ def mapped_packages(dist) -> dict:
     packages = top_level_packages(dist)
     name = dist.metadata["name"]
 
-    return {name: package for package in packages}
+    return {name: packages} if packages else {}
 
 
 def map_packages(acc, dist) -> dict:
@@ -30,7 +30,7 @@ def distributions_packages(dists) -> Dict[str, List[str]]:
     return reduce(map_packages, dists, {})
 
 
-def distributions(poetry: Poetry, path: Union[Path, None]):
+def distributions(poetry: Poetry, path: Union[Path, None]) -> Iterable:
     project_poetry = Factory().create_poetry(path) if path else poetry
     env = EnvManager(project_poetry).get()
 
