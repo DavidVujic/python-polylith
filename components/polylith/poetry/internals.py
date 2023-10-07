@@ -29,15 +29,20 @@ def distributions_packages(dists) -> Dict[str, List[str]]:
     return reduce(map_packages, dists, {})
 
 
+def get_project_poetry(poetry: Poetry, path: Union[Path, None]) -> Poetry:
+    return Factory().create_poetry(path) if path else poetry
+
+
 def distributions(poetry: Poetry, path: Union[Path, None]) -> Iterable:
-    project_poetry = Factory().create_poetry(path) if path else poetry
+    project_poetry = get_project_poetry(poetry, path)
+
     env = EnvManager(project_poetry).get()
 
     return env.site_packages.distributions()
 
 
 def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
-    project_poetry = Factory().create_poetry(path) if path else poetry
+    project_poetry = get_project_poetry(poetry, path)
 
     if not project_poetry.locker.is_locked():
         raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")
