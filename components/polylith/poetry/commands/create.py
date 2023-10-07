@@ -4,7 +4,7 @@ from polylith import repo, workspace
 
 
 def create(command, fn):
-    root = repo.find_workspace_root(Path.cwd())
+    root = repo.get_workspace_root(Path.cwd())
     name = command.option("name")
     description = command.option("description")
     namespace = workspace.parser.get_namespace_from_config(root)

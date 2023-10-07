@@ -71,13 +71,7 @@ class CheckCommand(Command):
             return False
 
     def handle(self) -> int:
-        root = repo.find_workspace_root(Path.cwd())
-
-        if not root:
-            raise ValueError(
-                "Didn't find the workspace root. Expected to find a workspace.toml file."
-            )
-
+        root = repo.get_workspace_root(Path.cwd())
         ns = workspace.parser.get_namespace_from_config(root)
 
         all_projects_data = info.get_projects_data(root, ns)
@@ -85,17 +79,14 @@ class CheckCommand(Command):
 
         if self.option("directory"):
             project_name = project.get_project_name(self.poetry.pyproject.data)
-
             data = next((p for p in projects_data if p["name"] == project_name), None)
 
             if not data:
                 raise ValueError(f"Didn't find project in {self.option('directory')}")
 
             res = self.print_report(root, ns, data)
-            result_code = 0 if res else 1
-        else:
-            results = {self.print_report(root, ns, data) for data in projects_data}
+            return 0 if res else 1
 
-            result_code = 0 if all(results) else 1
+        results = {self.print_report(root, ns, data) for data in projects_data}
 
-        return result_code
+        return 0 if all(results) else 1

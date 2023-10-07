@@ -19,12 +19,7 @@ class DiffCommand(Command):
     ]
 
     def handle(self) -> int:
-        root = repo.find_workspace_root(Path.cwd())
-        if not root:
-            raise ValueError(
-                "Didn't find the workspace root. Expected to find a workspace.toml file."
-            )
-
+        root = repo.get_workspace_root(Path.cwd())
         tag = diff.collect.get_latest_tag(root)
 
         if not tag:
