@@ -13,7 +13,9 @@ def _parse_folder_parts(folder: str, changed_file: Path) -> str:
 
 def _get_changed(folder: str, changed_files: List[Path]) -> set:
     return {
-        _parse_folder_parts(folder, f) for f in changed_files if folder in f.as_posix()
+        _parse_folder_parts(folder, f)
+        for f in changed_files
+        if str.startswith(f.as_posix(), folder)
     }
 
 
@@ -25,9 +27,7 @@ def _get_changed_bricks(
     return sorted(_get_changed(d, changed_files))
 
 
-def get_changed_components(
-    changed_files: List[Path], namespace: str
-) -> list:
+def get_changed_components(changed_files: List[Path], namespace: str) -> list:
     return _get_changed_bricks(repo.components_dir, changed_files, namespace)
 
 
