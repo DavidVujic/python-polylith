@@ -45,7 +45,7 @@ def print_detected_changes_in_bricks(
     if short:
         print_detected_changes(sorted_components + sorted_bases, "data", short)
     else:
-        print_detected_changes(sorted_components, "component", short)
+        print_detected_changes(sorted_components, "comp", short)
         print_detected_changes(sorted_bases, "base", short)
 
 
