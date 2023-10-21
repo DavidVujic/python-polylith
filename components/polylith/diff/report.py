@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 
 from polylith import info
 from polylith.reporting import theme
@@ -22,14 +22,41 @@ def print_diff_details(
     console.print(table, overflow="ellipsis")
 
 
-def print_detected_changes_in_projects(projects: List[str]) -> None:
-    if not projects:
+def print_detected_changes(changes: List[str], markup: str, short: bool) -> None:
+    if not changes:
         return
 
     console = Console(theme=theme.poly_theme)
 
-    for project in sorted(projects):
-        console.print(f"[data]:gear: Changes found in [/][proj]{project}[/]")
+    if short:
+        console.print(",".join(changes))
+        return
+
+    for brick in changes:
+        console.print(f"[data]:gear: Changes found in [/][{markup}]{brick}[/]")
+
+
+def print_detected_changes_in_bricks(
+    bases: List[str], components: List[str], short: bool
+) -> None:
+    sorted_bases = sorted(bases)
+    sorted_components = sorted(components)
+
+    if short:
+        print_detected_changes(sorted_components + sorted_bases, "data", short)
+    else:
+        print_detected_changes(sorted_components, "comp", short)
+        print_detected_changes(sorted_bases, "base", short)
+
+
+def print_detected_changes_in_projects(projects: List[str], short: bool) -> None:
+    print_detected_changes(projects, "proj", short)
+
+
+def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
+    sorted_projects = sorted(list(projects))
+
+    print_detected_changes(sorted_projects, "proj", short)
 
 
 def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:
@@ -46,30 +73,3 @@ def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> Non
 
     if bases:
         console.print(f"[base]Changed bases[/]: [data]{len(bases)}[/]")
-
-
-def _changed_projects(
-    projects_data: List[dict], brick_type: str, bricks: List[str]
-) -> set:
-    res = {
-        p["path"].name: set(p.get(brick_type, [])).intersection(bricks)
-        for p in projects_data
-    }
-
-    return {k for k, v in res.items() if v}
-
-
-def print_short_diff(
-    projects_data: List[dict],
-    projects: List[str],
-    bases: List[str],
-    components: List[str],
-) -> None:
-    a = _changed_projects(projects_data, "components", components)
-    b = _changed_projects(projects_data, "bases", bases)
-    c = set(projects)
-
-    res = {*a, *b, *c}
-
-    console = Console(theme=theme.poly_theme)
-    console.print(",".join(res))

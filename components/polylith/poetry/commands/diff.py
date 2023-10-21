@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List, Set
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
@@ -13,10 +14,58 @@ class DiffCommand(Command):
         option(
             long_name="short",
             short_name="s",
-            description="Print only changed projects",
+            description="Print short view",
+            flag=True,
+        ),
+        option(
+            long_name="bricks",
+            description="Print changed bricks",
             flag=True,
         ),
     ]
+
+    def has_partial_options(self) -> bool:
+        return any(self.option(k) for k in {"bricks"})
+
+    def print_partial_views(
+        self,
+        affected_projects: Set[str],
+        bases: List[str],
+        components: List[str],
+    ) -> None:
+        short = self.option("short")
+
+        if short and not self.has_partial_options():
+            diff.report.print_projects_affected_by_changes(affected_projects, short)
+
+            return
+
+        if self.option("bricks"):
+            diff.report.print_detected_changes_in_bricks(bases, components, short)
+
+    def print_views(self, root: Path, tag: str) -> None:
+        ns = workspace.parser.get_namespace_from_config(root)
+        files = diff.collect.get_files(tag)
+        bases = diff.collect.get_changed_bases(files, ns)
+        components = diff.collect.get_changed_components(files, ns)
+        projects = diff.collect.get_changed_projects(files)
+        all_projects_data = info.get_bricks_in_projects(root, components, bases, ns)
+        projects_data = [p for p in all_projects_data if info.is_project(p)]
+
+        affected_projects = diff.collect.get_projects_affected_by_changes(
+            projects_data, projects, bases, components
+        )
+
+        short = self.option("short")
+
+        if not short and not self.has_partial_options():
+            diff.report.print_diff_summary(tag, bases, components)
+            diff.report.print_detected_changes_in_projects(projects, short)
+            diff.report.print_diff_details(projects_data, bases, components)
+
+            return
+
+        self.print_partial_views(affected_projects, bases, components)
 
     def handle(self) -> int:
         root = repo.get_workspace_root(Path.cwd())
@@ -25,21 +74,6 @@ class DiffCommand(Command):
         if not tag:
             self.line("No tags found in repository.")
         else:
-            ns = workspace.parser.get_namespace_from_config(root)
-            files = diff.collect.get_files(tag)
-            bases = diff.collect.get_changed_bases(files, ns)
-            components = diff.collect.get_changed_components(files, ns)
-            projects = diff.collect.get_changed_projects(files)
-            all_projects_data = info.get_bricks_in_projects(root, components, bases, ns)
-            projects_data = [p for p in all_projects_data if info.is_project(p)]
-
-            short = self.option("short")
-
-            if short:
-                diff.report.print_short_diff(projects_data, projects, bases, components)
-            else:
-                diff.report.print_diff_summary(tag, bases, components)
-                diff.report.print_detected_changes_in_projects(projects)
-                diff.report.print_diff_details(projects_data, bases, components)
+            self.print_views(root, tag)
 
         return 0

@@ -1,6 +1,6 @@
 import subprocess
 from pathlib import Path
-from typing import List, Union
+from typing import List, Set, Union
 
 from polylith import repo, workspace
 
@@ -59,3 +59,25 @@ def get_files(tag: str) -> List[Path]:
     )
 
     return [Path(p) for p in res.stdout.decode("utf-8").split()]
+
+
+def _affected(projects_data: List[dict], brick_type: str, bricks: List[str]) -> set:
+    res = {
+        p["path"].name: set(p.get(brick_type, [])).intersection(bricks)
+        for p in projects_data
+    }
+
+    return {k for k, v in res.items() if v}
+
+
+def get_projects_affected_by_changes(
+    projects_data: List[dict],
+    projects: List[str],
+    bases: List[str],
+    components: List[str],
+) -> Set[str]:
+    a = _affected(projects_data, "components", components)
+    b = _affected(projects_data, "bases", bases)
+    c = set(projects)
+
+    return {*a, *b, *c}
