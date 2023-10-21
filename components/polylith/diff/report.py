@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 
 from polylith import info
 from polylith.reporting import theme
@@ -22,7 +22,7 @@ def print_diff_details(
     console.print(table, overflow="ellipsis")
 
 
-def _print_detected_changes(changes: List[str], markup: str, short: bool) -> None:
+def print_detected_changes(changes: List[str], markup: str, short: bool) -> None:
     if not changes:
         return
 
@@ -43,14 +43,18 @@ def print_detected_changes_in_bricks(
     sorted_components = sorted(components)
 
     if short:
-        _print_detected_changes(sorted_components + sorted_bases, "data", short)
+        print_detected_changes(sorted_components + sorted_bases, "data", short)
     else:
-        _print_detected_changes(sorted_components, "component", short)
-        _print_detected_changes(sorted_bases, "base", short)
+        print_detected_changes(sorted_components, "component", short)
+        print_detected_changes(sorted_bases, "base", short)
 
 
 def print_detected_changes_in_projects(projects: List[str], short: bool) -> None:
-    _print_detected_changes(projects, "proj", short)
+    print_detected_changes(projects, "proj", short)
+
+
+def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
+    print_detected_changes(list(projects), "proj", short)
 
 
 def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:
