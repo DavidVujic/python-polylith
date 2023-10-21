@@ -54,7 +54,9 @@ def print_detected_changes_in_projects(projects: List[str], short: bool) -> None
 
 
 def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
-    print_detected_changes(list(projects), "proj", short)
+    sorted_projects = sorted(list(projects))
+
+    print_detected_changes(sorted_projects, "proj", short)
 
 
 def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:
