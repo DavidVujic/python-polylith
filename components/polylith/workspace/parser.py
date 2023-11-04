@@ -1,5 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
+from typing import Union
 
 import tomlkit
 from polylith import repo
@@ -20,10 +21,17 @@ def get_namespace_from_config(path: Path) -> str:
     return toml["tool"]["polylith"]["namespace"]
 
 
-def get_git_tag_pattern_from_config(path: Path) -> str:
+def get_git_tag_pattern(toml: dict) -> str:
+    """Fallback git tag pattern configuration"""
+    return toml["tool"]["polylith"]["git_tag_pattern"]
+
+
+def get_tag_pattern_from_config(path: Path, key: Union[str, None]) -> str:
     toml: dict = _load_workspace_config(path)
 
-    return toml["tool"]["polylith"]["git_tag_pattern"]
+    patterns = toml["tool"]["polylith"].get("tag", {}).get("patterns")
+
+    return patterns[key or "stable"] if patterns else get_git_tag_pattern(toml)
 
 
 def is_test_generation_enabled(path: Path) -> bool:

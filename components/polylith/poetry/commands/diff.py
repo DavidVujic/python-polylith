@@ -22,6 +22,11 @@ class DiffCommand(Command):
             description="Print changed bricks",
             flag=True,
         ),
+        option(
+            long_name="since",
+            description="Changed since a specific tag",
+            flag=False,
+        ),
     ]
 
     def has_partial_options(self) -> bool:
@@ -69,7 +74,9 @@ class DiffCommand(Command):
 
     def handle(self) -> int:
         root = repo.get_workspace_root(Path.cwd())
-        tag = diff.collect.get_latest_tag(root)
+
+        tag_name = self.option("since")
+        tag = diff.collect.get_latest_tag(root, tag_name)
 
         if not tag:
             self.line("No tags found in repository.")
