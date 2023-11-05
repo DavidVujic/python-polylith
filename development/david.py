@@ -25,7 +25,7 @@ print(repo.projects_dir)
 root = Path.cwd()
 ns = workspace.parser.get_namespace_from_config(root)
 
-tag = diff.collect.get_latest_tag(root) or ""
+tag = diff.collect.get_latest_tag(root, "release") or ""
 
 changed_files = diff.collect.get_files(tag)
 changed_components = diff.collect.get_changed_components(changed_files, ns)

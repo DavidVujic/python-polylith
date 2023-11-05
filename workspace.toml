@@ -1,9 +1,12 @@
 [tool.polylith]
 namespace = "polylith"
-git_tag_pattern = "v*"
 
 [tool.polylith.structure]
 theme = "loose"
+
+[tool.polylith.tag.patterns]
+stable = "stable-*"
+release = "v[0-9]*"
 
 [tool.polylith.test]
 enabled = false

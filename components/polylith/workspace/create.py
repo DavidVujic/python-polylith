@@ -13,6 +13,10 @@ git_tag_pattern = "stable-*"
 [tool.polylith.structure]
 theme = "{theme}"
 
+[tool.polylith.tag.patterns]
+stable = "stable-*"
+release = "v[0-9]*"
+
 [tool.polylith.resources]
 brick_docs_enabled = false
 

@@ -41,8 +41,8 @@ def get_changed_projects(changed_files: List[Path]) -> list:
     return sorted(filtered)
 
 
-def get_latest_tag(root: Path) -> Union[str, None]:
-    tag_pattern = workspace.parser.get_git_tag_pattern_from_config(root)
+def get_latest_tag(root: Path, key: Union[str, None]) -> Union[str, None]:
+    tag_pattern = workspace.parser.get_tag_pattern_from_config(root, key)
 
     res = subprocess.run(
         ["git", "tag", "-l", "--sort=-committerdate", f"{tag_pattern}"],
