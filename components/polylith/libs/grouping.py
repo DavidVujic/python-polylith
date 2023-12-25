@@ -11,8 +11,16 @@ def get_python_version() -> str:
     return f"{sys.version_info.major}.{sys.version_info.minor}"
 
 
+def get_latest_standard_libs() -> Set[str]:
+    values = list(standard_libs.values())
+
+    return values[-1]
+
+
 def get_standard_libs(python_version: str) -> Set[str]:
-    return standard_libs.get(python_version, set())
+    libs = standard_libs.get(python_version)
+
+    return libs or get_latest_standard_libs()
 
 
 def exclude_libs(import_data: dict, to_exclude: Set) -> dict:
