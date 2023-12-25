@@ -248,8 +248,15 @@ def to_py310(stdlib: set) -> set:
 
 
 def to_py311(stdlib: set) -> set:
-    news = {"tomllib"}
+    news = {"tomllib", "_tkinter", "sitecustomize", "usercustomize"}
     removed = {"binhex"}
+
+    return union(stdlib, news, removed)
+
+
+def to_py312(stdlib: set) -> set:
+    news: set = set()
+    removed = {"asynchat", "asyncore", "distutils", "imp", "smtpd"}
 
     return union(stdlib, news, removed)
 
@@ -258,6 +265,7 @@ py38 = with_extras(stdlib_python_3_8)
 py39 = to_py39(py38)
 py310 = to_py310(py39)
 py311 = to_py311(py310)
+py312 = to_py312(py311)
 
 
-standard_libs = {"3.8": py38, "3.9": py39, "3.10": py310, "3.11": py311}
+standard_libs = {"3.8": py38, "3.9": py39, "3.10": py310, "3.11": py311, "3.12": py312}

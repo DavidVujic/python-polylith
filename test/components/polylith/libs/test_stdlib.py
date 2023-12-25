@@ -29,4 +29,23 @@ def test_stdlib_3_11():
     py311 = stdlib.standard_libs["3.11"]
 
     assert py310.difference(py311) == {"binhex"}
-    assert py311.difference(py310) == {"tomllib"}
+    assert py311.difference(py310) == {
+        "tomllib",
+        "_tkinter",
+        "sitecustomize",
+        "usercustomize",
+    }
+
+
+def test_stdlib_3_12():
+    py311 = stdlib.standard_libs["3.11"]
+    py312 = stdlib.standard_libs["3.12"]
+
+    assert py311.difference(py312) == {
+        "asynchat",
+        "asyncore",
+        "distutils",
+        "imp",
+        "smtpd",
+    }
+    assert py312.difference(py311) == set()

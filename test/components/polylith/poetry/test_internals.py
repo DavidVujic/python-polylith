@@ -40,8 +40,8 @@ def test_distribution_packages():
 
     res = internals.distributions_packages(dists)
 
-    expected_dist = "importlib-metadata"
-    expected_package = "importlib_metadata"
+    expected_dist = "mypy-extensions"
+    expected_package = "mypy_extensions"
 
     assert res.get(expected_dist) is not None
     assert res[expected_dist] == [expected_package]
