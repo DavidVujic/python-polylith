@@ -6,7 +6,7 @@ from polylith import repo
 from polylith.dirs import create_dir
 from polylith.repo import projects_dir
 
-template = """\
+poetry_template = """\
 [tool.poetry]
 name = "{name}"
 version = "0.1.0"
@@ -35,11 +35,8 @@ def get_workspace_toml(path: Path) -> dict:
 
 
 def create_project_toml(
-    name: str, template: str, workspace_toml: dict, description: str
+    name: str, template: str, authors: str, python_version: str, description: str
 ) -> tomlkit.TOMLDocument:
-    authors = workspace_toml["tool"]["poetry"]["authors"]
-    python_version = workspace_toml["tool"]["poetry"]["dependencies"]["python"]
-
     content = template.format(
         name=name,
         description=description,
@@ -56,8 +53,11 @@ def create_project(
     d = create_dir(path, f"{projects_dir}/{name}")
 
     workspace_toml = get_workspace_toml(path)
+    authors = workspace_toml["tool"]["poetry"]["authors"]
+    python_version = workspace_toml["tool"]["poetry"]["dependencies"]["python"]
+
     project_toml = create_project_toml(
-        name, template, workspace_toml, description or ""
+        name, poetry_template, authors, python_version, description or ""
     )
 
     fullpath = d / repo.default_toml
