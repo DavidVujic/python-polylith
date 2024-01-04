@@ -6,15 +6,8 @@ from polylith.dirs import create_dir
 from polylith.repo import projects_dir
 
 
-def create_project_toml(
-    name: str, template: str, authors: list, python_version: str, description: str
-) -> tomlkit.TOMLDocument:
-    content = template.format(
-        name=name,
-        description=description,
-        authors=authors,
-        python_version=python_version,
-    )
+def create_project_toml(template: str, template_data: dict) -> tomlkit.TOMLDocument:
+    content = template.format(**template_data)
 
     return tomlkit.loads(content)
 
@@ -26,7 +19,13 @@ def create_project(path: Path, template: str, name: str, description: str) -> No
     python_version = repo.get_python_version(path)
 
     project_toml = create_project_toml(
-        name, template, authors, python_version, description
+        template,
+        {
+            "name": name,
+            "description": description,
+            "authors": authors,
+            "python_version": python_version,
+        },
     )
 
     fullpath = d / repo.default_toml

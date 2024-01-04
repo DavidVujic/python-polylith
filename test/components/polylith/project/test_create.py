@@ -10,6 +10,13 @@ def test_create_project_toml():
 
     template = 'x = "{name}{description}{authors}{python_version}"'
 
-    res = create_project_toml(name, template, authors, python_version, description)
+    data = {
+        "name": name,
+        "description": description,
+        "authors": authors,
+        "python_version": python_version,
+    }
+
+    res = create_project_toml(template, data)
 
     assert tomlkit.dumps(res) == f'x = "{name}{description}{authors}{python_version}"'
