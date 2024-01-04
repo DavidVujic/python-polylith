@@ -6,11 +6,9 @@ from polylith.repo.repo import default_toml
 
 
 @lru_cache
-def get_pyproject_data(path: Path) -> dict:
+def get_pyproject_data(path: Path) -> tomlkit.TOMLDocument:
     with open(str(path / default_toml), "r", errors="ignore") as f:
-        data: dict = tomlkit.loads(f.read())
-
-    return data
+        return tomlkit.loads(f.read())
 
 
 def is_pep_621_compliant(data: dict) -> bool:
@@ -29,7 +27,7 @@ def get_authors(path: Path) -> list:
 
 
 def get_python_version(path: Path) -> str:
-    data = get_pyproject_data(path)
+    data: dict = get_pyproject_data(path)
 
     if is_pep_621_compliant(data):
         return data["project"]["requires-python"]
