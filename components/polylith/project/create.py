@@ -6,36 +6,9 @@ from polylith import repo
 from polylith.dirs import create_dir
 from polylith.repo import projects_dir
 
-poetry_template = """\
-[tool.poetry]
-name = "{name}"
-version = "0.1.0"
-description = "{description}"
-authors = {authors}
-license = ""
-
-packages = []
-
-[tool.poetry.dependencies]
-python = "{python_version}"
-
-[tool.poetry.group.dev.dependencies]
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-"""
-
-
-def get_workspace_toml(path: Path) -> dict:
-    with open(str(path / repo.default_toml), "r", errors="ignore") as f:
-        data: dict = tomlkit.loads(f.read())
-
-    return data
-
 
 def create_project_toml(
-    name: str, template: str, authors: str, python_version: str, description: str
+    name: str, template: str, authors: list, python_version: str, description: str
 ) -> tomlkit.TOMLDocument:
     content = template.format(
         name=name,
@@ -48,16 +21,15 @@ def create_project_toml(
 
 
 def create_project(
-    path: Path, _namespace: str, name: str, description: Union[str, None]
+    template: str, path: Path, _namespace: str, name: str, description: Union[str, None]
 ) -> None:
     d = create_dir(path, f"{projects_dir}/{name}")
 
-    workspace_toml = get_workspace_toml(path)
-    authors = workspace_toml["tool"]["poetry"]["authors"]
-    python_version = workspace_toml["tool"]["poetry"]["dependencies"]["python"]
+    authors = repo.get_authors(path)
+    python_version = repo.get_python_version(path)
 
     project_toml = create_project_toml(
-        name, poetry_template, authors, python_version, description or ""
+        name, template, authors, python_version, description or ""
     )
 
     fullpath = d / repo.default_toml

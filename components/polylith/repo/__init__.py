@@ -8,6 +8,7 @@ from polylith.repo.repo import (
     readme_file,
     workspace_file,
 )
+from polylith.repo.toml import get_authors, get_python_version
 
 __all__ = [
     "bases_dir",
@@ -18,4 +19,6 @@ __all__ = [
     "projects_dir",
     "readme_file",
     "workspace_file",
+    "get_authors",
+    "get_python_version",
 ]
