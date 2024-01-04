@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 import tomlkit
 from polylith import repo
@@ -20,16 +19,14 @@ def create_project_toml(
     return tomlkit.loads(content)
 
 
-def create_project(
-    template: str, path: Path, _namespace: str, name: str, description: Union[str, None]
-) -> None:
+def create_project(path: Path, template: str, name: str, description: str) -> None:
     d = create_dir(path, f"{projects_dir}/{name}")
 
     authors = repo.get_authors(path)
     python_version = repo.get_python_version(path)
 
     project_toml = create_project_toml(
-        name, template, authors, python_version, description or ""
+        name, template, authors, python_version, description
     )
 
     fullpath = d / repo.default_toml

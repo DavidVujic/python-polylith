@@ -1,7 +1,7 @@
-from polylith import repo
-import tomlkit
 from pathlib import Path
 
+import tomlkit
+from polylith import repo
 
 poetry_toml = """\
 [tool.poetry]

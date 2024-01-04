@@ -1,4 +1,5 @@
-from functools import partial
+from pathlib import Path
+from typing import Union
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
@@ -29,6 +30,10 @@ build-backend = "poetry.core.masonry.api"
 """
 
 
+def create_project(root: Path, _ns: str, name: str, description: Union[str, None]):
+    project.create_project(root, pyproject_template, name, description or "")
+
+
 class CreateProjectCommand(Command):
     name = command_name
     description = "Creates a <comment>Polylith</> project."
@@ -45,8 +50,6 @@ class CreateProjectCommand(Command):
     ]
 
     def handle(self) -> int:
-        fn = partial(project.create_project, pyproject_template)
-
-        create(self, fn)
+        create(self, create_project)
 
         return 0
