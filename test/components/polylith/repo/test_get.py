@@ -40,11 +40,6 @@ build-backend = "hatchling.build"
 path = Path.cwd()
 
 
-def test_is_pep_621_compliant():
-    assert repo.get.is_pep_621_compliant({"tool": {"poetry": {}}}) is False
-    assert repo.get.is_pep_621_compliant({"project": {"hello": "world"}}) is True
-
-
 def test_get_metadata_section():
     expected = {"hello": "world"}
 

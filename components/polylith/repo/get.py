@@ -2,17 +2,13 @@ from functools import lru_cache
 from pathlib import Path
 
 import tomlkit
-from polylith.repo.repo import default_toml
+from polylith.repo.repo import default_toml, is_pep_621_compliant
 
 
 @lru_cache
 def get_pyproject_data(path: Path) -> tomlkit.TOMLDocument:
     with open(str(path / default_toml), "r", errors="ignore") as f:
         return tomlkit.loads(f.read())
-
-
-def is_pep_621_compliant(data: dict) -> bool:
-    return data.get("project") is not None
 
 
 def get_metadata_section(data: dict) -> dict:
