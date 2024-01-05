@@ -57,5 +57,8 @@ def get_workspace_root(cwd: Path) -> Path:
     return root
 
 
-def is_pep_621_compliant(pyproject: dict) -> bool:
-    return pyproject.get("project") is not None
+def is_pep_621_ready(pyproject: dict) -> bool:
+    if pyproject.get("tool", {}).get("poetry") is not None:
+        return False
+
+    return pyproject.get("project", {}).get("name") is not None

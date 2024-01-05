@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List
 
 import tomlkit
-from polylith.repo import default_toml
+from polylith.repo import default_toml, is_pep_621_ready
 
 
 def get_project_package_includes(data) -> List[dict]:
@@ -10,6 +10,9 @@ def get_project_package_includes(data) -> List[dict]:
 
 
 def get_project_name(data) -> str:
+    if is_pep_621_ready(data):
+        return data["project"]["name"]
+
     return data["tool"]["poetry"]["name"]
 
 

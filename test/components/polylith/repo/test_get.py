@@ -41,7 +41,7 @@ path = Path.cwd()
 
 
 def test_get_metadata_section():
-    expected = {"hello": "world"}
+    expected = {"name": "hello world"}
 
     assert repo.get.get_metadata_section({"project": expected}) == expected
     assert repo.get.get_metadata_section({"tool": {"poetry": expected}}) == expected

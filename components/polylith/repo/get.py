@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import tomlkit
-from polylith.repo.repo import default_toml, is_pep_621_compliant
+from polylith.repo.repo import default_toml, is_pep_621_ready
 
 
 @lru_cache
@@ -12,7 +12,7 @@ def get_pyproject_data(path: Path) -> tomlkit.TOMLDocument:
 
 
 def get_metadata_section(data: dict) -> dict:
-    return data["project"] if is_pep_621_compliant(data) else data["tool"]["poetry"]
+    return data["project"] if is_pep_621_ready(data) else data["tool"]["poetry"]
 
 
 def get_authors(path: Path) -> list:
@@ -25,7 +25,7 @@ def get_authors(path: Path) -> list:
 def get_python_version(path: Path) -> str:
     data: dict = get_pyproject_data(path)
 
-    if is_pep_621_compliant(data):
-        return data["project"]["requires-python"]
+    if is_pep_621_ready(data):
+        return data["project"].get("requires-python", "")
 
     return data["tool"]["poetry"]["dependencies"]["python"]
