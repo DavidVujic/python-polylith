@@ -6,7 +6,7 @@ from polylith import repo, workspace
 
 
 def transform_to_package(namespace: str, include: str) -> dict:
-    path, ns, brick = str.partition(include, f"/{namespace}/")
+    path, _separator, brick = str.partition(include, f"/{namespace}/")
 
     return {"include": f"{namespace}/{brick}", "from": path}
 
