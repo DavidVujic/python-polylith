@@ -2,15 +2,25 @@ from pathlib import Path
 from typing import List
 
 import tomlkit
-from polylith.repo import default_toml, is_pep_621_ready
+from polylith import repo, workspace
 
 
-def get_project_package_includes(data) -> List[dict]:
+def transform_to_package(namespace: str, include: str) -> dict:
+    path, ns, brick = str.partition(include, f"/{namespace}/")
+
+    return {"include": f"{namespace}/{brick}", "from": path}
+
+
+def get_project_package_includes(namespace: str, data) -> List[dict]:
+    if repo.is_pep_621_ready(data):
+        includes = data["project"].get("includes", [])
+        return [transform_to_package(namespace, include) for include in includes]
+
     return data["tool"]["poetry"].get("packages", [])
 
 
 def get_project_name(data) -> str:
-    if is_pep_621_ready(data):
+    if repo.is_pep_621_ready(data):
         return data["project"]["name"]
 
     return data["tool"]["poetry"]["name"]
@@ -22,8 +32,8 @@ def get_toml(path: Path) -> tomlkit.TOMLDocument:
 
 
 def get_project_files(root: Path) -> dict:
-    projects = sorted(root.glob(f"projects/**/{default_toml}"))
-    development = Path(root / default_toml)
+    projects = sorted(root.glob(f"projects/**/{repo.default_toml}"))
+    development = Path(root / repo.default_toml)
 
     proj = {"projects": projects}
     dev = {"development": [development]}
@@ -46,11 +56,12 @@ def get_toml_files(root: Path) -> List[dict]:
 
 def get_packages_for_projects(root: Path) -> List[dict]:
     tomls = get_toml_files(root)
+    namespace = workspace.parser.get_namespace_from_config(root)
 
     return [
         {
             "name": get_project_name(d["toml"]),
-            "packages": get_project_package_includes(d["toml"]),
+            "packages": get_project_package_includes(namespace, d["toml"]),
             "path": d["path"],
             "type": d["type"],
         }
