@@ -58,13 +58,14 @@ def test_bricks_to_pyproject_packages():
     assert res == expected
 
 
-def test_generate_updated_project():
-    expected = [
-        {"include": "hello/first", "from": "bases"},
-        {"include": "hello/second", "from": "bases"},
-        {"include": "hello/third", "from": "components"},
-    ]
+packages = [
+    {"include": "hello/first", "from": "bases"},
+    {"include": "hello/second", "from": "components"},
+    {"include": "hello/third", "from": "components"},
+]
 
+
+def test_generate_updated_project():
     data = tomlkit.parse(
         """\
 [tool.poetry]
@@ -72,8 +73,30 @@ packages = [{include = "hello/first", from = "bases"}]
 """
     )
 
-    updated = update.generate_updated_project(data, expected[1:])
+    updated = update.generate_updated_project(data, packages[1:])
 
     res = tomlkit.parse(updated)["tool"]["poetry"]["packages"]
+
+    assert res == packages
+
+
+def test_generate_updated_pep_621_ready_project():
+    expected = [
+        "bases/hello/first",
+        "components/hello/second",
+        "components/hello/third",
+    ]
+
+    data = tomlkit.parse(
+        """\
+[project]
+name = "unit test"
+includes = ["bases/hello/first"]
+"""
+    )
+
+    updated = update.generate_updated_project(data, packages[1:])
+
+    res = tomlkit.parse(updated)["project"]["includes"]
 
     assert res == expected
