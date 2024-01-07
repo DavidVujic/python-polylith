@@ -12,9 +12,35 @@ def to_package(namespace: str, brick: str, brick_path: str, theme: str) -> dict:
     return {"include": f"{namespace}/{brick}", "from": folder}
 
 
-def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> str:
+def copy_toml_data(data: TOMLDocument) -> dict:
     original = tomlkit.dumps(data)
     copy: dict = tomlkit.parse(original)
+
+    return copy
+
+
+def generate_updated_pep_621_ready_project(
+    data: TOMLDocument, packages: List[dict]
+) -> str:
+    copy = copy_toml_data(data)
+
+    if copy["project"].get("includes") is None:
+        copy["project"].add("includes", [])
+
+    for package in packages:
+        brick = package["include"]
+        relative_path = package.get("from", "")
+        include = Path(relative_path, brick).as_posix()
+
+        copy["project"]["includes"].append(include)
+
+    copy["project"]["includes"].multiline(True)
+
+    return tomlkit.dumps(copy)
+
+
+def generate_updated_poetry_project(data: TOMLDocument, packages: List[dict]) -> str:
+    copy = copy_toml_data(data)
 
     if copy["tool"]["poetry"].get("packages") is None:
         copy["tool"]["poetry"].add("packages", [])
@@ -25,6 +51,13 @@ def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> str:
     copy["tool"]["poetry"]["packages"].multiline(True)
 
     return tomlkit.dumps(copy)
+
+
+def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> str:
+    if repo.is_pep_621_ready(data):
+        return generate_updated_pep_621_ready_project(data, packages)
+
+    return generate_updated_poetry_project(data, packages)
 
 
 def to_packages(root: Path, namespace: str, diff: dict) -> List[dict]:

@@ -9,4 +9,4 @@ stable = "stable-*"
 release = "v[0-9]*"
 
 [tool.polylith.test]
-enabled = false
+enabled = true
