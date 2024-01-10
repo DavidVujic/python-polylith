@@ -64,8 +64,14 @@ packages = [
     {"include": "hello/third", "from": "components"},
 ]
 
+expected_hatch_packages = {
+    "bases/hello/first": "hello/first",
+    "components/hello/second": "hello/second",
+    "components/hello/third": "hello/third",
+}
 
-def test_generate_updated_project():
+
+def test_generate_updated_poetry_project():
     data = tomlkit.parse(
         """\
 [tool.poetry]
@@ -80,23 +86,46 @@ packages = [{include = "hello/first", from = "bases"}]
     assert res == packages
 
 
-def test_generate_updated_pep_621_ready_project():
-    expected = [
-        "bases/hello/first",
-        "components/hello/second",
-        "components/hello/third",
-    ]
-
+def test_generate_updated_hatch_project():
     data = tomlkit.parse(
         """\
-[project]
-name = "unit test"
-includes = ["bases/hello/first"]
+[tool.hatch.build.force-include]
+"bases/hello/first" = "hello/first"
 """
     )
 
     updated = update.generate_updated_project(data, packages[1:])
 
-    res = tomlkit.parse(updated)["project"]["includes"]
+    res = tomlkit.parse(updated)["tool"]["hatch"]["build"]["force-include"]
 
-    assert res == expected
+    assert res == expected_hatch_packages
+
+
+def test_generate_updated_hatch_project_with_missing_build_config():
+    data = tomlkit.parse(
+        """\
+[tool.hatch]
+hello = "world"
+"""
+    )
+
+    updated = update.generate_updated_project(data, packages)
+
+    res = tomlkit.parse(updated)["tool"]["hatch"]["build"]["force-include"]
+
+    assert res == expected_hatch_packages
+
+
+def test_generate_updated_hatch_project_with_missing_force_include_config():
+    data = tomlkit.parse(
+        """\
+[tool.hatch.build]
+hello = "world"
+"""
+    )
+
+    updated = update.generate_updated_project(data, packages)
+
+    res = tomlkit.parse(updated)["tool"]["hatch"]["build"]["force-include"]
+
+    assert res == expected_hatch_packages

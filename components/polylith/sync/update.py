@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 import tomlkit
 from polylith import project, repo, workspace
@@ -19,22 +19,23 @@ def copy_toml_data(data: TOMLDocument) -> dict:
     return copy
 
 
-def generate_updated_pep_621_ready_project(
+def generate_updated_hatch_project(
     data: TOMLDocument, packages: List[dict]
 ) -> str:
     copy = copy_toml_data(data)
 
-    if copy["project"].get("includes") is None:
-        copy["project"].add("includes", [])
+    if copy["tool"]["hatch"].get("build") is None:
+        copy["tool"]["hatch"].add("build", {"force-include": {}})
+
+    if copy["tool"]["hatch"]["build"].get("force-include") is None:
+        copy["tool"]["hatch"]["build"]["force-include"] = {}
 
     for package in packages:
         brick = package["include"]
         relative_path = package.get("from", "")
         include = Path(relative_path, brick).as_posix()
 
-        copy["project"]["includes"].append(include)
-
-    copy["project"]["includes"].multiline(True)
+        copy["tool"]["hatch"]["build"]["force-include"][include] = brick
 
     return tomlkit.dumps(copy)
 
@@ -53,11 +54,14 @@ def generate_updated_poetry_project(data: TOMLDocument, packages: List[dict]) ->
     return tomlkit.dumps(copy)
 
 
-def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> str:
-    if repo.is_pep_621_ready(data):
-        return generate_updated_pep_621_ready_project(data, packages)
+def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> Union[str, None]:
+    if repo.is_poetry(data):
+        return generate_updated_poetry_project(data, packages)
 
-    return generate_updated_poetry_project(data, packages)
+    if repo.is_hatch(data):
+        return generate_updated_hatch_project(data, packages)
+
+    return None
 
 
 def to_packages(root: Path, namespace: str, diff: dict) -> List[dict]:
@@ -79,6 +83,9 @@ def rewrite_project_file(path: Path, packages: List[dict]):
     project_toml = project.get_toml(fullpath)
 
     generated = generate_updated_project(project_toml, packages)
+
+    if not generated:
+        return
 
     with fullpath.open("w", encoding="utf-8") as f:
         f.write(generated)
