@@ -12,11 +12,15 @@ def transform_to_package(namespace: str, include: str) -> dict:
 
 
 def get_project_package_includes(namespace: str, data) -> List[dict]:
-    if repo.is_pep_621_ready(data):
-        includes = data["project"].get("includes", [])
-        return [transform_to_package(namespace, include) for include in includes]
+    if repo.is_poetry(data):
+        return data["tool"]["poetry"].get("packages", [])
 
-    return data["tool"]["poetry"].get("packages", [])
+    if repo.is_hatch(data):
+        includes = data["tool"]["hatch"].get("build", {}).get("force-include", {})
+
+        return [transform_to_package(namespace, key) for key in includes.keys()]
+
+    return []
 
 
 def get_project_name(data) -> str:

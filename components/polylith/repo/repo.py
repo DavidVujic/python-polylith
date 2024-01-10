@@ -57,8 +57,16 @@ def get_workspace_root(cwd: Path) -> Path:
     return root
 
 
+def is_poetry(pyproject: dict) -> bool:
+    return pyproject.get("tool", {}).get("poetry") is not None
+
+
+def is_hatch(pyproject: dict) -> bool:
+    return pyproject.get("tool", {}).get("hatch") is not None
+
+
 def is_pep_621_ready(pyproject: dict) -> bool:
-    if pyproject.get("tool", {}).get("poetry") is not None:
+    if is_poetry(pyproject):
         return False
 
     return pyproject.get("project", {}).get("name") is not None
