@@ -35,6 +35,7 @@ python = "^3.8"
 poetry = "^1.2"
 tomlkit = "^0.11.5"
 rich = "^13.6.0"
+typer = {extras = ["all"], version = "^0.9.0"}
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"
