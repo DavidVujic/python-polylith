@@ -1,16 +1,14 @@
 from pathlib import Path
-
+from typing import Union
 from polylith import repo, workspace
 
 
-def create(command, fn):
+def create(name: Union[str, None], description: Union[str, None], fn):
     root = repo.get_workspace_root(Path.cwd())
-    name = command.option("name")
-    description = command.option("description")
     namespace = workspace.parser.get_namespace_from_config(root)
 
     if not name:
-        raise ValueError("Please add a name by using --name or -n")
+        raise ValueError("Please add a name by using --name")
 
     if not namespace:
         raise ValueError(
