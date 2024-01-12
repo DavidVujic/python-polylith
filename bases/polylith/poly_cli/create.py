@@ -14,7 +14,7 @@ app = Typer()
 @app.command("base")
 def base_command(
     name: Annotated[str, Option(help="Name of the base.")],
-    description: Annotated[str, Option(help="Description of the base.")] = None,
+    description: Annotated[str, Option(help="Description of the base.")] = "",
 ):
     """Creates a Polylith base."""
     create(name, description, base.create_base)
@@ -23,7 +23,7 @@ def base_command(
 @app.command("component")
 def component_command(
     name: Annotated[str, Option(help="Name of the component.")],
-    description: Annotated[str, Option(help="Description of the component.")] = None,
+    description: Annotated[str, Option(help="Description of the component.")] = "",
 ):
     """Creates a Polylith component."""
     create(name, description, component.create_component)
@@ -50,7 +50,7 @@ def _create_project(root: Path, _ns: str, name: str, description: Union[str, Non
 @app.command("project")
 def project_command(
     name: Annotated[str, Option(help="Name of the project.")],
-    description: Annotated[str, Option(help="Description of the project.")] = None,
+    description: Annotated[str, Option(help="Description of the project.")] = "",
 ):
     """Creates a Polylith project."""
     create(name, description, _create_project)

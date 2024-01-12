@@ -2,7 +2,7 @@ from pathlib import Path
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith import alias, check, info, project, repo, workspace
+from polylith import alias, check, distributions, info, project, repo, workspace
 from polylith.poetry import internals
 
 command_options = [
@@ -39,7 +39,8 @@ class CheckCommand(Command):
             third_party_libs = internals.find_third_party_libs(self.poetry, path)
 
             dists = internals.distributions(self.poetry, path)
-            known_aliases = internals.distributions_packages(dists)
+
+            known_aliases = distributions.distributions_packages(dists)
             known_aliases.update(alias.parse(self.option("alias")))
 
             extra = alias.pick(known_aliases, third_party_libs)

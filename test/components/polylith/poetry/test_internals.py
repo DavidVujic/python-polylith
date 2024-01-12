@@ -30,18 +30,3 @@ def test_distributions():
     res = internals.distributions(dev_poetry, path)
 
     assert res is not None and len(list(res))
-
-
-def test_distribution_packages():
-    path = Path.cwd()
-
-    dev_poetry = Factory().create_poetry(path)
-    dists = internals.distributions(dev_poetry, path)
-
-    res = internals.distributions_packages(dists)
-
-    expected_dist = "mypy-extensions"
-    expected_package = "mypy_extensions"
-
-    assert res.get(expected_dist) is not None
-    assert res[expected_dist] == [expected_package]
