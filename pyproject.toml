@@ -36,6 +36,7 @@ poetry = "^1.2"
 tomlkit = "^0.11.5"
 rich = "^13.6.0"
 typer = {extras = ["all"], version = "^0.9.0"}
+cleo = "^2.1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.12.1"

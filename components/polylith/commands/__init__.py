@@ -1,3 +1,3 @@
-from polylith.commands import create, diff, info
+from polylith.commands import check, create, diff, info
 
-__all__ = ["create", "diff", "info"]
+__all__ = ["check", "create", "diff", "info"]

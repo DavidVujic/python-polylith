@@ -39,7 +39,7 @@ def get_bricks_in_projects(
 
     res = [
         {
-            **{"name": p["name"], "path": p["path"], "type": p["type"]},
+            **{k: v for k, v in p.items() if k not in {"packages"}},
             **get_project_bricks(p["packages"], components, bases, namespace),
         }
         for p in packages_for_projects

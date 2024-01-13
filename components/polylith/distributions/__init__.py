@@ -1,3 +1,3 @@
-from polylith.distributions.core import distributions_packages
+from polylith.distributions.core import distributions_packages, get_distributions
 
-__all__ = ["distributions_packages"]
+__all__ = ["distributions_packages", "get_distributions"]

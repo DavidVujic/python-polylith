@@ -1,3 +1,4 @@
+import importlib.metadata
 from functools import reduce
 from typing import Dict, List
 
@@ -22,3 +23,9 @@ def map_packages(acc, dist) -> dict:
 def distributions_packages(dists) -> Dict[str, List[str]]:
     """Return a mapping of top-level packages to their distributions."""
     return reduce(map_packages, dists, {})
+
+
+def get_distributions(project_dependencies: set) -> list:
+    dists = importlib.metadata.distributions()
+
+    return [dist for dist in dists if dist.metadata["name"] in project_dependencies]
