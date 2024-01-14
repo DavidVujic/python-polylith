@@ -1,9 +1,10 @@
 from pathlib import Path
-from typing import Iterable, Set, Union
+from typing import Iterable, List, Set, Union
 
 from poetry.factory import Factory
 from poetry.poetry import Poetry
 from poetry.utils.env import EnvManager
+from polylith import project
 
 
 def get_project_poetry(poetry: Poetry, path: Union[Path, None]) -> Poetry:
@@ -27,3 +28,19 @@ def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
     packages = project_poetry.locker.locked_repository().packages
 
     return {p.name for p in packages}
+
+
+def filter_projects_data(
+    poetry: Poetry, directory: Union[str, None], projects_data: List[dict]
+) -> List[dict]:
+    if not directory:
+        return projects_data
+
+    project_name = project.get_project_name(poetry.pyproject.data)
+
+    data = next((p for p in projects_data if p["name"] == project_name), None)
+
+    if not data:
+        raise ValueError(f"Didn't find project in {directory}")
+
+    return [data]

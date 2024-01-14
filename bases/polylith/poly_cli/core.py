@@ -85,5 +85,31 @@ def libs_command(
         raise Exit(code=1)
 
 
+@app.command("sync")
+def sync_command(
+    strict: Annotated[bool, options.strict] = False,
+    quiet: Annotated[bool, options.quiet] = False,
+    directory: Annotated[str, options.directory] = "",
+    verbose: Annotated[str, options.verbose] = "",
+):
+    """Update pyproject.toml with missing bricks."""
+    root = repo.get_workspace_root(Path.cwd())
+    ns = workspace.parser.get_namespace_from_config(root)
+
+    projects_data = info.get_projects_data(root, ns)
+
+    cli_options = {
+        "strict": strict,
+        "quiet": quiet,
+        "verbose": verbose,
+    }
+
+    dir_path = Path(directory).as_posix() if directory else Path.cwd().name
+    projects_data = [p for p in projects_data if dir_path in p["path"].as_posix()]
+
+    for p in projects_data:
+        commands.sync.run(root, ns, p, cli_options)
+
+
 if __name__ == "__main__":
     app()

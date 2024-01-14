@@ -2,7 +2,7 @@ from pathlib import Path
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith import commands, info, project, repo, workspace
+from polylith import commands, info, repo, workspace
 from polylith.poetry import internals
 
 command_options = [
@@ -47,22 +47,16 @@ class CheckCommand(Command):
             return False
 
     def handle(self) -> int:
-        specific_directory = self.option("directory")
+        directory = self.option("directory")
         root = repo.get_workspace_root(Path.cwd())
         ns = workspace.parser.get_namespace_from_config(root)
 
         all_projects_data = info.get_projects_data(root, ns)
-        projects_data = [p for p in all_projects_data if info.is_project(p)]
+        only_projects_data = [p for p in all_projects_data if info.is_project(p)]
 
-        if specific_directory:
-            project_name = project.get_project_name(self.poetry.pyproject.data)
-            data = next((p for p in projects_data if p["name"] == project_name), None)
-
-            if not data:
-                raise ValueError(f"Didn't find project in {specific_directory}")
-
-            res = self.print_report(root, ns, data)
-            return 0 if res else 1
+        projects_data = internals.filter_projects_data(
+            self.poetry, directory, only_projects_data
+        )
 
         results = {self.print_report(root, ns, data) for data in projects_data}
 
