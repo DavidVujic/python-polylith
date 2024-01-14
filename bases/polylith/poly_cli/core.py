@@ -88,5 +88,48 @@ def diff_command(
     commands.diff.run(since, short, bricks)
 
 
+@app.command("libs")
+def libs_command(
+    strict: Annotated[
+        bool,
+        Option(
+            help="More strict checks when matching name of third-party libraries and imports"
+        ),
+    ] = False,
+    directory: Annotated[
+        str,
+        Option(
+            help="The working directory for the command (defaults to the current working directory)."
+        ),
+    ] = "",
+    alias: Annotated[
+        str,
+        Option(
+            help="alias for third-party libraries, useful when an import differ from the library name"
+        ),
+    ] = "",
+):
+    """Show third-party libraries used in the workspace."""
+
+    root = repo.get_workspace_root(Path.cwd())
+    ns = workspace.parser.get_namespace_from_config(root)
+
+    projects_data = info.get_projects_data(root, ns)
+
+    options = {
+        "strict": strict,
+        "alias": str.split(alias, ",") if alias else [],
+    }
+
+    dir_path = Path(directory).as_posix() if directory else Path.cwd().name
+
+    projects_data = [p for p in projects_data if dir_path in p["path"].as_posix()]
+
+    results = {commands.libs.run(root, ns, p, options) for p in projects_data}
+
+    if not all(results):
+        raise Exit(code=1)
+
+
 if __name__ == "__main__":
     app()
