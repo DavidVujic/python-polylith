@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from polylith import commands, info, repo, workspace
-from polylith.poly_cli import create
+from polylith.poly_cli import create, options
 from typer import Exit, Option, Typer
 from typing_extensions import Annotated
 
@@ -15,53 +15,27 @@ app.add_typer(
 
 
 @app.command("info")
-def info_command(
-    short: Annotated[
-        bool, Option(help="Display Workspace Info adjusted for many projects.")
-    ] = False
-):
+def info_command(short: Annotated[bool, options.short_workspace] = False):
     """Info about the Polylith workspace."""
     commands.info.run(short)
 
 
 @app.command("check")
 def check_command(
-    strict: Annotated[
-        bool,
-        Option(
-            help="More strict checks when matching name of third-party libraries and imports"
-        ),
-    ] = False,
-    verbose: Annotated[
-        bool,
-        Option(help="More verbose output."),
-    ] = False,
-    quiet: Annotated[
-        bool,
-        Option(help="Do not output any messages."),
-    ] = False,
-    directory: Annotated[
-        str,
-        Option(
-            help="The working directory for the command (defaults to the current working directory)."
-        ),
-    ] = "",
-    alias: Annotated[
-        str,
-        Option(
-            help="alias for third-party libraries, useful when an import differ from the library name"
-        ),
-    ] = "",
+    strict: Annotated[bool, options.strict] = False,
+    verbose: Annotated[bool, options.verbose] = False,
+    quiet: Annotated[bool, options.quiet] = False,
+    directory: Annotated[str, options.directory] = "",
+    alias: Annotated[str, options.alias] = "",
 ):
     """Validates the Polylith workspace."""
-
     root = repo.get_workspace_root(Path.cwd())
     ns = workspace.parser.get_namespace_from_config(root)
 
     all_projects_data = info.get_projects_data(root, ns)
     only_projects_data = [p for p in all_projects_data if info.is_project(p)]
 
-    options = {
+    cli_options = {
         "verbose": verbose,
         "quiet": quiet,
         "strict": strict,
@@ -69,10 +43,8 @@ def check_command(
     }
 
     dir_path = Path(directory).as_posix() if directory else Path.cwd().name
-
     projects_data = [p for p in only_projects_data if dir_path in p["path"].as_posix()]
-
-    results = {commands.check.run(root, ns, p, options) for p in projects_data}
+    results = {commands.check.run(root, ns, p, cli_options) for p in projects_data}
 
     if not all(results):
         raise Exit(code=1)
@@ -81,7 +53,7 @@ def check_command(
 @app.command("diff")
 def diff_command(
     since: Annotated[str, Option(help="Changed since a specific tag.")] = "",
-    short: Annotated[bool, Option(help="Print short view.")] = False,
+    short: Annotated[bool, options.short] = False,
     bricks: Annotated[bool, Option(help="Print changed bricks.")] = False,
 ):
     """Shows changed bricks compared to the latest git tag."""
@@ -90,42 +62,24 @@ def diff_command(
 
 @app.command("libs")
 def libs_command(
-    strict: Annotated[
-        bool,
-        Option(
-            help="More strict checks when matching name of third-party libraries and imports"
-        ),
-    ] = False,
-    directory: Annotated[
-        str,
-        Option(
-            help="The working directory for the command (defaults to the current working directory)."
-        ),
-    ] = "",
-    alias: Annotated[
-        str,
-        Option(
-            help="alias for third-party libraries, useful when an import differ from the library name"
-        ),
-    ] = "",
+    strict: Annotated[bool, options.strict] = False,
+    directory: Annotated[str, options.directory] = "",
+    alias: Annotated[str, options.alias] = "",
 ):
     """Show third-party libraries used in the workspace."""
-
     root = repo.get_workspace_root(Path.cwd())
     ns = workspace.parser.get_namespace_from_config(root)
 
     projects_data = info.get_projects_data(root, ns)
 
-    options = {
+    cli_options = {
         "strict": strict,
         "alias": str.split(alias, ",") if alias else [],
     }
 
     dir_path = Path(directory).as_posix() if directory else Path.cwd().name
-
     projects_data = [p for p in projects_data if dir_path in p["path"].as_posix()]
-
-    results = {commands.libs.run(root, ns, p, options) for p in projects_data}
+    results = {commands.libs.run(root, ns, p, cli_options) for p in projects_data}
 
     if not all(results):
         raise Exit(code=1)
