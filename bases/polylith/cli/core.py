@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from polylith import commands, info, repo, workspace
-from polylith.poly_cli import create, options
+from polylith.cli import create, options
 from typer import Exit, Option, Typer
 from typing_extensions import Annotated
 

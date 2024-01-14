@@ -8,6 +8,7 @@ repository = "https://github.com/davidvujic/python-polylith"
 readme = "README.md"
 packages = [
     {include = "polylith/poetry_plugin",from = "bases"},
+    {include = "polylith/cli",from = "bases"},
     {include = "polylith/poly_cli",from = "bases"},
     {include = "polylith/alias",from = "components"},
     {include = "polylith/bricks",from = "components"},
