@@ -26,12 +26,10 @@ You will find installation, setup, usage guides and more.
 ## Polylith for Python? :snake:
 This repo contains a Poetry plugin and a CLI that enables support for Hatch.
 Both can be installed from PyPI:
-* [The Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
-* The CLI (coming soon)
+* [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
+* a CLI (coming soon)
 
 The Poetry plugin will add Polylith specific tooling support to Poetry.
-Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polylith_plugin/README.md) with details about the Poetry plugin.
-
 The CLI will add tooling support for Polylith, enabling more Package & Dependency Management tools (such as Hatch).
 
 ### Use cases
@@ -46,7 +44,7 @@ More details about how to package libraries in the docs about [Packaging & deplo
 ## :sparkles: Examples :sparkles:
 Have a look at the [Python Polylith Examples](https://github.com/DavidVujic/python-polylith-example) repository.
 
-Also, there is a [Python Polylith Examples with Hatch](https://github.com/DavidVujic/python-polylith-example-hatch) repository.
+There is also a [Python Polylith Examples with Hatch](https://github.com/DavidVujic/python-polylith-example-hatch) repository.
 
 The repositories are example __Python__ setups of the Polylith Architecture.
 You will find examples of sharing code between different kind of projects, and developer tooling setup such as `mypy` and the `venv`.
