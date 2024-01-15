@@ -27,10 +27,10 @@ You will find installation, setup, usage guides and more.
 This repo contains a Poetry plugin and a CLI that enables support for Hatch.
 Both can be installed from PyPI:
 * [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
-* a CLI (coming soon)
+* [a CLI](https://pypi.org/project/polylith-cli)
 
-The Poetry plugin will add Polylith specific tooling support to Poetry.
-The CLI will add tooling support for Polylith, enabling more Package & Dependency Management tools (such as Hatch).
+The Poetry plugin adds Polylith specific tooling support to Poetry.
+The CLI adds tooling support for Polylith, and enables different kinds of Package & Dependency Management tools (such as Hatch).
 
 ### Use cases
 
