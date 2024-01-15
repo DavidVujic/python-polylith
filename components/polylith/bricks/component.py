@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Union
+from typing import List
 
 from polylith import workspace
 from polylith.bricks.brick import create_brick
@@ -7,11 +7,12 @@ from polylith.repo import components_dir
 from polylith.test import create_test
 
 
-def create_component(
-    path: Path, namespace: str, package: str, description: Union[str, None]
-) -> None:
-    create_brick(path, components_dir, namespace, package, description)
-    create_test(path, components_dir, namespace, package)
+def create_component(path: Path, options: dict) -> None:
+    extra = {"brick": components_dir}
+    component_options = {**options, **extra}
+
+    create_brick(path, component_options)
+    create_test(path, component_options)
 
 
 def is_brick_dir(p: Path) -> bool:

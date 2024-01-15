@@ -35,10 +35,12 @@ def create_test_base(handle_workspace_files):
     Note:
         The handle_workspace_files fixture will clean up at tear-down.
     """
-    create_base(
-        path=handle_workspace_files,
-        namespace="test_namespace",
-        package="test_package",
-        description="test desc",
-    )
+
+    options = {
+        "namespace": "test_namespace",
+        "package": "test_package",
+        "description": "test desc",
+        "modulename": "core",
+    }
+    create_base(path=handle_workspace_files, options=options)
     yield handle_workspace_files

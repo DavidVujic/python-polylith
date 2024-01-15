@@ -1,7 +1,7 @@
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith.bricks import component
-from polylith.poetry.commands.create import create
+from polylith.commands.create import create
 
 
 class CreateComponentCommand(Command):
@@ -20,6 +20,9 @@ class CreateComponentCommand(Command):
     ]
 
     def handle(self) -> int:
-        create(self, component.create_component)
+        name = self.option("name")
+        description = self.option("description")
+
+        create(name, description, component.create_component)
 
         return 0

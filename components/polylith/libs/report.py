@@ -1,4 +1,5 @@
 import difflib
+from operator import itemgetter
 from pathlib import Path
 from typing import Set
 
@@ -73,13 +74,11 @@ def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
         Padding(f"[data]Libraries summary for [/]{printable_name}", (1, 0, 1, 0))
     )
 
-    bases_imports = flatten_imports(brick_imports, "bases")
-    components_imports = flatten_imports(brick_imports, "components")
+    bases_len = len(flatten_imports(brick_imports, "bases"))
+    components_len = len(flatten_imports(brick_imports, "components"))
 
-    console.print(f"[base]Libraries used in bases[/]: [data]{len(bases_imports)}[/]")
-    console.print(
-        f"[comp]libraries used in components[/]: [data]{len(components_imports)}[/]"
-    )
+    console.print(f"[comp]libraries used in components[/]: [data]{components_len}[/]")
+    console.print(f"[base]Libraries used in bases[/]: [data]{bases_len}[/]")
 
 
 def print_libs_in_bricks(brick_imports: dict) -> None:
@@ -98,17 +97,20 @@ def print_libs_in_bricks(brick_imports: dict) -> None:
     table.add_column("[data]brick[/]")
     table.add_column("[data]libraries[/]")
 
-    for brick, imports in bases.items():
-        table.add_row(f"[base]{brick}[/]", ", ".join(sorted(imports)))
-
-    for brick, imports in components.items():
+    for brick, imports in sorted(components.items(), key=itemgetter(0)):
         table.add_row(f"[comp]{brick}[/]", ", ".join(sorted(imports)))
+
+    for brick, imports in sorted(bases.items(), key=itemgetter(0)):
+        table.add_row(f"[base]{brick}[/]", ", ".join(sorted(imports)))
 
     console.print(table, overflow="ellipsis")
 
 
 def print_missing_installed_libs(
-    brick_imports: dict, third_party_libs: Set[str], project_name: str, is_strict: bool = False
+    brick_imports: dict,
+    third_party_libs: Set[str],
+    project_name: str,
+    is_strict: bool = False,
 ) -> bool:
     diff = calculate_diff(brick_imports, third_party_libs, is_strict)
 

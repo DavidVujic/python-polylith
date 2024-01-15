@@ -11,10 +11,10 @@ packages = [
 """
 
 
-pep_621_toml = """\
-[project]
-name = "unit test"
-includes = ["../../components/unittest/one"]
+hatch_toml = """\
+[tool.hatch.build.force-include]
+"../../bases/unittest/one" = "unittest/one"
+"../../components/unittest/two" = "unittest/two"
 """
 
 
@@ -27,8 +27,11 @@ def test_get_poetry_package_includes():
 
 
 def test_get_pep_621_includes():
-    data = tomlkit.loads(pep_621_toml)
+    data = tomlkit.loads(hatch_toml)
 
     res = project.get.get_project_package_includes(namespace, data)
 
-    assert res == [{"include": "unittest/one", "from": "../../components"}]
+    assert res == [
+        {"include": "unittest/one", "from": "../../bases"},
+        {"include": "unittest/two", "from": "../../components"},
+    ]

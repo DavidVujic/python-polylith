@@ -13,11 +13,14 @@ def test_sample():
 """
 
 
-def create_test(
-    root: Path, brick: str, namespace: str, package: str, modulename: str = "core"
-) -> None:
+def create_test(root: Path, options: dict) -> None:
     if not parser.is_test_generation_enabled(root):
         return
+
+    brick = options["brick"]
+    namespace = options["namespace"]
+    package = options["package"]
+    modulename = options["modulename"]
 
     dirs_structure = parser.get_tests_structure_from_config(root)
     dirs = dirs_structure.format(brick=brick, namespace=namespace, package=package)

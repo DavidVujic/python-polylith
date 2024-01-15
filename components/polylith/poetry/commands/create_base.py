@@ -1,7 +1,7 @@
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith.bricks import base
-from polylith.poetry.commands.create import create
+from polylith.commands.create import create
 
 
 class CreateBaseCommand(Command):
@@ -20,6 +20,9 @@ class CreateBaseCommand(Command):
     ]
 
     def handle(self) -> int:
-        create(self, base.create_base)
+        name = self.option("name")
+        description = self.option("description")
+
+        create(name, description, base.create_base)
 
         return 0

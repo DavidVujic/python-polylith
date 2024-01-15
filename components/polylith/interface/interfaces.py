@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 from polylith.files import create_file
 
@@ -14,7 +13,6 @@ template_content = """\
 from {namespace}.{package} import {modulename}
 
 __all__ = ["{modulename}"]
-
 """
 
 
@@ -24,14 +22,13 @@ def to_namespaced_path(package: str) -> str:
     return ".".join(parts)
 
 
-def create_interface(
-    path: Path,
-    namespace: str,
-    package: str,
-    modulename: str,
-    description: Union[str, None],
-) -> None:
+def create_interface(path: Path, options: dict) -> None:
     interface = create_file(path, "__init__.py")
+
+    namespace = options["namespace"]
+    package = options["package"]
+    description = options["description"]
+    modulename = options["modulename"]
 
     package_path = to_namespaced_path(package)
 

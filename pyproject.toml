@@ -8,11 +8,15 @@ repository = "https://github.com/davidvujic/python-polylith"
 readme = "README.md"
 packages = [
     {include = "polylith/poetry_plugin",from = "bases"},
+    {include = "polylith/cli",from = "bases"},
+    {include = "polylith/alias",from = "components"},
     {include = "polylith/bricks",from = "components"},
     {include = "polylith/check",from = "components"},
+    {include = "polylith/commands",from = "components"},
     {include = "polylith/development",from = "components"},
     {include = "polylith/diff",from = "components"},
     {include = "polylith/dirs",from = "components"},
+    {include = "polylith/distributions",from = "components"},
     {include = "polylith/files",from = "components"},
     {include = "polylith/imports",from = "components"},
     {include = "polylith/info",from = "components"},
@@ -26,23 +30,26 @@ packages = [
     {include = "polylith/sync",from = "components"},
     {include = "polylith/test",from = "components"},
     {include = "polylith/workspace",from = "components"},
-    {include = "polylith/alias",from = "components"},
     {include = "development"},
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.8.1"
 poetry = "^1.2"
 tomlkit = "^0.11.5"
 rich = "^13.6.0"
+typer = {extras = ["all"], version = "^0.9.0"}
+cleo = "^2.1.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^22.10.0"
+black = "^23.12.1"
 isort = "^5.10.1"
-mypy = "^0.982"
-flake8 = "^5.0.4"
-pytest = "^7.2.1"
-pytest-cov = "^4.0.0"
+mypy = "^1.8.0"
+flake8 = "^7.0.0"
+pytest = "^7.4.4"
+
+[tool.poetry.scripts]
+poly = "polylith.cli.core:app"
 
 [tool.isort]
 profile = "black"

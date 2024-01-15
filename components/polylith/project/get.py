@@ -1,5 +1,7 @@
+import re
+from functools import lru_cache
 from pathlib import Path
-from typing import List
+from typing import List, Set
 
 import tomlkit
 from polylith import repo, workspace
@@ -12,11 +14,15 @@ def transform_to_package(namespace: str, include: str) -> dict:
 
 
 def get_project_package_includes(namespace: str, data) -> List[dict]:
-    if repo.is_pep_621_ready(data):
-        includes = data["project"].get("includes", [])
-        return [transform_to_package(namespace, include) for include in includes]
+    if repo.is_poetry(data):
+        return data["tool"]["poetry"].get("packages", [])
 
-    return data["tool"]["poetry"].get("packages", [])
+    if repo.is_hatch(data):
+        includes = data["tool"]["hatch"].get("build", {}).get("force-include", {})
+
+        return [transform_to_package(namespace, key) for key in includes.keys()]
+
+    return []
 
 
 def get_project_name(data) -> str:
@@ -26,6 +32,18 @@ def get_project_name(data) -> str:
     return data["tool"]["poetry"]["name"]
 
 
+def get_project_dependencies(data) -> Set:
+    if repo.is_poetry(data):
+        deps = data["tool"]["poetry"].get("dependencies", [])
+
+        return set(deps.keys())
+    else:
+        deps = data["project"].get("dependencies", [])
+
+        return {re.split(r"[\^~=!<>]", dep)[0] for dep in deps}
+
+
+@lru_cache
 def get_toml(path: Path) -> tomlkit.TOMLDocument:
     with path.open(encoding="utf-8", errors="ignore") as f:
         return tomlkit.loads(f.read())
@@ -64,6 +82,7 @@ def get_packages_for_projects(root: Path) -> List[dict]:
             "packages": get_project_package_includes(namespace, d["toml"]),
             "path": d["path"],
             "type": d["type"],
+            "deps": get_project_dependencies(d["toml"]),
         }
         for d in tomls
     ]
