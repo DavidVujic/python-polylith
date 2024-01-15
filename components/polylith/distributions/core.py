@@ -1,6 +1,10 @@
 import importlib.metadata
+import re
 from functools import reduce
-from typing import Dict, List
+from typing import Dict, List, Set
+
+
+SUB_DEP_SEPARATORS = r"[\s!=;><\^~]"
 
 
 def top_level_packages(dist) -> List[str]:
@@ -20,9 +24,35 @@ def map_packages(acc, dist) -> dict:
     return {**acc, **mapped_packages(dist)}
 
 
+def only_package_name(package: str) -> str:
+    parts = re.split(SUB_DEP_SEPARATORS, package)
+
+    return str(parts[0])
+
+
+def dist_subpackages(dist) -> Set[str]:
+    packages = importlib.metadata.requires(dist.metadata["name"]) or []
+
+    return {only_package_name(p) for p in packages}
+
+
+def distributions_subpackages(dists) -> Set[str]:
+    res = [dist_subpackages(dist) for dist in dists]
+
+    return set().union(*res)
+
+
 def distributions_packages(dists) -> Dict[str, List[str]]:
-    """Return a mapping of top-level packages to their distributions."""
-    return reduce(map_packages, dists, {})
+    """Return a mapping of top-level packages to their distributions.
+
+    Additional dist sub-dependency package names are appended to the result.
+    """
+    mapped: dict = reduce(map_packages, dists, {})
+
+    sub_packages = distributions_subpackages(dists)
+    reshaped = {s: [s] for s in sub_packages}
+
+    return {**reshaped, **mapped}
 
 
 def get_distributions(project_dependencies: set) -> list:

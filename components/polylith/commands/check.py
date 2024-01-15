@@ -14,7 +14,7 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
     name = project_data["name"]
 
     collected_imports = check.report.collect_all_imports(root, ns, project_data)
-    dists = importlib.metadata.distributions()
+    dists = list(importlib.metadata.distributions())
 
     known_aliases = distributions.distributions_packages(dists)
     known_aliases.update(alias.parse(library_alias))
