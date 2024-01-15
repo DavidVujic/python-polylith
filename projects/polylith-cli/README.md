@@ -23,7 +23,8 @@ hatch new --init
 Add the Polylith CLI as a dev dependency in `pyproject.toml`:
 
 ``` toml
-dependencies = ["polylith-cli~=0.1.0"]
+[tool.hatch.envs.default]
+dependencies = ["polylith-cli"]
 ```
 
 Add configuration for a local virtual environment in the `pyproject.toml`:
