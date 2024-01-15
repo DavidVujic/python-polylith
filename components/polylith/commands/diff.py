@@ -30,8 +30,7 @@ def print_views(root: Path, tag: str, short: bool, only_bricks: bool) -> None:
 
         return
 
-    if only_bricks:
-        diff.report.print_detected_changes_in_bricks(bases, components, short)
+    diff.report.print_detected_changes_in_bricks(bases, components, short)
 
 
 def run(tag_name: Union[str, None], short: bool, only_bricks: bool):
