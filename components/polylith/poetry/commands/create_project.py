@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
@@ -9,10 +8,11 @@ from polylith.commands.create import create
 command_name = "poly create project"
 
 
-def create_project(root: Path, _ns: str, name: str, description: Union[str, None]):
-    desc = description or ""
+def create_project(root: Path, options: dict):
+    package = options["package"]
+    desc = options["description"] or ""
 
-    project.create_project(root, project.templates.poetry_pyproject, name, desc)
+    project.create_project(root, project.templates.poetry_pyproject, package, desc)
 
 
 class CreateProjectCommand(Command):

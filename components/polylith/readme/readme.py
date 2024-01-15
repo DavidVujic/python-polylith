@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 from polylith import repo
 
@@ -35,11 +34,13 @@ def create_workspace_readme(path: Path, namespace: str) -> None:
     create_readme(path, workspace_template, namespace=namespace)
 
 
-def create_brick_readme(
-    path: Path, name: str, brick: str, description: Union[str, None]
-) -> None:
+def create_brick_readme(path: Path, options: dict) -> None:
+    brick = options["brick"]
+    package = options["package"]
+    description = options["description"]
+
     b = "component" if brick in repo.components_dir else "base"
 
     create_readme(
-        path, brick_template, name=name, brick=b, description=description or ""
+        path, brick_template, name=package, brick=b, description=description or ""
     )

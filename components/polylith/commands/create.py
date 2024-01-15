@@ -15,4 +15,10 @@ def create(name: Union[str, None], description: Union[str, None], fn):
             "Didn't find a namespace. Expected to find it in workspace.toml."
         )
 
-    fn(root, namespace, name, description)
+    options = {
+        "namespace": namespace,
+        "package": name,
+        "description": description,
+        "modulename": "core",
+    }
+    fn(root, options)

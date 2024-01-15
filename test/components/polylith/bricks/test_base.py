@@ -24,13 +24,14 @@ create_base_ids = [x[0] for x in create_base_params]
     ids=create_base_ids,
 )
 def test_create_base(handle_workspace_files, id, expected_dirs, expected_dir_structure):
+    options = {
+        "namespace": "test_namespace",
+        "package": "test_package",
+        "description": "test desc",
+        "modulename": "core",
+    }
+    create_base(path=handle_workspace_files, options=options)
 
-    create_base(
-        path=handle_workspace_files,
-        namespace="test_namespace",
-        package="test_package",
-        description="test desc",
-    )
     results = [
         x for x in handle_workspace_files.iterdir() if x.name != "workspace.toml"
     ]
@@ -44,6 +45,5 @@ def test_create_base(handle_workspace_files, id, expected_dirs, expected_dir_str
 
 
 def test_get_bases_data_valid_with_test_file_structure(create_test_base):
-
     result = get_bases_data(create_test_base, "test_namespace")
     assert result == [{"name": "test_package"}]
