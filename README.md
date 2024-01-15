@@ -24,9 +24,15 @@ Have a look at the [Python-specific documentation](https://davidvujic.github.io/
 You will find installation, setup, usage guides and more.
 
 ## Polylith for Python? :snake:
-This repo contains a Poetry plugin, that you can install from [PyPI](https://pypi.org/project/poetry-polylith-plugin).
-The plugin will add Polylith specific tooling support to Poetry.
+This repo contains a Poetry plugin and a CLI that enables support for Hatch.
+Both can be installed from PyPI:
+* [The Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
+* The CLI (coming soon)
+
+The Poetry plugin will add Polylith specific tooling support to Poetry.
 Have a look in the [Poetry Polylith Plugin project folder](projects/poetry_polylith_plugin/README.md) with details about the Poetry plugin.
+
+The CLI will add tooling support for Polylith, enabling more Package & Dependency Management tools (such as Hatch).
 
 ### Use cases
 
@@ -39,7 +45,10 @@ More details about how to package libraries in the docs about [Packaging & deplo
 
 ## :sparkles: Examples :sparkles:
 Have a look at the [Python Polylith Examples](https://github.com/DavidVujic/python-polylith-example) repository.
-It is a repository with an example __Python__ setup of the Polylith Architecture.
+
+Also, there is a [Python Polylith Examples with Hatch](https://github.com/DavidVujic/python-polylith-example-hatch) repository.
+
+The repositories are example __Python__ setups of the Polylith Architecture.
 You will find examples of sharing code between different kind of projects, and developer tooling setup such as `mypy` and the `venv`.
 
 ## Videos
@@ -63,6 +72,3 @@ You will find examples of sharing code between different kind of projects, and d
 - [Kafka messaging with Python & Polylith](https://davidvujic.blogspot.com/2023/08/kafka-messaging-with-python-and-polylith.html)
 
 <img width="800" alt="poetry-poly-info-example" src="https://github.com/DavidVujic/python-polylith/assets/301286/67df68ed-8fa7-4b25-8e4e-beb71a2024cd">
-
-
-
