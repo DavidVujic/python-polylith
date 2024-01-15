@@ -32,14 +32,12 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
 
     res = all([not details["brick_diff"], not details["libs_diff"]])
 
-    if is_quiet:
-        return res
+    if not is_quiet:
+        check.report.print_missing_deps(details["brick_diff"], name)
+        check.report.print_missing_deps(details["libs_diff"], name)
 
-    check.report.print_missing_deps(details["brick_diff"], name)
-    check.report.print_missing_deps(details["libs_diff"], name)
-
-    if is_verbose:
-        check.report.print_brick_imports(details["brick_imports"])
-        check.report.print_brick_imports(details["third_party_imports"])
+        if is_verbose:
+            check.report.print_brick_imports(details["brick_imports"])
+            check.report.print_brick_imports(details["third_party_imports"])
 
     return res
