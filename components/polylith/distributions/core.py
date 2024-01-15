@@ -45,7 +45,7 @@ def distributions_subpackages(dists) -> Set[str]:
 def distributions_packages(dists) -> Dict[str, List[str]]:
     """Return a mapping of top-level packages to their distributions.
 
-    Additional dist sub-dependency package names are appended to the result.
+    Additional dist sub-dependency package names (without dist names) are appended to the result.
     """
     mapped: dict = reduce(map_packages, dists, {})
 
