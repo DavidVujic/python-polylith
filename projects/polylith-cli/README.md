@@ -1,6 +1,6 @@
-# Python CLI for Polylith
+# Python tooling for Polylith
 
-Python CLI support for the Polylith Architecture.
+A command line interface that adds tooling support for the Polylith Architecture in Python.
 
 ## Documentation
 Have a look at the [documentation](https://davidvujic.github.io/python-polylith-docs/).
