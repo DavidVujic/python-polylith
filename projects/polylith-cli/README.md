@@ -8,7 +8,8 @@ You will find installation, setup, usage guides and more.
 
 ## Quick start
 
-`Poetry` user? For Poetry, the recommended setup is to install the `poetry-polylith-plugin`, [see docs](https://davidvujic.github.io/python-polylith-docs/installation/).
+`Poetry` user? For Poetry, the recommended setup is to install the `poetry-polylith-plugin`.
+Read more about Poetry in the [documentation](https://davidvujic.github.io/python-polylith-docs/installation/).
 
 ### Setup: Hatch
 Create a directory for your code, initialize it with __git__ and setup the basics with `hatch`:
@@ -19,7 +20,7 @@ git init
 hatch new --init
 ```
 
-Add the Polylith CLI as a dev dependency in `pyproject.toml:
+Add the Polylith CLI as a dev dependency in `pyproject.toml`:
 
 ``` toml
 dependencies = ["polylith-cli~=0.1.0"]
