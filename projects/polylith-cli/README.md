@@ -42,13 +42,14 @@ dev-mode-dirs = ["components", "bases", "development", "."]
 ```
 
 Next: create a Polylith workspace, with a basic Polylith folder structure.
+The `poly` command is now available in the local virtual environment.
+You can run commands in the context of `hatch run` to make Polylith aware of the development environment.
 
 ``` shell
 hatch run poly create workspace --name my_namespace --theme loose
 ```
 
-### Coding
-Ready for coding!
+### Ready for coding!
 
 Add components, bases and projects:
 
