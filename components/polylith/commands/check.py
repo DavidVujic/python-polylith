@@ -19,6 +19,13 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
     known_aliases = distributions.distributions_packages(dists)
     known_aliases.update(alias.parse(library_alias))
 
+    """
+    WIP:
+    dist_packages = distributions.distributions_packages(dists)
+    sub_packages = distributions.distributions_sub_packages(dists)
+    custom_aliases = alias.parse(library_alias)
+    """
+
     extra = alias.pick(known_aliases, third_party_libs)
 
     libs = third_party_libs.union(extra)

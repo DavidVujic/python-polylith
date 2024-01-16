@@ -1,10 +1,29 @@
 import importlib.metadata
 import re
 from functools import reduce
-from typing import Dict, List, Set
+from typing import Dict, List
 
 
 SUB_DEP_SEPARATORS = r"[\s!=;><\^~]"
+
+
+def parse_sub_package_name(dependency: str) -> str:
+    parts = re.split(SUB_DEP_SEPARATORS, dependency)
+
+    return str(parts[0])
+
+
+def dist_subpackages(dist) -> dict:
+    name = dist.metadata["name"]
+    dependencies = importlib.metadata.requires(name) or []
+
+    parsed_package_names = {parse_sub_package_name(d) for d in dependencies}
+
+    return {name: parsed_package_names}
+
+
+def map_sub_packages(acc, dist) -> dict:
+    return {**acc, **dist_subpackages(dist)}
 
 
 def top_level_packages(dist) -> List[str]:
@@ -24,35 +43,14 @@ def map_packages(acc, dist) -> dict:
     return {**acc, **mapped_packages(dist)}
 
 
-def only_package_name(package: str) -> str:
-    parts = re.split(SUB_DEP_SEPARATORS, package)
-
-    return str(parts[0])
-
-
-def dist_subpackages(dist) -> Set[str]:
-    packages = importlib.metadata.requires(dist.metadata["name"]) or []
-
-    return {only_package_name(p) for p in packages}
-
-
-def distributions_subpackages(dists) -> Set[str]:
-    res = [dist_subpackages(dist) for dist in dists]
-
-    return set().union(*res)
-
-
 def distributions_packages(dists) -> Dict[str, List[str]]:
-    """Return a mapping of top-level packages to their distributions.
+    """Return a mapping of top-level packages to their distributions."""
+    return reduce(map_packages, dists, {})
 
-    Additional dist sub-dependency package names (without dist names) are appended to the result.
-    """
-    mapped: dict = reduce(map_packages, dists, {})
 
-    sub_packages = distributions_subpackages(dists)
-    reshaped = {s: [s] for s in sub_packages}
-
-    return {**reshaped, **mapped}
+def distributions_sub_packages(dists) -> Dict[str, List[str]]:
+    """Return the dependencies of each distribution."""
+    return reduce(map_sub_packages, dists, {})
 
 
 def get_distributions(project_dependencies: set) -> list:
