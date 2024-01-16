@@ -1,7 +1,7 @@
 import re
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Set
+from typing import List
 
 import tomlkit
 from polylith import repo, workspace
@@ -32,15 +32,17 @@ def get_project_name(data) -> str:
     return data["tool"]["poetry"]["name"]
 
 
-def get_project_dependencies(data) -> Set:
+def get_project_dependencies(data) -> dict:
     if repo.is_poetry(data):
         deps = data["tool"]["poetry"].get("dependencies", [])
 
-        return set(deps.keys())
+        items = set(deps.keys())
     else:
         deps = data["project"].get("dependencies", [])
 
-        return {re.split(r"[\^~=!<>]", dep)[0] for dep in deps}
+        items = {re.split(r"[\^~=!<>]", dep)[0] for dep in deps}
+
+    return {"items": items, "source": repo.default_toml}
 
 
 @lru_cache
