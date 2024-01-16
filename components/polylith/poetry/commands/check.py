@@ -39,7 +39,10 @@ class CheckCommand(Command):
 
         try:
             third_party_libs = internals.find_third_party_libs(self.poetry, path)
-            merged = {**project_data, **{"deps": third_party_libs}}
+            merged = {
+                **project_data,
+                **{"deps": {"items": third_party_libs, "source": "poetry.lock"}},
+            }
 
             return commands.check.run(root, ns, merged, options)
         except ValueError as e:

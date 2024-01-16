@@ -20,7 +20,10 @@ class LibsCommand(Command):
 
         try:
             third_party_libs = find_third_party_libs(self.poetry, path)
-            merged = {**data, **{"deps": third_party_libs}}
+            merged = {
+                **data,
+                **{"deps": {"items": third_party_libs, "source": "poetry.lock"}},
+            }
 
             return commands.libs.run(root, ns, merged, options)
         except ValueError as e:
