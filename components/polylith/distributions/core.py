@@ -17,9 +17,9 @@ def dist_subpackages(dist) -> dict:
     name = dist.metadata["name"]
     dependencies = importlib.metadata.requires(name) or []
 
-    parsed_package_names = {parse_sub_package_name(d) for d in dependencies}
+    parsed_package_names = list({parse_sub_package_name(d) for d in dependencies})
 
-    return {name: parsed_package_names}
+    return {name: parsed_package_names} if dependencies else {}
 
 
 def map_sub_packages(acc, dist) -> dict:
