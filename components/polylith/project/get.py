@@ -1,7 +1,7 @@
 import re
 from functools import lru_cache
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 import tomlkit
 from polylith import repo, workspace
@@ -13,7 +13,7 @@ def transform_to_package(namespace: str, include: str) -> dict:
     return {"include": f"{namespace}/{brick}", "from": path}
 
 
-def find_by_key(data: dict, key: str) -> dict:
+def find_by_key(data: dict, key: str) -> Any:
     if key in data.keys():
         return data[key]
 
@@ -21,15 +21,20 @@ def find_by_key(data: dict, key: str) -> dict:
 
     res = (find_by_key(data[k], key) for k in filtered.keys())
 
-    return next((r for r in res if r), {})
+    return next((r for r in res if r), None)
 
 
-def get_hatch_project_packages(namespace: str, data) -> dict:
+def get_hatch_project_packages(data) -> dict:
     build_data = data["tool"]["hatch"].get("build", {})
 
-    force_included = build_data.get("force-include", {})
+    force_included = build_data.get("force-include")
 
-    return force_included or find_by_key(build_data, "polylith").get("bricks", {})
+    if force_included:
+        return force_included
+
+    found = find_by_key(build_data, "polylith")
+
+    return found.get("bricks", {}) if isinstance(found, dict) else {}
 
 
 def get_project_package_includes(namespace: str, data) -> List[dict]:
@@ -37,7 +42,7 @@ def get_project_package_includes(namespace: str, data) -> List[dict]:
         return data["tool"]["poetry"].get("packages", [])
 
     if repo.is_hatch(data):
-        includes = get_hatch_project_packages(namespace, data)
+        includes = get_hatch_project_packages(data)
 
         return [transform_to_package(namespace, key) for key in includes.keys()]
 
