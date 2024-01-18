@@ -1,5 +1,5 @@
-from polylith import project
 import tomlkit
+from polylith import project
 
 namespace = "unittest"
 
@@ -68,3 +68,15 @@ def test_get_hatch_package_includes_from_default_when_in_both():
     res = project.get.get_project_package_includes(namespace, data)
 
     assert res == expected
+
+
+def test_get_hatch_package_includes_lookup_with_unexpected_format():
+    unexpected = """\
+[tool.hatch.build.hooks.targets.wheel]
+"polylith" = "this-is-unexpected"
+"""
+    data = tomlkit.loads(unexpected)
+
+    res = project.get.get_project_package_includes(namespace, data)
+
+    assert res == []
