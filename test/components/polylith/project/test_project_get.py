@@ -18,7 +18,10 @@ hatch_toml = """\
 """
 
 hatch_toml_alternative = """\
-[tool.hatch.build.hooks.targets.wheel.polylith.bricks]
+[tool.hatch.build]
+something = "something"
+
+[tool.polylith.bricks]
 "../../bases/unittest/one" = "unittest/one"
 "../../components/unittest/two" = "unittest/two"
 """
@@ -28,7 +31,7 @@ hatch_toml_combined = """\
 "../../bases/unittest/one" = "unittest/one"
 "../../components/unittest/two" = "unittest/two"
 
-[tool.hatch.build.hooks.targets.wheel.polylith.bricks]
+[tool.polylith.bricks]
 "something" = "else"
 """
 
@@ -68,15 +71,3 @@ def test_get_hatch_package_includes_from_default_when_in_both():
     res = project.get.get_project_package_includes(namespace, data)
 
     assert res == expected
-
-
-def test_get_hatch_package_includes_lookup_with_unexpected_format():
-    unexpected = """\
-[tool.hatch.build.hooks.targets.wheel]
-"polylith" = "this-is-unexpected"
-"""
-    data = tomlkit.loads(unexpected)
-
-    res = project.get.get_project_package_includes(namespace, data)
-
-    assert res == []

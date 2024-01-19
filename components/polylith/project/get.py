@@ -24,6 +24,12 @@ def find_by_key(data: dict, key: str) -> Any:
     return next((r for r in res if r), None)
 
 
+def get_project_packages_from_polylith_section(data) -> dict:
+    bricks = data["tool"].get("polylith", {}).get("bricks")
+
+    return bricks if isinstance(bricks, dict) else {}
+
+
 def get_hatch_project_packages(data) -> dict:
     hatch_data = data["tool"]["hatch"]
     build_data = hatch_data.get("build", {}) if isinstance(hatch_data, dict) else {}
@@ -33,10 +39,7 @@ def get_hatch_project_packages(data) -> dict:
     if force_included:
         return force_included
 
-    found = find_by_key(build_data, "polylith")
-    bricks = found.get("bricks", {}) if isinstance(found, dict) else {}
-
-    return bricks if isinstance(bricks, dict) else {}
+    return get_project_packages_from_polylith_section(data)
 
 
 def get_project_package_includes(namespace: str, data) -> List[dict]:

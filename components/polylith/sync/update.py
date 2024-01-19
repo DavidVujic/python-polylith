@@ -1,3 +1,4 @@
+from functools import reduce
 from pathlib import Path
 from typing import List, Union
 
@@ -19,10 +20,24 @@ def copy_toml_data(data: TOMLDocument) -> dict:
     return copy
 
 
-def generate_updated_hatch_project(
-    data: TOMLDocument, packages: List[dict]
-) -> str:
+def to_key_value_include(acc: dict, package: dict) -> dict:
+    brick = package["include"]
+    relative_path = package.get("from", "")
+    include = Path(relative_path, brick).as_posix()
+
+    return {**acc, **{include: brick}}
+
+
+def generate_updated_hatch_project(data: TOMLDocument, packages: List[dict]) -> str:
+    bricks_to_add: dict = reduce(to_key_value_include, packages, {})
+
     copy = copy_toml_data(data)
+
+    if copy["tool"].get("polylith", {}).get("bricks") is not None:
+        for k, v in bricks_to_add.items():
+            copy["tool"]["polylith"]["bricks"][k] = v
+
+        return tomlkit.dumps(copy)
 
     if copy["tool"]["hatch"].get("build") is None:
         copy["tool"]["hatch"].add("build", {"force-include": {}})
@@ -30,12 +45,8 @@ def generate_updated_hatch_project(
     if copy["tool"]["hatch"]["build"].get("force-include") is None:
         copy["tool"]["hatch"]["build"]["force-include"] = {}
 
-    for package in packages:
-        brick = package["include"]
-        relative_path = package.get("from", "")
-        include = Path(relative_path, brick).as_posix()
-
-        copy["tool"]["hatch"]["build"]["force-include"][include] = brick
+    for k, v in bricks_to_add.items():
+        copy["tool"]["hatch"]["build"]["force-include"][k] = v
 
     return tomlkit.dumps(copy)
 
@@ -54,7 +65,9 @@ def generate_updated_poetry_project(data: TOMLDocument, packages: List[dict]) ->
     return tomlkit.dumps(copy)
 
 
-def generate_updated_project(data: TOMLDocument, packages: List[dict]) -> Union[str, None]:
+def generate_updated_project(
+    data: TOMLDocument, packages: List[dict]
+) -> Union[str, None]:
     if repo.is_poetry(data):
         return generate_updated_poetry_project(data, packages)
 
