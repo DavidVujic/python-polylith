@@ -6,17 +6,42 @@ from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 from polylith import parsing, project, repo
 
 
-def get_temp_dir(config: dict) -> Path:
-    tmp_dir = config.get("tmp_dir", ".tmp")
+def get_work_dir(config: dict) -> Path:
+    work_dir = config.get("work_dir", ".tmp")
 
-    return Path(tmp_dir)
+    return Path(work_dir)
+
+
+def parse_namespace(bricks: dict) -> str:
+    namespaces = parsing.parse_brick_namespace_from_path(bricks)
+
+    return next(namespace for namespace in namespaces)
+
+
+def copy_brick(source: str, brick: str, tmp_dir: Path) -> Path:
+    destination = Path(tmp_dir / brick).as_posix()
+
+    return parsing.copy_brick(source, destination)
+
+
+def rewrite_modules(path: Path, ns: str, top_ns: str) -> None:
+    modules = path.glob("**/*.py")
+
+    for module in modules:
+        was_rewritten = parsing.rewrite_module(module, ns, top_ns)
+
+        if was_rewritten:
+            print(
+                f"Updated {module.parent.name}/{module.name} with new top namespace for local imports."
+            )
 
 
 class PolylithBricksHook(BuildHookInterface):
     PLUGIN_NAME = "polylith-bricks"
 
-    def initialize(self, version: str, build_data: Dict[str, Any]) -> None:
+    def initialize(self, _version: str, build_data: Dict[str, Any]) -> None:
         top_ns = self.config.get("top_namespace")
+        work_dir = get_work_dir(self.config)
         pyproject = Path(f"{self.root}/{repo.default_toml}")
 
         data = project.get_toml(pyproject)
@@ -29,30 +54,19 @@ class PolylithBricksHook(BuildHookInterface):
             build_data["force_include"] = bricks
             return
 
-        namespaces = parsing.parse_brick_namespace_from_path(bricks)
-        ns = next(namespace for namespace in namespaces)
-
-        tmp_dir = get_temp_dir(self.config)
+        ns = parse_namespace(bricks)
 
         for source, brick in bricks.items():
-            destination = Path(tmp_dir / brick).as_posix()
-            res = parsing.copy_brick(source, destination)
+            path = copy_brick(source, brick, work_dir)
+            rewrite_modules(path, ns, top_ns)
 
-            modules = res.glob("**/*.py")
-
-            for module in modules:
-                was_rewritten = parsing.rewrite_module(module, ns, top_ns)
-
-                if was_rewritten:
-                    print(f"Updated {module.parent.name}/{module.name}.")
-
-        key = tmp_dir.as_posix()
+        key = work_dir.as_posix()
         build_data["force_include"][key] = top_ns
 
-    def finalize(
-        self, version: str, build_data: Dict[str, Any], artifact_path: str
-    ) -> None:
-        tmp_dir = get_temp_dir(self.config)
+    def finalize(self, *args, **kwargs) -> None:
+        work_dir = get_work_dir(self.config)
 
-        if tmp_dir.exists() and tmp_dir.is_dir():
-            shutil.rmtree(tmp_dir.as_posix())
+        if not work_dir.exists() or not work_dir.is_dir():
+            return
+
+        shutil.rmtree(work_dir.as_posix())
