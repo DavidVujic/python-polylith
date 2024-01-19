@@ -460,6 +460,17 @@ paramiko = ["paramiko"]
 pgp = ["gpg"]
 
 [[package]]
+name = "editables"
+version = "0.5"
+description = "Editable installations"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "editables-0.5-py3-none-any.whl", hash = "sha256:61e5ffa82629e0d8bfe09bc44a07db3c1ab8ed1ce78a6980732870f19b5e7d4c"},
+    {file = "editables-0.5.tar.gz", hash = "sha256:309627d9b5c4adc0e668d8c6fa7bac1ba7c8c5d415c2d27f60f081f8e80d1de2"},
+]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.0"
 description = "Backport of PEP 654 (exception groups)"
@@ -518,6 +529,25 @@ files = [
 mccabe = ">=0.7.0,<0.8.0"
 pycodestyle = ">=2.11.0,<2.12.0"
 pyflakes = ">=3.2.0,<3.3.0"
+
+[[package]]
+name = "hatchling"
+version = "1.21.0"
+description = "Modern, extensible Python build backend"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "hatchling-1.21.0-py3-none-any.whl", hash = "sha256:b33ef0ecdee6dbfd28c21ca30df459ba1d566050d033f8b5a1d0e26e5606d26b"},
+    {file = "hatchling-1.21.0.tar.gz", hash = "sha256:5c086772357a50723b825fd5da5278ac7e3697cdf7797d07541a6c90b6ff754c"},
+]
+
+[package.dependencies]
+editables = ">=0.3"
+packaging = ">=21.3"
+pathspec = ">=0.10.1"
+pluggy = ">=1.0.0"
+tomli = {version = ">=1.2.2", markers = "python_version < \"3.11\""}
+trove-classifiers = "*"
 
 [[package]]
 name = "idna"
@@ -1477,4 +1507,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "de65e90775c58e5e930efa83146526a3879827f46296afad0d4031081992315a"
+content-hash = "28699790093c8c0b68111d1a436c94c72469405980dd2dfc3d57eb4288f61c56"

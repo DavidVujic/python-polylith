@@ -4,6 +4,7 @@ from polylith.project.get import (
     get_packages_for_projects,
     get_project_dependencies,
     get_project_name,
+    get_project_packages_from_polylith_section,
     get_toml,
 )
 from polylith.project.parser import parse_package_paths
@@ -13,6 +14,7 @@ __all__ = [
     "get_packages_for_projects",
     "get_project_dependencies",
     "get_project_name",
+    "get_project_packages_from_polylith_section",
     "get_toml",
     "parse_package_paths",
     "templates",
