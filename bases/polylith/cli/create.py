@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 from polylith import project, repo
 from polylith.bricks import base, component
