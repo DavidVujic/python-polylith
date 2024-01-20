@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 [project.entry-points.hatch]
-polylith-bricks = "hatch_hooks.hooks"
+polylith-bricks = "polylith.hatch_hooks.hooks"
 
 [tool.polylith.bricks]
 "../../bases/polylith/hatch_hooks" = "polylith/hatch_hooks"
