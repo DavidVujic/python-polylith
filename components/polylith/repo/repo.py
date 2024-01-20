@@ -58,7 +58,7 @@ def get_workspace_root(cwd: Path) -> Path:
 
 
 def has_build_requires(pyproject: dict, value: str) -> bool:
-    backend = pyproject["build-system"]["build-backend"]
+    backend = pyproject.get("build-system", {}).get("build-backend", {})
 
     return value in backend
 

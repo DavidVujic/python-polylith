@@ -9,15 +9,27 @@ packages = [
     {include = "unittest/one",from = "../../bases"},
     {include = "unittest/two",from = "../../components"}
 ]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 """
 
 hatch_toml = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build.force-include]
 "../../bases/unittest/one" = "unittest/one"
 "../../components/unittest/two" = "unittest/two"
 """
 
 hatch_toml_alternative = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build]
 something = "something"
 
@@ -27,6 +39,10 @@ something = "something"
 """
 
 hatch_toml_combined = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build.force-include]
 "../../bases/unittest/one" = "unittest/one"
 "../../components/unittest/two" = "unittest/two"
