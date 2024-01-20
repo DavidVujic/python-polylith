@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Any, Dict
 
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
-from polylith import parsing, project, repo
+from polylith import toml, parsing, repo
 
 
 def get_work_dir(config: dict) -> Path:
@@ -44,8 +44,8 @@ class PolylithBricksHook(BuildHookInterface):
         work_dir = get_work_dir(self.config)
         pyproject = Path(f"{self.root}/{repo.default_toml}")
 
-        data = project.get_toml(pyproject)
-        bricks = project.get_project_packages_from_polylith_section(data)
+        data = toml.read_toml_document(pyproject)
+        bricks = toml.get_project_packages_from_polylith_section(data)
 
         if not bricks:
             return

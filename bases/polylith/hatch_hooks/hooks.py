@@ -1,6 +1,6 @@
 from hatchling.plugin import hookimpl
 
-from polylith.hatch_hooks.bricks.plugin import PolylithBricksHook
+from polylith.hatch.hooks.bricks import PolylithBricksHook
 
 
 @hookimpl

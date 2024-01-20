@@ -7,14 +7,10 @@ license = "MIT"
 
 packages = [
     {include = "polylith/hatch_hooks", from = "../../bases"},
-    {include = "polylith/files",from = "../../components"},
-    {include = "polylith/readme",from = "../../components"},
-    {include = "polylith/dirs",from = "../../components"},
     {include = "polylith/repo",from = "../../components"},
     {include = "polylith/parsing",from = "../../components"},
-    {include = "polylith/workspace",from = "../../components"},
-    {include = "polylith/project",from = "../../components"},
-    {include = "polylith/development",from = "../../components"},
+    {include = "polylith/hatch",from = "../../components"},
+    {include = "polylith/toml",from = "../../components"},
 ]
 
 [tool.poetry.dependencies]
@@ -22,7 +18,7 @@ python = "^3.8.1"
 hatchling = "^1.21.0"
 
 [project.entry-points.hatch]
-polylith-bricks = "hatch_hooks.bricks.hooks"
+polylith-bricks = "hatch_hooks.hooks"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

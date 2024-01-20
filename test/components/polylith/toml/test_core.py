@@ -1,5 +1,5 @@
 import tomlkit
-from polylith import project
+from polylith import toml
 
 namespace = "unittest"
 
@@ -44,7 +44,7 @@ expected = [
 def test_get_poetry_package_includes():
     data = tomlkit.loads(poetry_toml)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected
 
@@ -52,7 +52,7 @@ def test_get_poetry_package_includes():
 def test_get_hatch_package_includes():
     data = tomlkit.loads(hatch_toml)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected
 
@@ -60,7 +60,7 @@ def test_get_hatch_package_includes():
 def test_get_hatch_package_includes_in_build_hook():
     data = tomlkit.loads(hatch_toml_alternative)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected
 
@@ -68,6 +68,6 @@ def test_get_hatch_package_includes_in_build_hook():
 def test_get_hatch_package_includes_from_default_when_in_both():
     data = tomlkit.loads(hatch_toml_combined)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected
