@@ -1,31 +1,30 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[project]
+[tool.poetry]
 name = "hatch-polylith-bricks"
 version = "0.1.0"
 description = "Hatch build hook plugin for Polylith bricks"
 readme = "README.md"
-authors = [{ name = "David Vujic" }]
+authors = ['David Vujic']
+license = "MIT"
 
-requires-python = ">=3.8"
-
-dependencies = [
-  "hatchling",
+packages = [
+    {include = "polylith/hatch_hooks", from = "../../bases"},
+    {include = "polylith/repo",from = "../../components"},
+    {include = "polylith/parsing",from = "../../components"},
+    {include = "polylith/hatch",from = "../../components"},
+    {include = "polylith/toml",from = "../../components"},
 ]
 
 classifiers = [
   "Framework :: Hatch",
-  "License :: OSI Approved :: MIT License",
 ]
 
-[project.entry-points.hatch]
+[tool.poetry.dependencies]
+python = "^3.8.1"
+hatchling = "^1.21.0"
+
+[tool.poetry.plugins.hatch]
 polylith-bricks = "polylith.hatch_hooks.hooks"
 
-[tool.polylith.bricks]
-"../../bases/polylith/hatch_hooks" = "polylith/hatch_hooks"
-"../../components/polylith/repo" = "polylith/repo"
-"../../components/polylith/parsing" = "polylith/parsing"
-"../../components/polylith/hatch" = "polylith/hatch"
-"../../components/polylith/toml" = "polylith/toml"
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
