@@ -15,10 +15,13 @@ class PolylithBricksHook(BuildHookInterface):
         work_dir = core.get_work_dir(self.config)
         pyproject = Path(f"{self.root}/{repo.default_toml}")
 
+        print(f"Using {pyproject.as_posix()}.")
+
         data = toml.read_toml_document(pyproject)
         bricks = toml.get_project_packages_from_polylith_section(data)
 
         if not bricks:
+            print("No bricks found.")
             return
 
         if not top_ns:
