@@ -1,5 +1,5 @@
 import tomlkit
-from polylith import project
+from polylith import toml
 
 namespace = "unittest"
 
@@ -9,15 +9,27 @@ packages = [
     {include = "unittest/one",from = "../../bases"},
     {include = "unittest/two",from = "../../components"}
 ]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 """
 
 hatch_toml = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build.force-include]
 "../../bases/unittest/one" = "unittest/one"
 "../../components/unittest/two" = "unittest/two"
 """
 
 hatch_toml_alternative = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build]
 something = "something"
 
@@ -27,6 +39,10 @@ something = "something"
 """
 
 hatch_toml_combined = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build.force-include]
 "../../bases/unittest/one" = "unittest/one"
 "../../components/unittest/two" = "unittest/two"
@@ -44,7 +60,7 @@ expected = [
 def test_get_poetry_package_includes():
     data = tomlkit.loads(poetry_toml)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected
 
@@ -52,7 +68,7 @@ def test_get_poetry_package_includes():
 def test_get_hatch_package_includes():
     data = tomlkit.loads(hatch_toml)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected
 
@@ -60,7 +76,7 @@ def test_get_hatch_package_includes():
 def test_get_hatch_package_includes_in_build_hook():
     data = tomlkit.loads(hatch_toml_alternative)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected
 
@@ -68,6 +84,6 @@ def test_get_hatch_package_includes_in_build_hook():
 def test_get_hatch_package_includes_from_default_when_in_both():
     data = tomlkit.loads(hatch_toml_combined)
 
-    res = project.get.get_project_package_includes(namespace, data)
+    res = toml.get_project_package_includes(namespace, data)
 
     assert res == expected

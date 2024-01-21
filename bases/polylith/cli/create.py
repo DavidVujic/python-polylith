@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 from polylith import project, repo
 from polylith.bricks import base, component
@@ -29,8 +28,10 @@ def component_command(
     create(name, description, component.create_component)
 
 
-def _create_project(root: Path, _ns: str, name: str, description: Union[str, None]):
+def _create_project(root: Path, options: dict):
     root_pyproject: dict = project.get_toml(root / repo.default_toml)
+    name = options["package"]
+    description = options["description"]
 
     if repo.is_poetry(root_pyproject):
         template = project.templates.poetry_pyproject

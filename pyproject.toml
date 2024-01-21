@@ -9,6 +9,7 @@ readme = "README.md"
 packages = [
     {include = "polylith/poetry_plugin",from = "bases"},
     {include = "polylith/cli",from = "bases"},
+    {include = "polylith/hatch_hooks", from = "bases"},
     {include = "polylith/alias",from = "components"},
     {include = "polylith/bricks",from = "components"},
     {include = "polylith/check",from = "components"},
@@ -18,10 +19,12 @@ packages = [
     {include = "polylith/dirs",from = "components"},
     {include = "polylith/distributions",from = "components"},
     {include = "polylith/files",from = "components"},
+    {include = "polylith/hatch",from = "components"},
     {include = "polylith/imports",from = "components"},
     {include = "polylith/info",from = "components"},
     {include = "polylith/interface",from = "components"},
     {include = "polylith/libs",from = "components"},
+    {include = "polylith/parsing",from = "components"},
     {include = "polylith/poetry",from = "components"},
     {include = "polylith/project",from = "components"},
     {include = "polylith/readme",from = "components"},
@@ -29,6 +32,7 @@ packages = [
     {include = "polylith/reporting",from = "components"},
     {include = "polylith/sync",from = "components"},
     {include = "polylith/test",from = "components"},
+    {include = "polylith/toml",from = "components"},
     {include = "polylith/workspace",from = "components"},
     {include = "development"},
 ]
@@ -40,6 +44,7 @@ tomlkit = "^0.11.5"
 rich = "^13.6.0"
 typer = {extras = ["all"], version = "^0.9.0"}
 cleo = "^2.1.0"
+hatchling = "^1.21.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.12.1"

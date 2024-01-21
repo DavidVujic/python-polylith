@@ -76,6 +76,10 @@ def test_generate_updated_poetry_project():
         """\
 [tool.poetry]
 packages = [{include = "hello/first", from = "bases"}]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
 """
     )
 
@@ -89,6 +93,10 @@ packages = [{include = "hello/first", from = "bases"}]
 def test_generate_updated_hatch_project():
     data = tomlkit.parse(
         """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build.force-include]
 "bases/hello/first" = "hello/first"
 """
@@ -104,6 +112,10 @@ def test_generate_updated_hatch_project():
 def test_generate_updated_hatch_project_with_missing_build_config():
     data = tomlkit.parse(
         """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch]
 hello = "world"
 """
@@ -119,6 +131,10 @@ hello = "world"
 def test_generate_updated_hatch_project_with_missing_force_include_config():
     data = tomlkit.parse(
         """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [tool.hatch.build]
 hello = "world"
 """

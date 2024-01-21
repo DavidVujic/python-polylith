@@ -57,12 +57,18 @@ def get_workspace_root(cwd: Path) -> Path:
     return root
 
 
+def has_build_requires(pyproject: dict, value: str) -> bool:
+    backend = pyproject.get("build-system", {}).get("build-backend", {})
+
+    return value in backend
+
+
 def is_poetry(pyproject: dict) -> bool:
-    return pyproject.get("tool", {}).get("poetry") is not None
+    return has_build_requires(pyproject, "poetry")
 
 
 def is_hatch(pyproject: dict) -> bool:
-    return pyproject.get("tool", {}).get("hatch") is not None
+    return has_build_requires(pyproject, "hatchling")
 
 
 def is_pep_621_ready(pyproject: dict) -> bool:
