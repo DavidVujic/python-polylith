@@ -71,4 +71,8 @@ You will find examples of sharing code between different kind of projects, and d
 - [Python FastAPI Microservices with Polylith](https://davidvujic.blogspot.com/2023/07/python-fastapi-microservices-with-polylith.html)
 - [Kafka messaging with Python & Polylith](https://davidvujic.blogspot.com/2023/08/kafka-messaging-with-python-and-polylith.html)
 
-<img width="800" alt="poetry-poly-info-example" src="https://github.com/DavidVujic/python-polylith/assets/301286/67df68ed-8fa7-4b25-8e4e-beb71a2024cd">
+## Repo Visualization
+A visualization of this repo (that itself is a Polylith workspace) using the `poly info` command.
+
+
+<img width="600" alt="poly-info" src="https://github.com/DavidVujic/python-polylith/assets/301286/525a1e0b-d06a-4fdf-825e-b330f4176368">
