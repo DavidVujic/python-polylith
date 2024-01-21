@@ -22,9 +22,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = {name}"
+name = "{name}"
 version = "0.1.0"
-description = '{description}'
+description = "{description}"
 authors = {authors}
 
 requires-python = "{python_version}"
