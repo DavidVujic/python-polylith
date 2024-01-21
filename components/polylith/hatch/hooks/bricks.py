@@ -11,7 +11,7 @@ class PolylithBricksHook(BuildHookInterface):
     PLUGIN_NAME = "polylith-bricks"
 
     def initialize(self, _version: str, build_data: Dict[str, Any]) -> None:
-        top_ns = self.config.get("top_namespace")
+        top_ns = self.config.get("top-namespace")
         work_dir = core.get_work_dir(self.config)
         pyproject = Path(f"{self.root}/{repo.default_toml}")
 

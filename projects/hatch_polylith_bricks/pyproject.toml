@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "hatch-polylith-bricks"
 version = "0.0.1"
-description = "Hatch build hook plugin for Polylith bricks"
+description = "Hatch build hook plugin for Polylith"
 readme = "README.md"
 authors = ['David Vujic']
 license = "MIT"
@@ -19,7 +19,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.9"
 hatchling = "^1.21.0"
 
 [tool.poetry.plugins.hatch]

@@ -5,7 +5,7 @@ from polylith import parsing
 
 
 def get_work_dir(config: dict) -> Path:
-    work_dir = config.get("work_dir", ".polylith_tmp")
+    work_dir = config.get("work-dir", ".polylith_tmp")
 
     return Path(work_dir)
 
