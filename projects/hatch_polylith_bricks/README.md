@@ -30,13 +30,6 @@ The Python built-in `ast` module is used to parse and un-parse Python code.
 
 No changes in the code, building and packaging as-is.
 
-```shell
-my_namespace/
-    /my_package
-       __init__.py
-       my_module.py
-```
-
 #### With a Top Namespace configuration
 
 ``` toml
@@ -65,8 +58,8 @@ from my_custom_namespace.my_namespace.my_package import my_function
 ## Usage
 | Key | Default | Description |
 | --- | ------- | ----------- |
-| `work-dir` | .polylith_tmp | The temporary working directory for copying and re-writing source code. |
-| `top-namespace` | None | A custom top namespace. When set, Polylith bricks will be updated using this namespace. |
+| work-dir | .polylith_tmp | The temporary working directory for copying and re-writing source code. |
+| top-namespace | None | A custom top namespace. When set, Polylith bricks will be updated using this namespace. |
 
 
 This Plugin expects to find Polylith Bricks in the `pyproject.toml`:
