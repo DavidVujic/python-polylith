@@ -20,15 +20,14 @@ Python libraries by default are installed in a "flat" folder structure, two libr
 
 The Solution: add a custom top namespace during packaging of the library with Hatch and this build hook plugin.
 
-##### How is this done?
+## How is this done?
 The code in this repo uses __AST__ (Abstract Syntax Tree) parsing to modify source code.
 The Python built-in `ast` module is used to parse and un-parse Python code.
 
 
 ### What's the output from this plugin?
-#### The Default, without any custom namespace in the configuration
 
-No changes in the code, building and packaging as-is.
+Without any custom namespace in the configuration: no changes in the code. Building and packaging as-is.
 
 #### With a Top Namespace configuration
 
