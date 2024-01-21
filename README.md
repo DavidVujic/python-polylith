@@ -24,7 +24,7 @@ Have a look at the [Python-specific documentation](https://davidvujic.github.io/
 You will find installation, setup, usage guides and more.
 
 ## Polylith for Python? :snake:
-This repo contains a Poetry plugin and a CLI that enables support for Hatch.
+This repo contains a Poetry plugin, a CLI that enables support for Hatch and a Hatch Build Hook plugin.
 Both can be installed from PyPI:
 * [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
 * [a CLI](https://pypi.org/project/polylith-cli)
