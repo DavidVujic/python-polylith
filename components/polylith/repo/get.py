@@ -15,11 +15,11 @@ def get_metadata_section(data: dict) -> dict:
     return data["project"] if is_pep_621_ready(data) else data["tool"]["poetry"]
 
 
-def get_authors(path: Path) -> list:
+def get_authors(path: Path) -> str:
     data = get_pyproject_data(path)
     section = get_metadata_section(data)
 
-    return section.get("authors", [])
+    return section.get("authors", []).as_string()
 
 
 def get_python_version(path: Path) -> str:

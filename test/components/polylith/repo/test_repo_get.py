@@ -48,7 +48,7 @@ def test_get_metadata_section():
 
 
 def test_get_authors_for_poetry_toml(monkeypatch):
-    expected = ["Unit Test"]
+    expected = '["Unit Test"]'
     data = poetry_toml.format(authors=expected)
 
     monkeypatch.setattr(repo.get, "get_pyproject_data", lambda _: tomlkit.loads(data))
@@ -62,7 +62,7 @@ def test_get_authors_for_pep_621_compliant_toml(monkeypatch):
 
     monkeypatch.setattr(repo.get, "get_pyproject_data", lambda _: tomlkit.loads(data))
 
-    assert repo.get.get_authors(path) == [{"name": "Unit Test", "email": "the-email"}]
+    assert repo.get.get_authors(path) == authors
 
 
 def test_get_python_version_for_poetry_toml(monkeypatch):
