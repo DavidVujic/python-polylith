@@ -8,6 +8,7 @@ def copy_brick(source: str, destination: str) -> Path:
         "__pycache__",
         ".venv",
         ".mypy_cache",
+        ".pytest_cache",
         "node_modules",
         ".git",
     )
