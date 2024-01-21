@@ -11,8 +11,6 @@ packages = []
 [tool.poetry.dependencies]
 python = "{python_version}"
 
-[tool.poetry.group.dev.dependencies]
-
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
