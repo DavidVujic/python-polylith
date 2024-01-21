@@ -2,7 +2,7 @@
 
 A plugin for [Hatch](https://github.com/pypa/hatch) and the Polylith Architecture.
 
-This build hook will look for Polylith `bricks` in `pyproject.toml` and __optionally__ re-write the imports made in the actual source code.
+This build hook will look for Polylith `bricks` in `pyproject.toml` and __optionally__ re-write the imports made in the source code.
 
 ## Installation
 ``` toml
@@ -63,15 +63,10 @@ from my_custom_namespace.my_namespace.my_package import my_function
 ```
 
 ## Usage
-
-Now you'll need to configure the build scripts you want to run. This is done by adding
-an array of scripts to the `tool.hatch.build.hooks.build-scripts.scripts` key in your
-`pyproject.toml` file. Each script is configured with the following keys:
-
 | Key | Default | Description |
 | --- | ------- | ----------- |
-| `work-dir` | `".polylith_tmp"` | The temporary working directory for copying and re-writing source code. |
-| `top-namespace` | None | A custom Top Namespace for the source code. When this is set, Polylith bricks will be updated with this namespace. |
+| `work-dir` | .polylith_tmp | The temporary working directory for copying and re-writing source code. |
+| `top-namespace` | None | A custom top namespace. When set, Polylith bricks will be updated using this namespace. |
 
 
 This Plugin expects to find Polylith Bricks in the `pyproject.toml`:
