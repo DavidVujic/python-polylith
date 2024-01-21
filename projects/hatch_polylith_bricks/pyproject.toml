@@ -2,9 +2,11 @@
 name = "hatch-polylith-bricks"
 version = "0.0.1"
 description = "Hatch build hook plugin for Polylith"
-readme = "README.md"
 authors = ['David Vujic']
+homepage = "https://davidvujic.github.io/python-polylith-docs/"
+repository = "https://github.com/davidvujic/python-polylith"
 license = "MIT"
+readme = "README.md"
 
 packages = [
     {include = "polylith/hatch_hooks", from = "../../bases"},
