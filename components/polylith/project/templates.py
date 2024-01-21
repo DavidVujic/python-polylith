@@ -17,7 +17,7 @@ build-backend = "poetry.core.masonry.api"
 """
 
 hatch_pyproject = """\
-build-system]
+[build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
