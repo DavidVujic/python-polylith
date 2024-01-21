@@ -18,7 +18,7 @@ but you will need to consider that code will share the same top namespace with a
 This can be a problem when more than one of your libraries are installed into the same virtual environment.
 Python libraries by default are installed in a "flat" folder structure, two libraries with the same top namespace will collide.
 
-The Solution: add a custom top namespace during packaging of the library with Hatch and this build hook plugin.
+_A Solution_: add a custom top namespace during packaging of the library with Hatch and this build hook plugin.
 
 ## How is this done?
 The code in this repo uses __AST__ (Abstract Syntax Tree) parsing to modify source code.
