@@ -79,6 +79,17 @@ files = [
 ]
 
 [[package]]
+name = "tomlkit"
+version = "0.11.8"
+description = "Style preserving TOML library"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tomlkit-0.11.8-py3-none-any.whl", hash = "sha256:8c726c4c202bdb148667835f68d68780b9a003a9ec34167b6c673b38eff2a171"},
+    {file = "tomlkit-0.11.8.tar.gz", hash = "sha256:9330fc7faa1db67b541b28e62018c17d20be733177d290a13b24c62d1614e0c3"},
+]
+
+[[package]]
 name = "trove-classifiers"
 version = "2024.1.8"
 description = "Canonical source for classifiers on PyPI (pypi.org)."
@@ -92,4 +103,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "27ab6a70560989a8ab2926bac614a4cfab206dfe7c1a61f167b44d5dbe3368be"
+content-hash = "61ff7a63aa1cdfe6013883c24b99315fcea1a06175fa46214c2437fc0b3bd7e4"
