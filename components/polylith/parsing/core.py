@@ -2,7 +2,7 @@ import shutil
 from pathlib import Path
 
 
-def copy_brick(source: str, destination: str) -> Path:
+def copy_tree(source: str, destination: str) -> Path:
     ignore = shutil.ignore_patterns(
         "*.pyc",
         "__pycache__",
@@ -18,7 +18,13 @@ def copy_brick(source: str, destination: str) -> Path:
     return Path(res)
 
 
-def parse_brick_namespace_from_path(bricks: dict) -> set:
+def copy_brick(source: str, brick: str, tmp_dir: Path) -> Path:
+    destination = Path(tmp_dir / brick).as_posix()
+
+    return copy_tree(source, destination)
+
+
+def parse_brick_namespace_from_path(bricks: dict) -> str:
     parts = {str.split(v, "/")[0] for v in bricks.values()}
 
-    return parts
+    return next(part for part in parts)

@@ -1,6 +1,6 @@
 import re
 from pathlib import Path
-from typing import List
+from typing import List, Union
 
 import tomlkit
 from polylith import repo
@@ -12,8 +12,20 @@ def transform_to_package(namespace: str, include: str) -> dict:
     return {"include": f"{namespace}/{brick}", "from": path}
 
 
+def get_polylith_section(data) -> dict:
+    return data.get("tool", {}).get("polylith", {})
+
+
+def get_custom_top_namespace_from_polylith_section(data) -> Union[str, None]:
+    poly_data = get_polylith_section(data)
+
+    return poly_data.get("build", {}).get("top-namespace")
+
+
 def get_project_packages_from_polylith_section(data) -> dict:
-    bricks = data["tool"].get("polylith", {}).get("bricks")
+    poly_data = get_polylith_section(data)
+
+    bricks = poly_data.get("bricks")
 
     return bricks if isinstance(bricks, dict) else {}
 
