@@ -7,6 +7,7 @@ def copy_tree(source: str, destination: str) -> Path:
         "*.pyc",
         "__pycache__",
         ".venv",
+        "__pypackages__",
         ".mypy_cache",
         ".pytest_cache",
         "node_modules",
