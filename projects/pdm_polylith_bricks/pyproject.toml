@@ -9,7 +9,7 @@ license = "MIT"
 readme = "README.md"
 
 packages = [
-    {include = "polylith/pdm_hooks", from = "../../bases"},
+    {include = "polylith/pdm_project_hooks", from = "../../bases"},
     {include = "polylith/parsing",from = "../../components"},
     {include = "polylith/pdm",from = "../../components"},
     {include = "polylith/repo",from = "../../components"},
@@ -21,7 +21,7 @@ python = "^3.9"
 tomlkit = "^0.11.5"
 
 [tool.poetry.plugins."pdm.build.hook"]
-polylith-bricks = "pdm_polylith_bricks.polylith.pdm_hooks.core"
+polylith-bricks = "pdm_polylith_bricks.polylith.pdm_project_hooks.core"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
