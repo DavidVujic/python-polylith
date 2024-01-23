@@ -67,8 +67,6 @@ There, you will find guides for setup, migration, packaging, available commands,
 
 
 ## Setup for PDM users
-For PDM, there are a couple of extra initial steps needed.
-
 Create a directory for your code, initialize it with __git__ and setup the basics with `PDM`.
 
 ``` shell
@@ -77,44 +75,25 @@ git init
 pdm init -n --backend pdm-backend minimal
 ```
 
-Add a README:
-``` shell
-touch README.md
+### Add a workspace hook
+Make `PDM` aware of the Polylith structure, by adding the `pdm-polylith-workspace` hook to the newly created `pyproject.toml`.
+
+The build hook will add an additional `pth` file to the virtual environment,
+with paths to the Polylith source code folders (bases, components).
+
+``` toml
+[build-system]
+requires = ["pdm-backend", "pdm-polylith-workspace"]
+build-backend = "pdm.backend"
+
 ```
 
-### PDM: custom hook
-Make `PDM` aware of the Polylith structure, by adding a custom hook.
-
-1. create a python module:
-
-``` shell
-touch pdm_build.py
-```
-
-2. add the following contents to `pdm_build.py`:
-
-``` python
-import os
-
-
-def pdm_build_initialize(context):
-    """Adding an additional pth file to the virtual environment
-
-    Making the virtual environment aware of the Polylith Workspace.
-    """
-
-    context.ensure_build_dir()
-    filepath = os.path.join(context.build_dir, "polylith_workspace.pth")
-
-    with open(filepath, "w") as f:
-        f.write(f"{context.config.root}/bases\n")
-        f.write(f"{context.config.root}/components\n")
-```
-
-### PDM: add polylith-cli
+### Add the polylith-cli
 Add the Polylith CLI as a dev dependency and setup the virtual environment paths.
 
 ``` toml
+touch README.md
+
 pdm add -d polylith-cli
 
 pdm install
