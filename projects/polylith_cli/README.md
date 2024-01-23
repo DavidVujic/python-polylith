@@ -11,7 +11,7 @@ You will find installation, setup, usage guides and more.
 `Poetry` user? For Poetry, the recommended setup is to install the `poetry-polylith-plugin`.
 Read more about Poetry in the [documentation](https://davidvujic.github.io/python-polylith-docs/installation/).
 
-### Setup: Hatch
+## Setup for Hatch users
 Create a directory for your code, initialize it with __git__ and setup the basics with `hatch`:
 
 ``` shell
@@ -60,6 +60,84 @@ hatch run poly create component --name my_component
 hatch run poly create base --name my_example_endpoint
 
 hatch run poly create project --name my_example_project
+```
+
+For details, have a look at the [documentation](https://davidvujic.github.io/python-polylith-docs/).
+There, you will find guides for setup, migration, packaging, available commands, code examples and more.
+
+
+## Setup for PDM users
+For PDM, there are a couple of extra initial steps needed.
+
+Create a directory for your code, initialize it with __git__ and setup the basics with `PDM`.
+
+``` shell
+git init
+
+pdm init -n --backend pdm-backend minimal
+```
+
+Add a README:
+``` shell
+touch README.md
+```
+
+### PDM: custom hook
+Make `PDM` aware of the Polylith structure, by adding a custom hook.
+
+1. create a python module:
+
+``` shell
+touch pdm_build.py
+```
+
+2. add the following contents to `pdm_build.py`:
+
+``` python
+import os
+
+
+def pdm_build_initialize(context):
+    """Adding an additional pth file to the virtual environment
+
+    Making the virtual environment aware of the Polylith Workspace.
+    """
+
+    context.ensure_build_dir()
+    filepath = os.path.join(context.build_dir, "polylith_workspace.pth")
+
+    with open(filepath, "w") as f:
+        f.write(f"{context.config.root}/bases\n")
+        f.write(f"{context.config.root}/components\n")
+```
+
+### PDM: add polylith-cli
+Add the Polylith CLI as a dev dependency and setup the virtual environment paths.
+
+``` toml
+pdm add -d polylith-cli
+
+pdm install
+```
+
+Next: create a Polylith workspace, with a basic Polylith folder structure.
+The `poly` command is now available in the local virtual environment.
+You can run commands in the context of `pdm run` to make Polylith aware of the development environment.
+
+``` shell
+pdm run poly create workspace --name my_namespace --theme loose
+```
+
+### Ready for coding!
+
+Add components, bases and projects:
+
+``` shell
+pdm run poly create component --name my_component
+
+pdm run poly create base --name my_example_endpoint
+
+pdm run poly create project --name my_example_project
 ```
 
 For details, have a look at the [documentation](https://davidvujic.github.io/python-polylith-docs/).
