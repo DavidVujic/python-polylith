@@ -109,6 +109,22 @@ build-backend = "hatchling.build"
     assert res == expected_hatch_packages
 
 
+def test_generate_updated_hatch_project_with_missing_brick_config():
+    data = tomlkit.parse(
+        """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+"""
+    )
+
+    updated = update.generate_updated_project(data, packages)
+
+    res = tomlkit.parse(updated)["tool"]["polylith"]["bricks"]
+
+    assert res == expected_hatch_packages
+
+
 def test_generate_updated_hatch_project_with_existing_force_include():
     data = tomlkit.parse(
         """\
@@ -124,43 +140,5 @@ build-backend = "hatchling.build"
     updated = update.generate_updated_project(data, packages[1:])
 
     res = tomlkit.parse(updated)["tool"]["hatch"]["build"]["force-include"]
-
-    assert res == expected_hatch_packages
-
-
-def test_generate_updated_hatch_project_with_missing_build_config():
-    data = tomlkit.parse(
-        """\
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch]
-hello = "world"
-"""
-    )
-
-    updated = update.generate_updated_project(data, packages)
-
-    res = tomlkit.parse(updated)["tool"]["polylith"]["bricks"]
-
-    assert res == expected_hatch_packages
-
-
-def test_generate_updated_hatch_project_with_missing_force_include_config():
-    data = tomlkit.parse(
-        """\
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build]
-hello = "world"
-"""
-    )
-
-    updated = update.generate_updated_project(data, packages)
-
-    res = tomlkit.parse(updated)["tool"]["polylith"]["bricks"]
 
     assert res == expected_hatch_packages
