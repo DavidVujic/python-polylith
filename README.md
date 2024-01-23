@@ -29,7 +29,7 @@ There's a Hatch Build Hook plugin and a PDM build hook to fully support these to
 
 * [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
 * [a CLI](https://pypi.org/project/polylith-cli)
-* [A Hatch Build Hook](https://pypi.org/project/hatch-polylith-bricks/)
+* [a Hatch Build Hook](https://pypi.org/project/hatch-polylith-bricks/)
 * [a PDM Build Hook](https://pypi.org/project/pdm-polylith-bricks/)
 
 The Poetry plugin adds Polylith specific tooling support to Poetry.
