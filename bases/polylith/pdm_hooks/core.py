@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from polylith import pdm
+from polylith.pdm.hooks.bricks import build_initialize
 
 
 def pdm_build_initialize(context):
@@ -8,4 +8,4 @@ def pdm_build_initialize(context):
 
     build_dir = Path(context.build_dir)
 
-    pdm.hooks.bricks.build_initialize(context.config.data, build_dir)
+    build_initialize(context.config.data, build_dir)
