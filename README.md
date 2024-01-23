@@ -25,17 +25,19 @@ You will find installation, setup, usage guides and more.
 
 ## Polylith for Python? :snake:
 This repo contains a Poetry plugin, a CLI that enables support for Hatch and PDM.
-There's a Hatch Build Hook plugin and a PDM build hook to fully support these tools.
+There's a Hatch Build Hook plugin and a PDM build hooks to fully support these tools.
 
 * [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
 * [a CLI](https://pypi.org/project/polylith-cli)
 * [a Hatch Build Hook](https://pypi.org/project/hatch-polylith-bricks/)
-* [a PDM Build Hook](https://pypi.org/project/pdm-polylith-bricks/)
+* [a PDM Build Hook for projects](https://pypi.org/project/pdm-polylith-bricks/)
+* [a PDM Build Hook for the workspace](https://pypi.org/project/pdm-polylith-workspace/)
 
 The Poetry plugin adds Polylith specific tooling support to Poetry.
 The CLI adds tooling support for Polylith, and enables different kinds of Package & Dependency Management tools (such as Hatch and PDM).
 The Hatch Build Hook adds support for building Libraries from Polylith with Hatch.
-The PDM Build Hook add support for building apps, services and libraries from Polylith using PDM.
+The PDM Build Hook for projects add support for building apps, services and libraries from Polylith using PDM.
+The PDM Build Hook for the workspace makes the virtual environment aware of the way Polylith organizes code (i.e. the bases and components folders).
 
 ### Use cases
 
