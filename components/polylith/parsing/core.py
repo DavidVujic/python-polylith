@@ -18,8 +18,8 @@ def copy_tree(source: str, destination: str) -> Path:
     return Path(res)
 
 
-def copy_brick(source: str, brick: str, tmp_dir: Path) -> Path:
-    destination = Path(tmp_dir / brick).as_posix()
+def copy_brick(source: str, brick: str, destination_dir: Path) -> Path:
+    destination = Path(destination_dir / brick).as_posix()
 
     return copy_tree(source, destination)
 
