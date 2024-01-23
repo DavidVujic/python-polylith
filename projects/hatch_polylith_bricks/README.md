@@ -1,6 +1,6 @@
 # Hatch Build Hook for Polylith
 
-A plugin for [Hatch](https://github.com/pypa/hatch) and the Polylith Architecture.
+A plugin for [Hatch](https://hatch.pypa.io/) and the Polylith Architecture.
 
 This build hook will look for Polylith `bricks` in `pyproject.toml` and __optionally__ re-write the imports made in the source code.
 
@@ -11,7 +11,27 @@ requires = ["hatchling", "hatch-polylith-bricks"]
 build-backend = "hatchling.build"
 ```
 
-## But why re-write code?
+This Build Hook has two main usages:
+* identify the included Polylith bricks from the `pyproject.toml`, and hand them over to the Hatch build process.
+* add support for building Python libraries by re-writing source code with a custom top namespace.
+
+Bricks are added to a project with relative paths, from the `bases` and `components` folders in a Polylith Workspace.
+The hook will add the bricks to the Hatch in-memory build config (`force-include`) provided by the Hatch build process.
+This will make the built `wheel` and `sdist` include proper paths to the source code.
+
+Polylith Bricks are defined in the `tool.polylith.bricks` section of the `pyproject.toml`:
+
+``` toml
+[tool.polylith.bricks]
+"../../bases/my_namespace/my_base" = "my_namespace/my_base"
+"../../components/my_namespace/my_component" = "my_namespace/my_component
+```
+
+### Polylith documentation
+[the Python tools for the Polylith Architecture](https://davidvujic.github.io/python-polylith-docs)
+
+
+## Why re-write code?
 Building libraries is supported in [the Python tools for the Polylith Architecture](https://davidvujic.github.io/python-polylith-docs),
 but you will need to consider that code will share the same top namespace with any other library built from the same monorepo.
 
@@ -32,7 +52,7 @@ Without any custom namespace in the configuration: no changes in the code. Build
 #### With a Top Namespace configuration
 
 ``` toml
-[tool.hatch.build.hooks.polylith-bricks]
+[tool.polylith.build]
 top-namespace = "my_custom_namespace"
 ```
 
@@ -58,16 +78,7 @@ from my_custom_namespace.my_namespace.my_package import my_function
 | Key | Default | Description |
 | --- | ------- | ----------- |
 | work-dir | .polylith_tmp | The temporary working directory for copying and re-writing source code. |
-| top-namespace | None | A custom top namespace. When set, Polylith bricks will be updated using this namespace. |
 
 
-This Plugin expects to find Polylith Bricks in the `pyproject.toml`:
-
-``` toml
-[tool.polylith.bricks]
-"../../bases/my_namespace/my_base" = "my_namespace/my_base"
-"../../components/my_namespace/my_component" = "my_namespace/my_component
-```
-
-## Documentation
+## Polylith documentation
 [the Python tools for the Polylith Architecture](https://davidvujic.github.io/python-polylith-docs)
