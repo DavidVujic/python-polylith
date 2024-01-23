@@ -8,7 +8,13 @@ repository = "https://github.com/davidvujic/python-polylith"
 license = "MIT"
 readme = "README.md"
 
-packages = [{include = "polylith/pdm_hooks", from = "../../bases"},]
+packages = [
+    {include = "polylith/pdm_hooks", from = "../../bases"},
+    {include = "polylith/parsing",from = "../../components"},
+    {include = "polylith/pdm",from = "../../components"},
+    {include = "polylith/repo",from = "../../components"},
+    {include = "polylith/toml",from = "../../components"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
