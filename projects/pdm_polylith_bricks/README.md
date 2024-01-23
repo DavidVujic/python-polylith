@@ -52,7 +52,7 @@ from my_namespace.my_package import my_function
 After:
 ```python
 from my_custom_namespace.my_namespace.my_package import my_function
-
+```
 
 This hook expects to find Polylith Bricks in the `pyproject.toml`:
 
