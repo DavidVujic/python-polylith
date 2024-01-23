@@ -1,5 +1,6 @@
 import ast
 from pathlib import Path
+from typing import List, Union
 
 
 def create_namespace_path(top_ns: str, current: str) -> str:
@@ -41,7 +42,7 @@ def mutate_imports(node: ast.AST, ns: str, top_ns: str) -> bool:
     return False
 
 
-def rewrite_module(source: Path, ns: str, top_ns: str) -> bool:
+def rewrite(source: Path, ns: str, top_ns: str) -> bool:
     file_path = source.as_posix()
 
     with open(file_path, "r", encoding="utf-8") as f:
@@ -58,3 +59,22 @@ def rewrite_module(source: Path, ns: str, top_ns: str) -> bool:
         return True
 
     return False
+
+
+def rewrite_module(module: Path, ns: str, top_ns: str) -> Union[str, None]:
+    was_rewritten = rewrite(module, ns, top_ns)
+
+    return f"{module.parent.name}/{module.name}" if was_rewritten else None
+
+
+def rewrite_modules(path: Path, ns: str, top_ns: str) -> List[str]:
+    """Rewrite modules in bricks with new top namespace
+
+    returns a list of bricks that was rewritten
+    """
+
+    modules = path.glob("**/*.py")
+
+    res = [rewrite_module(module, ns, top_ns) for module in modules]
+
+    return [r for r in res if r]

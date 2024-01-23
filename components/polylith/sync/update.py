@@ -28,27 +28,47 @@ def to_key_value_include(acc: dict, package: dict) -> dict:
     return {**acc, **{include: brick}}
 
 
+def generate_updated_pep_621_project(data: TOMLDocument, bricks_to_add: dict) -> str:
+    copy = copy_toml_data(data)
+
+    if not copy.get("tool"):
+        copy["tool"] = {"polylith": {"bricks": {}}}
+
+    if not copy["tool"].get("polylith"):
+        copy["tool"]["polylith"] = {"bricks": {}}
+
+    if not copy["tool"]["polylith"].get("bricks"):
+        copy["tool"]["polylith"]["bricks"] = {}
+
+    for k, v in bricks_to_add.items():
+        copy["tool"]["polylith"]["bricks"][k] = v
+
+    return tomlkit.dumps(copy)
+
+
+def generate_updated_pdm_project(data: TOMLDocument, packages: List[dict]) -> str:
+    bricks_to_add: dict = reduce(to_key_value_include, packages, {})
+
+    return generate_updated_pep_621_project(data, bricks_to_add)
+
+
 def generate_updated_hatch_project(data: TOMLDocument, packages: List[dict]) -> str:
     bricks_to_add: dict = reduce(to_key_value_include, packages, {})
 
-    copy = copy_toml_data(data)
+    has_polylith = data.get("tool", {}).get("polylith", {}).get("bricks")
+    has_hatch = (
+        data.get("tool", {}).get("hatch", {}).get("build", {}).get("force-include")
+    )
 
-    if copy["tool"].get("polylith", {}).get("bricks") is not None:
+    if not has_polylith and has_hatch:
+        copy = copy_toml_data(data)
+
         for k, v in bricks_to_add.items():
-            copy["tool"]["polylith"]["bricks"][k] = v
+            copy["tool"]["hatch"]["build"]["force-include"][k] = v
 
         return tomlkit.dumps(copy)
 
-    if copy["tool"]["hatch"].get("build") is None:
-        copy["tool"]["hatch"].add("build", {"force-include": {}})
-
-    if copy["tool"]["hatch"]["build"].get("force-include") is None:
-        copy["tool"]["hatch"]["build"]["force-include"] = {}
-
-    for k, v in bricks_to_add.items():
-        copy["tool"]["hatch"]["build"]["force-include"][k] = v
-
-    return tomlkit.dumps(copy)
+    return generate_updated_pep_621_project(data, bricks_to_add)
 
 
 def generate_updated_poetry_project(data: TOMLDocument, packages: List[dict]) -> str:
@@ -73,6 +93,9 @@ def generate_updated_project(
 
     if repo.is_hatch(data):
         return generate_updated_hatch_project(data, packages)
+
+    if repo.is_pdm(data):
+        return generate_updated_pdm_project(data, packages)
 
     return None
 

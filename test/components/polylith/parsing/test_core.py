@@ -11,4 +11,4 @@ bricks = {
 def test_parse_brick_namespace_from_path():
     res = core.parse_brick_namespace_from_path(bricks)
 
-    assert res == {expected_ns}
+    assert res == expected_ns
