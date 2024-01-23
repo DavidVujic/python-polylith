@@ -9,6 +9,9 @@ This build hook will look for Polylith `bricks` in `pyproject.toml` and __option
 [build-system]
 requires = ["hatchling", "hatch-polylith-bricks"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.hooks.polylith-bricks]
+# NOTE: this section is needed to enable the hook in the build process, even if empty
 ```
 
 This Build Hook has two main usages:
