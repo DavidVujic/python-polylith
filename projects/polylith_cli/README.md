@@ -91,12 +91,13 @@ build-backend = "pdm.backend"
 ### Add the polylith-cli
 Add the Polylith CLI as a dev dependency and setup the virtual environment paths.
 
-``` toml
+``` shell
 touch README.md
 
 pdm add -d polylith-cli
 
 pdm install
+
 ```
 
 Next: create a Polylith workspace, with a basic Polylith folder structure.

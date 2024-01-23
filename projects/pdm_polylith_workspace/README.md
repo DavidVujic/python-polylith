@@ -21,6 +21,8 @@ and that is the reason for using this hook.
 requires = ["pdm-backend", "pdm-polylith-workspace"]
 build-backend = "pdm.backend"
 
+```
+
 This is only needed in the Polylith workspace `pyproject.toml`, and not in the individual projects.
 
 ## Polylith documentation
