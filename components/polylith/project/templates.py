@@ -18,7 +18,7 @@ build-backend = "poetry.core.masonry.api"
 
 hatch_pyproject = """\
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-polylith-bricks"]
 build-backend = "hatchling.build"
 
 [project]
@@ -31,5 +31,23 @@ requires-python = "{python_version}"
 
 dependencies = []
 
-[tool.hatch.build.force-include]
+[tool.polylith.bricks]
+"""
+
+pdm_pyproject = """\
+[build-system]
+requires = ["pdm-backend", "pdm-polylith-bricks"]
+build-backend = "pdm.backend"
+
+[project]
+name = "{name}"
+version = "0.1.0"
+description = "{description}"
+authors = {authors}
+
+requires-python = "{python_version}"
+
+dependencies = []
+
+[tool.polylith.bricks]
 """

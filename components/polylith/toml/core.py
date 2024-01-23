@@ -31,27 +31,28 @@ def get_project_packages_from_polylith_section(data) -> dict:
 
 
 def get_hatch_project_packages(data) -> dict:
+    polylith_section = get_project_packages_from_polylith_section(data)
+
+    if polylith_section:
+        return polylith_section
+
     hatch_data = data["tool"]["hatch"]
     build_data = hatch_data.get("build", {}) if isinstance(hatch_data, dict) else {}
 
-    force_included = build_data.get("force-include")
-
-    if force_included:
-        return force_included
-
-    return get_project_packages_from_polylith_section(data)
+    return build_data.get("force-include", {})
 
 
 def get_project_package_includes(namespace: str, data) -> List[dict]:
     if repo.is_poetry(data):
         return data["tool"]["poetry"].get("packages", [])
 
-    if repo.is_hatch(data):
-        includes = get_hatch_project_packages(data)
+    includes = (
+        get_hatch_project_packages(data)
+        if repo.is_hatch(data)
+        else get_project_packages_from_polylith_section(data)
+    )
 
-        return [transform_to_package(namespace, key) for key in includes.keys()]
-
-    return []
+    return [transform_to_package(namespace, key) for key in includes.keys()]
 
 
 def get_project_name(data) -> str:

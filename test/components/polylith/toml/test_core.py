@@ -44,11 +44,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.force-include]
-"../../bases/unittest/one" = "unittest/one"
-"../../components/unittest/two" = "unittest/two"
+"something" = "else"
 
 [tool.polylith.bricks]
-"something" = "else"
+"../../bases/unittest/one" = "unittest/one"
+"../../components/unittest/two" = "unittest/two"
 """
 
 expected = [

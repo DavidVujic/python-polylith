@@ -37,6 +37,8 @@ def _create_project(root: Path, options: dict):
         template = project.templates.poetry_pyproject
     elif repo.is_hatch(root_pyproject):
         template = project.templates.hatch_pyproject
+    elif repo.is_pdm(root_pyproject):
+        template = project.templates.pdm_pyproject
 
     if not template:
         print("Failed to guess the used Package & Dependency Management")
