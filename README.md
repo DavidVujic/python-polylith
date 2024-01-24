@@ -52,12 +52,14 @@ Polylith for Python has support for building libraries to be published at PyPI, 
 More details about how to package libraries in the docs about [Packaging & deploying](https://davidvujic.github.io/python-polylith-docs/deployment/#packaging-a-library).
 
 ## :sparkles: Examples :sparkles:
-Have a look at the [Python Polylith Examples](https://github.com/DavidVujic/python-polylith-example) repository.
-
-There is also a [Python Polylith Examples with Hatch](https://github.com/DavidVujic/python-polylith-example-hatch) repository.
+There's example Polylith repositories for:
+- [Poetry](https://github.com/DavidVujic/python-polylith-example)
+- [Hatch](https://github.com/DavidVujic/python-polylith-example-hatch)
+- [PDM](https://github.com/DavidVujic/python-polylith-example-pdm)
 
 The repositories are example __Python__ setups of the Polylith Architecture.
-You will find examples of sharing code between different kind of projects, and developer tooling setup such as `mypy` and the `venv`.
+You will find examples of sharing code between different kind of projects,
+and developer tooling setup such as `mypy` and the `venv`.
 
 ## Videos
 - Python with the Polylith Architecture - [an overview](https://youtu.be/3w2ffHZb6gc) (about 15 minutes)
