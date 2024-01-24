@@ -8,7 +8,10 @@ A repo containing tooling support for the Polylith Architecture in Python.
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DavidVujic_python-polylith&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DavidVujic_python-polylith)
 
-[![Download Stats](https://img.shields.io/pypi/dm/poetry-polylith-plugin)](https://pypistats.org/packages/poetry-polylith-plugin)
+[![Download Stats](https://img.shields.io/pypi/dm/poetry-polylith-plugin?label=Poetry%20plugin%20Downloads)](https://pypistats.org/packages/poetry-polylith-plugin)
+
+[![Download Stats](https://img.shields.io/pypi/dm/polylith-cli?label=CLI%20Downloads)](https://pypistats.org/packages/polylith-cli)
+
 
 ## What's Polylith? :thinking:
 Polylith is an architecture (with tooling support) originally built for Clojure. The code in this repo brings __Polylith to Python__.
