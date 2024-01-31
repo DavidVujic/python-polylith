@@ -27,7 +27,7 @@ Have a look at the [Python-specific documentation](https://davidvujic.github.io/
 You will find installation, setup, usage guides and more.
 
 ## Polylith for Python? :snake:
-This repo contains a Poetry plugin, a CLI that enables support for Hatch and PDM.
+This repo contains a Poetry plugin, a CLI that enables support for __Hatch__, __PDM__ and __Rye__.
 There's a Hatch Build Hook plugin and a PDM build hooks to fully support these tools.
 
 * [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
@@ -38,7 +38,9 @@ There's a Hatch Build Hook plugin and a PDM build hooks to fully support these t
 
 The Poetry plugin adds Polylith specific tooling support to Poetry.
 The CLI adds tooling support for Polylith, and enables different kinds of Package & Dependency Management tools (such as Hatch and PDM).
-The Hatch Build Hook adds support for building Libraries from Polylith with Hatch.
+
+The Hatch Build Hook adds support for building Libraries from Polylith with Hatch (and Rye, using hatchling as a build backend by default).
+
 The PDM Build Hook for projects add support for building apps, services and libraries from Polylith using PDM.
 The PDM Build Hook for the workspace makes the virtual environment aware of the way Polylith organizes code (i.e. the bases and components folders).
 
@@ -56,6 +58,7 @@ There's example Polylith repositories for:
 - [Poetry](https://github.com/DavidVujic/python-polylith-example)
 - [Hatch](https://github.com/DavidVujic/python-polylith-example-hatch)
 - [PDM](https://github.com/DavidVujic/python-polylith-example-pdm)
+- [Rye](https://github.com/DavidVujic/python-polylith-example-rye)
 
 The repositories are example __Python__ setups of the Polylith Architecture.
 You will find examples of sharing code between different kind of projects,
