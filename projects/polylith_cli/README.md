@@ -120,5 +120,65 @@ pdm run poly create base --name my_example_endpoint
 pdm run poly create project --name my_example_project
 ```
 
+## Setup for Rye users
+``` shell
+rye init my_repo  # name your repo
+
+cd my_repo
+
+rye add polylith-cli --dev
+
+rye sync  # create a virtual environment and lock files
+```
+
+Create a workspace, with a basic Polylith folder structure.
+
+``` shell
+rye run poly create workspace --name my_namespace --theme loose
+```
+
+### Edit the configuration
+The default build backend for Rye is Hatch. Add the `hatch-polylith-bricks` build hook plugin to the `pyproject.toml` file.
+
+``` toml
+[build-system]
+requires = ["hatchling", "hatch-polylith-bricks"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.hooks.polylith-bricks]
+# this section is needed to enable the hook in the build process, even if empty.
+```
+
+Make Rye (and Hatch) aware of the way Polylith organizes source code:
+``` toml
+[tool.hatch.build]
+dev-mode-dirs = ["components", "bases", "development", "."]
+```
+
+Remove the `[project.scripts]` and `[tool.hatch.build.targets.wheel]` sections.
+
+Run the `sync` command to update the virtual environment:
+
+``` shell
+rye sync
+```
+
+Finally, remove the `src` boilerplate code that was added by Rye in the first step:
+``` shell
+rm -r src
+```
+
+### Ready for coding!
+
+Add components, bases and projects:
+
+``` shell
+rye run poly create component --name my_component
+
+rye run poly create base --name my_example_endpoint
+
+rye run poly create project --name my_example_project
+```
+
 For details, have a look at the [documentation](https://davidvujic.github.io/python-polylith-docs/).
 There, you will find guides for setup, migration, packaging, available commands, code examples and more.
