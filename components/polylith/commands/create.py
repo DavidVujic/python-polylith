@@ -12,7 +12,7 @@ def create(name: Union[str, None], description: Union[str, None], fn):
 
     if not namespace:
         raise ValueError(
-            "Didn't find a namespace. Expected to find it in workspace.toml."
+            "Didn't find a namespace. Expected to find it under [tool.polylith] in pyproject.toml."
         )
 
     options = {

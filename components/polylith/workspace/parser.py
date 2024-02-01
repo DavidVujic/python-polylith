@@ -8,7 +8,7 @@ from polylith import repo
 
 @lru_cache
 def _load_workspace_config(path: Path) -> tomlkit.TOMLDocument:
-    fullpath = path / repo.workspace_file
+    fullpath = path / repo.default_toml
 
     content = fullpath.read_text()
 

@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import Union
 
-workspace_file = "workspace.toml"
 default_toml = "pyproject.toml"
 readme_file = "README.md"
 
@@ -43,7 +42,7 @@ def find_upwards_dir(cwd: Path, name: str) -> Union[Path, None]:
 
 
 def find_workspace_root(cwd: Path) -> Union[Path, None]:
-    return find_upwards_dir(cwd, workspace_file)
+    return find_upwards_dir(cwd, default_toml)
 
 
 def get_workspace_root(cwd: Path) -> Path:
@@ -51,7 +50,7 @@ def get_workspace_root(cwd: Path) -> Path:
 
     if not root:
         raise ValueError(
-            "Didn't find the workspace root. Expected to find a workspace.toml file."
+            "Didn't find the workspace root. Expected to find a pyproject.toml file."
         )
 
     return root
