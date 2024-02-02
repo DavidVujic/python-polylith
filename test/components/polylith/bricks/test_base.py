@@ -32,7 +32,9 @@ def test_create_base(handle_workspace_files, id, expected_dirs, expected_dir_str
     }
     create_base(path=handle_workspace_files, options=options)
 
-    results = [x for x in handle_workspace_files.iterdir()]
+    results = [
+        x for x in handle_workspace_files.iterdir() if x.name != "workspace.toml"
+    ]
 
     assert all([item.is_dir() for item in results if item in expected_dirs])
     assert (

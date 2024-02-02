@@ -68,16 +68,3 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 addopts = "-sv"
-
-[tool.polylith]
-namespace = "polylith"
-
-[tool.polylith.structure]
-theme = "loose"
-
-[tool.polylith.tag.patterns]
-stable = "stable-*"
-release = "v[0-9]*"
-
-[tool.polylith.test]
-enabled = true
