@@ -29,7 +29,7 @@ def create_workspace_config(path: Path, namespace: str, theme: str) -> None:
     formatted = template.format(namespace=namespace, theme=theme)
     content: dict = tomlkit.loads(formatted)
 
-    fullpath = path / repo.default_toml
+    fullpath = path / repo.workspace_file
 
     with fullpath.open("w", encoding="utf-8") as f:
         f.write(tomlkit.dumps(content))

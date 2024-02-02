@@ -11,6 +11,7 @@ from polylith.repo.repo import (
     is_poetry,
     projects_dir,
     readme_file,
+    workspace_file,
 )
 
 __all__ = [
@@ -27,4 +28,5 @@ __all__ = [
     "is_poetry",
     "projects_dir",
     "readme_file",
+    "workspace_file",
 ]
