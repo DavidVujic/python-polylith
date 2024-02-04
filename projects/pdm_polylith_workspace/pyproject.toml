@@ -8,10 +8,22 @@ authors = ["David Vujic"]
 license = "MIT"
 readme = "README.md"
 
-packages = [{include = "polylith/pdm_workspace_hooks", from = "../../bases"}]
+packages = [
+    {include = "polylith/pdm_workspace_hooks", from = "../../bases"},
+    {include = "polylith/development",from = "../../components"},
+    {include = "polylith/dirs",from = "../../components"},
+    {include = "polylith/files",from = "../../components"},
+    {include = "polylith/parsing",from = "../../components"},
+    {include = "polylith/pdm",from = "../../components"},
+    {include = "polylith/readme",from = "../../components"},
+    {include = "polylith/repo",from = "../../components"},
+    {include = "polylith/toml",from = "../../components"},
+    {include = "polylith/workspace",from = "../../components"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+tomlkit = "^0.11.5"
 
 [tool.poetry.plugins."pdm.build.hook"]
 polylith-workspace = "pdm_polylith_workspace.polylith.pdm_workspace_hooks.core"
