@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Union
 
 workspace_file = "workspace.toml"
+root_file = ".git"
 default_toml = "pyproject.toml"
 readme_file = "README.md"
 
@@ -16,7 +17,7 @@ def is_drive_root(cwd: Path) -> bool:
 
 
 def is_repo_root(cwd: Path) -> bool:
-    fullpath = cwd / ".git"
+    fullpath = cwd / root_file
 
     return fullpath.exists()
 
@@ -43,7 +44,10 @@ def find_upwards_dir(cwd: Path, name: str) -> Union[Path, None]:
 
 
 def find_workspace_root(cwd: Path) -> Union[Path, None]:
-    return find_upwards_dir(cwd, workspace_file)
+    workspace_root = find_upwards_dir(cwd, workspace_file)
+    if workspace_root:
+        return workspace_root
+    return find_upwards_dir(cwd, root_file)
 
 
 def get_workspace_root(cwd: Path) -> Path:
@@ -51,7 +55,7 @@ def get_workspace_root(cwd: Path) -> Path:
 
     if not root:
         raise ValueError(
-            "Didn't find the workspace root. Expected to find a workspace.toml file."
+            "Didn't find the workspace root. Expected to find a workspace.toml or .git file."
         )
 
     return root

@@ -10,6 +10,9 @@ from polylith import repo
 def _load_workspace_config(path: Path) -> tomlkit.TOMLDocument:
     fullpath = path / repo.workspace_file
 
+    if not fullpath.exists():
+        fullpath = path / repo.default_toml
+
     content = fullpath.read_text()
 
     return tomlkit.loads(content)
