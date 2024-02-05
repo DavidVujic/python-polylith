@@ -11,7 +11,8 @@ def pdm_build_initialize(context):
 
     context.ensure_build_dir()
 
+    data = context.config.data
     build_dir = Path(context.build_dir)
     root = Path(context.root)
 
-    build_initialize(context.config, build_dir, root)
+    build_initialize(data, build_dir, root)
