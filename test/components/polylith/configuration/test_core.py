@@ -1,6 +1,7 @@
 from pathlib import Path
-import pytest
+from typing import Tuple
 
+import pytest
 import tomlkit
 from polylith.configuration import core
 
@@ -41,61 +42,62 @@ def use_tdd(use_fake):
     use_fake(theme="tdd")
 
 
+fake_path = Path.cwd()
+
+
 def test_get_namespace(use_loose):
-    res = core.get_namespace_from_config(Path.cwd())
+    res = core.get_namespace_from_config(fake_path)
 
     assert res == "my_namespace"
 
 
 def test_get_tag_pattern(use_loose):
-    path = Path.cwd()
-
-    stable = core.get_tag_pattern_from_config(path, "stable")
-    release = core.get_tag_pattern_from_config(path, "release")
+    stable = core.get_tag_pattern_from_config(fake_path, "stable")
+    release = core.get_tag_pattern_from_config(fake_path, "release")
 
     assert stable == "stable-*"
     assert release == "v[0-9]*"
 
 
 def test_is_test_generation_enabled(use_loose):
-    res = core.is_test_generation_enabled(Path.cwd())
+    res = core.is_test_generation_enabled(fake_path)
 
     assert res is True
 
 
 def test_is_readme_generation_enabled(use_loose):
-    res = core.is_readme_generation_enabled(Path.cwd())
+    res = core.is_readme_generation_enabled(fake_path)
 
     assert res is False
 
 
 def test_get_theme(use_loose):
-    res = core.get_theme_from_config(Path.cwd())
+    res = core.get_theme_from_config(fake_path)
 
     assert res == "loose"
 
 
-def test_get_structure_for_loose_theme(use_loose):
-    path = Path.cwd()
+def _get_structure(path: Path) -> Tuple[str, str, str]:
+    brick = core.get_brick_structure_from_config(path)
+    test = core.get_tests_structure_from_config(path)
+    resources = core.get_resources_structure_from_config(path)
 
-    brick_structure = core.get_brick_structure_from_config(path)
-    test_structure = core.get_tests_structure_from_config(path)
-    resources_structure = core.get_resources_structure_from_config(path)
+    return brick, test, resources
+
+
+def test_get_structure_for_loose_theme(use_loose):
+    brick, test, resources = _get_structure(fake_path)
 
     expected = "{brick}/{namespace}/{package}"
 
-    assert brick_structure == expected
-    assert test_structure == f"test/{expected}"
-    assert resources_structure == expected
+    assert brick == expected
+    assert test == f"test/{expected}"
+    assert resources == expected
 
 
 def test_get_structure_for_tdd_theme(use_tdd):
-    path = Path.cwd()
+    brick, test, resources = _get_structure(fake_path)
 
-    brick_structure = core.get_brick_structure_from_config(path)
-    test_structure = core.get_tests_structure_from_config(path)
-    resources_structure = core.get_resources_structure_from_config(path)
-
-    assert brick_structure == "{brick}/{package}/src/{namespace}/{package}"
-    assert test_structure == "{brick}/{package}/test/{namespace}/{package}"
-    assert resources_structure == "{brick}/{package}"
+    assert brick == "{brick}/{package}/src/{namespace}/{package}"
+    assert test == "{brick}/{package}/test/{namespace}/{package}"
+    assert resources == "{brick}/{package}"
