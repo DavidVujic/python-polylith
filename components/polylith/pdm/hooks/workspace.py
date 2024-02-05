@@ -4,7 +4,7 @@ from typing import Set
 from polylith import configuration, toml
 
 
-def paths_from_config(root: Path, ns: str, data: dict) -> Set[str]:
+def paths_from_config(ns: str, data: dict) -> Set[str]:
     packages = toml.get_project_package_includes(ns, data)
 
     return {p["from"] for p in packages}
@@ -13,7 +13,7 @@ def paths_from_config(root: Path, ns: str, data: dict) -> Set[str]:
 def parse_paths(root: Path, theme: str, ns: str, data: dict) -> Set[str]:
     defaults = {"bases", "components"}
 
-    paths = defaults if theme == "loose" else paths_from_config(root, ns, data)
+    paths = defaults if theme == "loose" else paths_from_config(ns, data)
 
     return {(root / p).as_posix() for p in paths}
 
