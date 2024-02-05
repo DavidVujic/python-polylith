@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Union
 
 import tomlkit
-from polylith import project, repo, workspace
+from polylith import configuration, project, repo
 from tomlkit.toml_document import TOMLDocument
 
 
@@ -101,7 +101,7 @@ def generate_updated_project(
 
 
 def to_packages(root: Path, namespace: str, diff: dict) -> List[dict]:
-    theme = workspace.parser.get_theme_from_config(root)
+    theme = configuration.get_theme_from_config(root)
 
     is_project = diff["is_project"]
 

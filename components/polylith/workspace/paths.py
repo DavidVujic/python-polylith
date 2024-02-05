@@ -1,8 +1,7 @@
 from pathlib import Path
 from typing import Set
 
-from polylith import repo
-from polylith.workspace import parser
+from polylith import configuration, repo
 
 
 def get_path(structure: str, brick: str, ns: str, package: str) -> str:
@@ -14,7 +13,7 @@ def get_paths(structure: str, brick: str, ns: str, packages: Set[str]) -> Set[st
 
 
 def collect_paths(root: Path, ns: str, brick: str, packages: Set[str]) -> Set[Path]:
-    structure = parser.get_brick_structure_from_config(root)
+    structure = configuration.get_brick_structure_from_config(root)
 
     paths = get_paths(structure, brick, ns, packages)
 

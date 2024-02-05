@@ -1,19 +1,31 @@
 from pathlib import Path
 
 from polylith import (
+    alias,
     bricks,
+    check,
+    commands,
+    configuration,
     development,
     diff,
     dirs,
+    distributions,
     files,
+    hatch,
+    imports,
     info,
     interface,
+    libs,
+    parsing,
+    pdm,
     poetry,
-    poetry_plugin,
     project,
     readme,
     repo,
+    reporting,
+    sync,
     test,
+    toml,
     workspace,
 )
 
@@ -23,7 +35,7 @@ print(repo.components_dir)
 print(repo.projects_dir)
 
 root = Path.cwd()
-ns = workspace.parser.get_namespace_from_config(root)
+ns = configuration.get_namespace_from_config(root)
 
 tag = diff.collect.get_latest_tag(root, "release") or ""
 

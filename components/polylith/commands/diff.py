@@ -1,11 +1,11 @@
 from pathlib import Path
-
 from typing import Union
-from polylith import diff, info, repo, workspace
+
+from polylith import configuration, diff, info, repo
 
 
 def print_views(root: Path, tag: str, short: bool, only_bricks: bool) -> None:
-    ns = workspace.parser.get_namespace_from_config(root)
+    ns = configuration.get_namespace_from_config(root)
     files = diff.collect.get_files(tag)
     bases = diff.collect.get_changed_bases(files, ns)
     components = diff.collect.get_changed_components(files, ns)

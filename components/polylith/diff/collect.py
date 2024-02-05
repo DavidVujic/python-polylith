@@ -2,7 +2,7 @@ import subprocess
 from pathlib import Path
 from typing import List, Set, Union
 
-from polylith import repo, workspace
+from polylith import configuration, repo
 
 
 def _parse_folder_parts(folder: str, changed_file: Path) -> str:
@@ -42,7 +42,7 @@ def get_changed_projects(changed_files: List[Path]) -> list:
 
 
 def get_latest_tag(root: Path, key: Union[str, None]) -> Union[str, None]:
-    tag_pattern = workspace.parser.get_tag_pattern_from_config(root, key)
+    tag_pattern = configuration.get_tag_pattern_from_config(root, key)
 
     res = subprocess.run(
         ["git", "tag", "-l", "--sort=-committerdate", f"{tag_pattern}"],

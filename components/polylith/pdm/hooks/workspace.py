@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Set
 
-from polylith import toml, workspace
+from polylith import configuration, toml
 
 
 def paths_from_config(root: Path, ns: str, data: dict) -> Set[str]:
@@ -27,8 +27,8 @@ def write_pth_file(build_dir: Path, paths: Set[str]) -> None:
 
 
 def build_initialize(config_data: dict, build_dir: Path, root: Path) -> None:
-    theme = workspace.parser.get_theme_from_config(root)
-    ns = workspace.parser.get_namespace_from_config(root)
+    theme = configuration.get_theme_from_config(root)
+    ns = configuration.get_namespace_from_config(root)
 
     paths = parse_paths(root, theme, ns, config_data)
 

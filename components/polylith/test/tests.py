@@ -2,7 +2,7 @@ from pathlib import Path
 
 from polylith.dirs import create_dir
 from polylith.files import create_file
-from polylith.workspace import parser
+from polylith import configuration
 
 template = """\
 from {namespace}.{package} import {modulename}
@@ -14,7 +14,7 @@ def test_sample():
 
 
 def create_test(root: Path, options: dict) -> None:
-    if not parser.is_test_generation_enabled(root):
+    if not configuration.is_test_generation_enabled(root):
         return
 
     brick = options["brick"]
@@ -22,7 +22,7 @@ def create_test(root: Path, options: dict) -> None:
     package = options["package"]
     modulename = options["modulename"]
 
-    dirs_structure = parser.get_tests_structure_from_config(root)
+    dirs_structure = configuration.get_tests_structure_from_config(root)
     dirs = dirs_structure.format(brick=brick, namespace=namespace, package=package)
     d = create_dir(root, dirs)
 

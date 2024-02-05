@@ -10,15 +10,11 @@ readme = "README.md"
 
 packages = [
     {include = "polylith/pdm_workspace_hooks", from = "../../bases"},
-    {include = "polylith/development",from = "../../components"},
-    {include = "polylith/dirs",from = "../../components"},
-    {include = "polylith/files",from = "../../components"},
+    {include = "polylith/configuration",from = "../../components"},
     {include = "polylith/parsing",from = "../../components"},
     {include = "polylith/pdm",from = "../../components"},
-    {include = "polylith/readme",from = "../../components"},
     {include = "polylith/repo",from = "../../components"},
     {include = "polylith/toml",from = "../../components"},
-    {include = "polylith/workspace",from = "../../components"},
 ]
 
 [tool.poetry.dependencies]

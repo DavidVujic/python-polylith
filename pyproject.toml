@@ -38,6 +38,7 @@ packages = [
     {include = "polylith/toml",from = "components"},
     {include = "polylith/workspace",from = "components"},
     {include = "development"},
+    {include = "polylith/configuration",from = "components"},
 ]
 
 [tool.poetry.dependencies]

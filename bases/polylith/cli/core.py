@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from polylith import commands, info, repo, workspace
+from polylith import commands, configuration, info, repo
 from polylith.cli import create, options
 from typer import Exit, Option, Typer
 from typing_extensions import Annotated
@@ -30,7 +30,7 @@ def check_command(
 ):
     """Validates the Polylith workspace."""
     root = repo.get_workspace_root(Path.cwd())
-    ns = workspace.parser.get_namespace_from_config(root)
+    ns = configuration.get_namespace_from_config(root)
 
     all_projects_data = info.get_projects_data(root, ns)
     only_projects_data = [p for p in all_projects_data if info.is_project(p)]
@@ -68,7 +68,7 @@ def libs_command(
 ):
     """Show third-party libraries used in the workspace."""
     root = repo.get_workspace_root(Path.cwd())
-    ns = workspace.parser.get_namespace_from_config(root)
+    ns = configuration.get_namespace_from_config(root)
 
     projects_data = info.get_projects_data(root, ns)
 
@@ -94,7 +94,7 @@ def sync_command(
 ):
     """Update pyproject.toml with missing bricks."""
     root = repo.get_workspace_root(Path.cwd())
-    ns = workspace.parser.get_namespace_from_config(root)
+    ns = configuration.get_namespace_from_config(root)
 
     projects_data = info.get_projects_data(root, ns)
 
