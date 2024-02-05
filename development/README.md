@@ -23,3 +23,31 @@ When done testing, don't forget to uninstall the local test version:
 ~/Library/Application\ Support/pypoetry/venv/bin/pip uninstall poetry-polylith-plugin
 ```
 
+## Packaging notes
+Developer notes about how to package the artifacts, using custom top namespaces.
+
+The Poetry plugin:
+``` shell
+poetry build-project --directory projects/poetry_polylith_plugin
+```
+
+The CLI:
+``` shell
+poetry build-project --directory projects/polylith_cli --with-top-namespace polylith_cli
+```
+
+The Hatch build hook:
+``` shell
+poetry build-project --directory projects/hatch_polylith_bricks --with-top-namespace hatch_polylith_bricks
+```
+
+The PDM project build hook:
+``` shell
+poetry build-project --directory projects/pdm_polylith_bricks --with-top-namespace pdm_polylith_bricks
+```
+
+The PDM Workspace build hook:
+``` shell
+poetry build-project --directory projects/pdm_polylith_workspace --with-top-namespace pdm_polylith_workspace
+```
+
