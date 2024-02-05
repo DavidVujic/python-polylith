@@ -2,7 +2,7 @@ from pathlib import Path
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith import commands, info, repo, workspace
+from polylith import commands, configuration, info, repo
 from polylith.poetry import internals
 
 command_options = [
@@ -52,7 +52,7 @@ class CheckCommand(Command):
     def handle(self) -> int:
         directory = self.option("directory")
         root = repo.get_workspace_root(Path.cwd())
-        ns = workspace.parser.get_namespace_from_config(root)
+        ns = configuration.get_namespace_from_config(root)
 
         all_projects_data = info.get_projects_data(root, ns)
         only_projects_data = [p for p in all_projects_data if info.is_project(p)]

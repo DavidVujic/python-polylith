@@ -2,7 +2,7 @@ import sys
 from pathlib import Path
 from typing import Set
 
-from polylith import workspace
+from polylith import configuration
 from polylith.imports import extract_top_ns, fetch_all_imports
 from polylith.libs.stdlib import standard_libs
 
@@ -42,7 +42,7 @@ def extract_third_party_imports(all_imports: dict, top_ns: str) -> dict:
 
 
 def get_third_party_imports(root: Path, paths: Set[Path]) -> dict:
-    top_ns = workspace.parser.get_namespace_from_config(root)
+    top_ns = configuration.get_namespace_from_config(root)
 
     all_imports = fetch_all_imports(paths)
 

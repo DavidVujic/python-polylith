@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdm-polylith-bricks"
-version = "0.1.1"
+version = "0.1.2"
 description = "a PDM build hook for Polylith"
 authors = ["David Vujic"]
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
@@ -10,6 +10,7 @@ readme = "README.md"
 
 packages = [
     {include = "polylith/pdm_project_hooks", from = "../../bases"},
+    {include = "polylith/configuration",from = "../../components"},
     {include = "polylith/parsing",from = "../../components"},
     {include = "polylith/pdm",from = "../../components"},
     {include = "polylith/repo",from = "../../components"},

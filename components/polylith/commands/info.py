@@ -1,12 +1,12 @@
 from pathlib import Path
 
-from polylith import info, repo, workspace
+from polylith import configuration, info, repo
 
 
 def run(short: bool):
     root = repo.get_workspace_root(Path.cwd())
 
-    ns = workspace.parser.get_namespace_from_config(root)
+    ns = configuration.get_namespace_from_config(root)
     bases = info.get_bases(root, ns)
     components = info.get_components(root, ns)
     projects_data = info.get_bricks_in_projects(root, components, bases, ns)

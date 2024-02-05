@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 
 import tomlkit
-from polylith import repo, toml, workspace
+from polylith import configuration, repo, toml
 
 
 def get_project_name(data) -> str:
@@ -43,7 +43,7 @@ def get_toml_files(root: Path) -> List[dict]:
 
 def get_packages_for_projects(root: Path) -> List[dict]:
     toml_files = get_toml_files(root)
-    namespace = workspace.parser.get_namespace_from_config(root)
+    namespace = configuration.get_namespace_from_config(root)
 
     return [
         {

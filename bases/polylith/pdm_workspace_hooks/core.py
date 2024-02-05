@@ -1,4 +1,6 @@
-import os
+from pathlib import Path
+
+from polylith.pdm.hooks.workspace import build_initialize
 
 
 def pdm_build_initialize(context):
@@ -8,8 +10,9 @@ def pdm_build_initialize(context):
     """
 
     context.ensure_build_dir()
-    filepath = os.path.join(context.build_dir, "polylith_workspace.pth")
 
-    with open(filepath, "w") as f:
-        f.write(f"{context.config.root}/bases\n")
-        f.write(f"{context.config.root}/components\n")
+    data = context.config.data
+    build_dir = Path(context.build_dir)
+    root = Path(context.config.root)
+
+    build_initialize(data, build_dir, root)

@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from poetry.console.commands.command import Command
-from polylith import commands, info, repo, workspace
+from polylith import commands, configuration, info, repo
 from polylith.poetry.commands.check import command_options
 from polylith.poetry.internals import filter_projects_data, find_third_party_libs
 
@@ -33,7 +33,7 @@ class LibsCommand(Command):
     def handle(self) -> int:
         directory = self.option("directory")
         root = repo.get_workspace_root(Path.cwd())
-        ns = workspace.parser.get_namespace_from_config(root)
+        ns = configuration.get_namespace_from_config(root)
 
         all_projects_data = info.get_projects_data(root, ns)
         projects_data = filter_projects_data(self.poetry, directory, all_projects_data)

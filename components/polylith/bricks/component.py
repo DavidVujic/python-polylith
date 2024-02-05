@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List
 
-from polylith import workspace
+from polylith import configuration
 from polylith.bricks.brick import create_brick
 from polylith.repo import components_dir
 from polylith.test import create_test
@@ -20,7 +20,7 @@ def is_brick_dir(p: Path) -> bool:
 
 
 def get_component_dirs(root: Path, top_dir, ns) -> list:
-    theme = workspace.parser.get_theme_from_config(root)
+    theme = configuration.get_theme_from_config(root)
     dirs = top_dir if theme == "tdd" else f"{top_dir}/{ns}"
 
     component_dir = root / dirs

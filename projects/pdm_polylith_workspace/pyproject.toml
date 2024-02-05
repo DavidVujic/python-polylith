@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdm-polylith-workspace"
-version = "0.1.0"
+version = "0.1.1"
 description = "a PDM build hook for a Polylith workspace"
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
 repository = "https://github.com/davidvujic/python-polylith"
@@ -8,10 +8,18 @@ authors = ["David Vujic"]
 license = "MIT"
 readme = "README.md"
 
-packages = [{include = "polylith/pdm_workspace_hooks", from = "../../bases"}]
+packages = [
+    {include = "polylith/pdm_workspace_hooks", from = "../../bases"},
+    {include = "polylith/configuration",from = "../../components"},
+    {include = "polylith/parsing",from = "../../components"},
+    {include = "polylith/pdm",from = "../../components"},
+    {include = "polylith/repo",from = "../../components"},
+    {include = "polylith/toml",from = "../../components"},
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
+tomlkit = "^0.11.5"
 
 [tool.poetry.plugins."pdm.build.hook"]
 polylith-workspace = "pdm_polylith_workspace.polylith.pdm_workspace_hooks.core"
