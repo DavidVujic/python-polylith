@@ -87,5 +87,5 @@ and developer tooling setup such as `mypy` and the `venv`.
 ## Repo Visualization
 A visualization of this repo (that itself is a Polylith workspace) using the `poly info` command.
 
-<img width="685" alt="poly-info" src="https://github.com/DavidVujic/python-polylith/assets/301286/0d41ae61-16a6-4c95-abe2-cbbf5d584920">
+<img width="698" alt="poly-info" src="https://github.com/DavidVujic/python-polylith/assets/301286/692581b6-e5ad-48b4-8fac-9a2aac83942f">
 
