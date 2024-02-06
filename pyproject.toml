@@ -17,6 +17,7 @@ packages = [
     {include = "polylith/check",from = "components"},
     {include = "polylith/configuration",from = "components"},
     {include = "polylith/commands",from = "components"},
+    {include = "polylith/deps",from = "components"},
     {include = "polylith/development",from = "components"},
     {include = "polylith/diff",from = "components"},
     {include = "polylith/dirs",from = "components"},
