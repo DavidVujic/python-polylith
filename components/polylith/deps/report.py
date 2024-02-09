@@ -1,48 +1,55 @@
+from typing import List
+
 from polylith.reporting import theme
 from rich import box
 from rich.console import Console
-from rich.padding import Padding
 from rich.table import Table
 
 
-def print_table(table: Table) -> None:
-    console = Console(theme=theme.poly_theme)
+def brick_status(brick_imports: dict, brick_name: str, imported: str) -> str:
+    bricks = brick_imports[brick_name]
 
-    console.print(table, overflow="ellipsis")
+    if brick_name == imported:
+        status = ""
+    elif imported in bricks:
+        status = ":heavy_check_mark:"
+    else:
+        status = "-"
+
+    return f"[data]{status}[/]"
 
 
-def print_brick_deps(brick_imports: dict):
-    bases = brick_imports["bases"]
-    components = brick_imports["components"]
+def calculate_tag(brick: str, project_data: dict) -> str:
+    return "base" if brick in project_data.get("bases", []) else "comp"
+
+
+def extract_names(project_data: dict) -> List[str]:
+    bases = project_data.get("bases", [])
+    components = project_data.get("components", [])
+
+    return sorted(components) + sorted(bases)
+
+
+def print_deps(project_data: dict, brick_imports: dict):
+    brick_names = extract_names(project_data)
+    flattened_imports = sorted(set().union(*brick_imports.values()))
 
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
 
-"""
-data = {
-    "bases": {
-        "pdm_project_hooks": {"pdm"},
-        "pdm": {"configuration", "parsing", "pdm", "toml"},
-        "configuration": {"configuration", "repo"},
-        "toml": {"repo", "toml"},
-        "parsing": {"parsing"},
-        "repo": {"repo"},
-    },
-    "components": {
-        "repo": {"repo"},
-        "pdm": {"configuration", "parsing", "pdm", "toml"},
-        "configuration": {"configuration", "repo"},
-        "toml": {"repo", "toml"},
-        "parsing": {"parsing"},
-    },
-}
+    for imported in flattened_imports:
+        tag = calculate_tag(imported, project_data)
+        name = "\n".join(imported)
 
-c = data["components"]
+        table.add_column(f"[{tag}]{name}[/]", justify="center")
 
-from functools import reduce
-from typing import Set
+    for name in brick_names:
+        tag = calculate_tag(name, project_data)
+        statuses = [brick_status(brick_imports, name, i) for i in flattened_imports]
+        cols = [f"[{tag}]{name}[/]"] + statuses
 
+        table.add_row(*cols)
 
-rows = set(c.keys())
-cols: Set[str] = reduce(lambda acc, total: set().union(acc, total), c.values(), set())
-"""
+    console = Console(theme=theme.poly_theme)
+
+    console.print(table, overflow="ellipsis")
