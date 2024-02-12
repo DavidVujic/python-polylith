@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from polylith import bricks, commands, configuration, info, repo
+from polylith import commands, configuration, info, repo
 from polylith.cli import create, options
 from typer import Exit, Option, Typer
 from typing_extensions import Annotated
@@ -119,19 +119,7 @@ def deps_command(directory: Annotated[str, options.directory] = ""):
 
     dir_path = Path(directory).as_posix() if directory else None
 
-    ws_bases = [b["name"] for b in bricks.get_bases_data(root, ns)]
-    ws_components = [c["name"] for c in bricks.get_components_data(root, ns)]
-
-    projects_data = info.get_projects_data(root, ns) if dir_path else []
-    proj_data = next((p for p in projects_data if dir_path in p["path"].as_posix()), {})
-
-    proj_bases = proj_data.get("bases", {}) if proj_data else ws_bases
-    proj_components = proj_data.get("components", {}) if proj_data else ws_components
-
-    bases = [b for b in ws_bases if b in proj_bases]
-    components = [c for c in ws_components if c in proj_components]
-
-    commands.deps.run(root, ns, bases, components)
+    commands.deps.run(root, ns, dir_path)
 
 
 if __name__ == "__main__":
