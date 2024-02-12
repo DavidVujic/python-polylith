@@ -19,7 +19,7 @@ def print_summary(diff: dict) -> None:
 
     anything_to_sync = bases or components
 
-    emoji = ":point_right:" if anything_to_sync else ":heavy_check_mark:"
+    emoji = ":point_right:" if anything_to_sync else theme.check_emoji
     printable_name = f"[proj]{name}[/]" if is_project else f"[data]{name}[/]"
 
     console.print(f"{emoji} {printable_name}")

@@ -1,4 +1,5 @@
-from typing import List
+from functools import reduce
+from typing import List, Set, Tuple
 
 from polylith.reporting import theme
 from rich import box
@@ -6,49 +7,72 @@ from rich.console import Console
 from rich.table import Table
 
 
-def brick_status(brick_imports: dict, brick_name: str, imported: str) -> str:
-    bricks = brick_imports[brick_name]
-
-    if brick_name == imported:
-        status = ""
-    elif imported in bricks:
-        status = ":heavy_check_mark:"
-    else:
-        status = "-"
-
-    return f"[data]{status}[/]"
-
-
 def calculate_tag(brick: str, project_data: dict) -> str:
     return "base" if brick in project_data.get("bases", []) else "comp"
 
 
-def extract_names(project_data: dict) -> List[str]:
-    bases = project_data.get("bases", [])
-    components = project_data.get("components", [])
+def to_col(brick: str, tag: str) -> str:
+    name = "\n".join(brick)
 
-    return sorted(components) + sorted(bases)
+    return f"[{tag}]{name}[/]"
 
 
-def print_deps(project_data: dict, brick_imports: dict):
-    brick_names = extract_names(project_data)
-    flattened_imports = sorted(set().union(*brick_imports.values()))
+def brick_status(bricks: List[str], brick_name: str, imported: str) -> str:
+    status = theme.check_emoji if imported in bricks and imported != brick_name else "-"
 
+    return f"[data]{status}[/]"
+
+
+def to_row(name: str, tag: str, brick_imports: dict, imported: List[str]) -> List[str]:
+    bricks = brick_imports[name]
+    statuses = [brick_status(bricks, name, i) for i in imported]
+
+    return [f"[{tag}]{name}[/]"] + statuses
+
+
+def flatten_import(acc: Set[str], kv: Tuple[str, Set[str]]) -> set:
+    key = kv[0]
+    values = kv[1]
+
+    return set().union(acc, values.difference({key}))
+
+
+def flatten_imports(brick_imports: dict) -> Set[str]:
+    """Flatten the dict into a set of imports, with the actual brick filtered away when existing as an import"""
+    return reduce(flatten_import, brick_imports.items(), set())
+
+
+def print_deps(bases: List[str], components: List[str], brick_imports: dict):
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
 
-    for imported in flattened_imports:
-        tag = calculate_tag(imported, project_data)
-        name = "\n".join(imported)
+    flattened_imports = flatten_imports(brick_imports)
 
-        table.add_column(f"[{tag}]{name}[/]", justify="center")
+    imported_bases = sorted({b for b in flattened_imports if b in bases})
+    imported_components = sorted({c for c in flattened_imports if c in components})
+    imported = imported_components + imported_bases
 
-    for name in brick_names:
-        tag = calculate_tag(name, project_data)
-        statuses = [brick_status(brick_imports, name, i) for i in flattened_imports]
-        cols = [f"[{tag}]{name}[/]"] + statuses
+    base_cols = [to_col(brick, "base") for brick in imported_bases]
+    comp_cols = [to_col(brick, "comp") for brick in imported_components]
 
-        table.add_row(*cols)
+    base_rows = [
+        to_row(name, "base", brick_imports, imported) for name in sorted(bases)
+    ]
+    comp_rows = [
+        to_row(name, "comp", brick_imports, imported) for name in sorted(components)
+    ]
+
+    for col in comp_cols:
+        table.add_column(col, justify="center")
+
+    for col in base_cols:
+        table.add_column(col, justify="center")
+
+    for row in comp_rows:
+        table.add_row(*row)
+
+    for row in base_rows:
+        table.add_row(*row)
 
     console = Console(theme=theme.poly_theme)
 

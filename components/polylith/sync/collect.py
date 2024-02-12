@@ -9,14 +9,13 @@ def calculate_diff(
     project_data: dict,
     workspace_data: dict,
 ) -> dict:
-    brick_imports = deps.get_brick_imports(root, namespace, project_data)
+    bases = project_data["bases"]
+    components = project_data["components"]
 
     all_bases = workspace_data["bases"]
     all_components = workspace_data["components"]
 
-    bases = project_data["bases"]
-    components = project_data["components"]
-
+    brick_imports = deps.get_brick_imports(root, namespace, bases, components)
     is_project = info.is_project(project_data)
 
     if is_project:

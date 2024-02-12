@@ -8,7 +8,7 @@ from rich.table import Table
 
 
 def brick_status(brick, bricks, command: str) -> str:
-    emoji = ":heavy_check_mark:" if command == "info" else ":gear:"
+    emoji = theme.check_emoji if command == "info" else ":gear:"
 
     status = emoji if brick in bricks else "-"
 
