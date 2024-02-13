@@ -9,8 +9,8 @@ def calculate_diff(
     project_data: dict,
     workspace_data: dict,
 ) -> dict:
-    bases = project_data["bases"]
-    components = project_data["components"]
+    bases = set(project_data["bases"])
+    components = set(project_data["components"])
 
     all_bases = workspace_data["bases"]
     all_components = workspace_data["components"]

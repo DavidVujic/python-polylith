@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Set
+from typing import Set
 
 from polylith import check, imports, workspace
 
@@ -31,13 +31,13 @@ def with_unknown_components(root: Path, ns: str, brick_imports: dict) -> dict:
     return with_unknown_components(root, ns, collected)
 
 
-def diff(known_bricks: Set[str], bases: List[str], components: List[str]) -> Set[str]:
+def diff(known_bricks: Set[str], bases: Set[str], components: Set[str]) -> Set[str]:
     bricks = set().union(bases, components)
 
     return known_bricks.difference(bricks)
 
 
-def imports_diff(brick_imports: dict, bases: List, components: List) -> Set[str]:
+def imports_diff(brick_imports: dict, bases: Set[str], components: Set[str]) -> Set[str]:
     flattened_bases = set().union(*brick_imports["bases"].values())
     flattened_components = set().union(*brick_imports["components"].values())
 

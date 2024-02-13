@@ -42,7 +42,7 @@ def flatten_imports(brick_imports: dict) -> Set[str]:
     return reduce(flatten_import, brick_imports.items(), set())
 
 
-def print_deps(bases: List[str], components: List[str], brick_imports: dict):
+def print_deps(bases: Set[str], components: Set[str], brick_imports: dict):
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]brick[/]")
 

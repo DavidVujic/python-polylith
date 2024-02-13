@@ -76,7 +76,7 @@ def create_report(
     brick_imports = collected_imports["brick_imports"]
     third_party_imports = collected_imports["third_party_imports"]
 
-    brick_diff = collect.imports_diff(brick_imports, list(bases), list(components))
+    brick_diff = collect.imports_diff(brick_imports, bases, components)
     libs_diff = libs.report.calculate_diff(
         third_party_imports, third_party_libs, is_strict
     )
