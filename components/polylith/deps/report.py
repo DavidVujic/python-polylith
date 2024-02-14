@@ -42,7 +42,9 @@ def flatten_imports(brick_imports: dict) -> Set[str]:
     return reduce(flatten_import, brick_imports.items(), set())
 
 
-def create_columns(imported_bases: List[str], imported_components: List[str]):
+def create_columns(
+    imported_bases: List[str], imported_components: List[str]
+) -> List[str]:
     base_cols = [to_col(brick, "base") for brick in imported_bases]
     comp_cols = [to_col(brick, "comp") for brick in imported_components]
 
@@ -51,7 +53,7 @@ def create_columns(imported_bases: List[str], imported_components: List[str]):
 
 def create_rows(
     bases: Set[str], components: Set[str], import_data: dict, imported: List[str]
-) -> list:
+) -> List[List[str]]:
     base_rows = [to_row(b, "base", import_data, imported) for b in sorted(bases)]
     comp_rows = [to_row(c, "comp", import_data, imported) for c in sorted(components)]
 
@@ -59,14 +61,14 @@ def create_rows(
 
 
 def print_deps(bases: Set[str], components: Set[str], import_data: dict):
-    table = Table(box=box.SIMPLE_HEAD)
-    table.add_column("[data]brick[/]")
-
     flattened = flatten_imports(import_data)
 
     imported_bases = sorted({b for b in flattened if b in bases})
     imported_components = sorted({c for c in flattened if c in components})
     imported_bricks = imported_components + imported_bases
+
+    table = Table(box=box.SIMPLE_HEAD)
+    table.add_column("[data]brick[/]")
 
     cols = create_columns(imported_bases, imported_components)
     rows = create_rows(bases, components, import_data, imported_bricks)
