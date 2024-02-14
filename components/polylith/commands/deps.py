@@ -16,17 +16,25 @@ def pick_name(data: List[dict]) -> Set[str]:
     return {b["name"] for b in data}
 
 
+def get_bases(root: Path, ns: str, project_data: dict) -> Set[str]:
+    if project_data:
+        return set(project_data.get("bases", []))
+
+    return pick_name(bricks.get_bases_data(root, ns))
+
+
+def get_components(root: Path, ns: str, project_data: dict) -> Set[str]:
+    if project_data:
+        return set(project_data.get("components", []))
+
+    return pick_name(bricks.get_components_data(root, ns))
+
+
 def run(root: Path, ns: str, directory: Union[str, None]):
-    ws_bases = pick_name(bricks.get_bases_data(root, ns))
-    ws_components = pick_name(bricks.get_components_data(root, ns))
-
     projects_data = info.get_projects_data(root, ns) if directory else []
-    proj_data = next((p for p in projects_data if directory in p["path"].as_posix()), {})
+    project = next((p for p in projects_data if directory in p["path"].as_posix()), {})
 
-    proj_bases = set(proj_data.get("bases", [])) if proj_data else ws_bases
-    proj_components = set(proj_data.get("components", [])) if proj_data else ws_components
-
-    bases = {b for b in ws_bases if b in proj_bases}
-    components = {c for c in ws_components if c in proj_components}
+    bases = get_bases(root, ns, project)
+    components = get_components(root, ns, project)
 
     print_report(root, ns, bases, components)
