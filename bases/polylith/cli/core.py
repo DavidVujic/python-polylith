@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List, Union
 
 from polylith import commands, configuration, info, repo
 from polylith.cli import create, options
@@ -12,6 +13,14 @@ app.add_typer(
     name="create",
     help="Commands for creating a workspace, bases, components and projects.",
 )
+
+
+def filtered_projects_data(
+    projects_data: List[dict], directory: Union[str, None]
+) -> List[dict]:
+    dir_path = Path(directory).as_posix() if directory else Path.cwd().name
+
+    return [p for p in projects_data if dir_path in p["path"].as_posix()]
 
 
 @app.command("info")
@@ -42,8 +51,8 @@ def check_command(
         "alias": str.split(alias, ",") if alias else [],
     }
 
-    dir_path = Path(directory).as_posix() if directory else Path.cwd().name
-    projects_data = [p for p in only_projects_data if dir_path in p["path"].as_posix()]
+    projects_data = filtered_projects_data(only_projects_data, directory)
+
     results = {commands.check.run(root, ns, p, cli_options) for p in projects_data}
 
     if not all(results):
@@ -70,15 +79,15 @@ def libs_command(
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
-    projects_data = info.get_projects_data(root, ns)
+    all_projects_data = info.get_projects_data(root, ns)
 
     cli_options = {
         "strict": strict,
         "alias": str.split(alias, ",") if alias else [],
     }
 
-    dir_path = Path(directory).as_posix() if directory else Path.cwd().name
-    projects_data = [p for p in projects_data if dir_path in p["path"].as_posix()]
+    projects_data = filtered_projects_data(all_projects_data, directory)
+
     results = {commands.libs.run(root, ns, p, cli_options) for p in projects_data}
 
     if not all(results):
@@ -96,7 +105,7 @@ def sync_command(
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
-    projects_data = info.get_projects_data(root, ns)
+    all_projects_data = info.get_projects_data(root, ns)
 
     cli_options = {
         "strict": strict,
@@ -104,11 +113,21 @@ def sync_command(
         "verbose": verbose,
     }
 
-    dir_path = Path(directory).as_posix() if directory else Path.cwd().name
-    projects_data = [p for p in projects_data if dir_path in p["path"].as_posix()]
+    projects_data = filtered_projects_data(all_projects_data, directory)
 
     for p in projects_data:
         commands.sync.run(root, ns, p, cli_options)
+
+
+@app.command("deps")
+def deps_command(directory: Annotated[str, options.directory] = ""):
+    """Visualize the dependencies between bricks."""
+    root = repo.get_workspace_root(Path.cwd())
+    ns = configuration.get_namespace_from_config(root)
+
+    dir_path = Path(directory).as_posix() if directory else None
+
+    commands.deps.run(root, ns, dir_path)
 
 
 if __name__ == "__main__":

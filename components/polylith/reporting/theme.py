@@ -8,3 +8,5 @@ poly_theme = Theme(
         "base": "#6495ED",
     }
 )
+
+check_emoji = ":heavy_check_mark:"
