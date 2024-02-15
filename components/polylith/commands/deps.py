@@ -28,7 +28,7 @@ def get_components(root: Path, ns: str, project_data: dict) -> Set[str]:
     return pick_name(bricks.get_components_data(root, ns))
 
 
-def run(root: Path, ns: str, directory: Union[str, None]):
+def run(root: Path, ns: str, directory: Union[str, None], brick: Union[str, None]):
     projects_data = info.get_projects_data(root, ns) if directory else []
     project = next((p for p in projects_data if directory in p["path"].as_posix()), {})
 
@@ -36,5 +36,9 @@ def run(root: Path, ns: str, directory: Union[str, None]):
     components = get_components(root, ns, project)
 
     imports = get_imports(root, ns, bases, components)
+
+    if brick and imports.get(brick):
+        deps.print_brick_deps(brick, bases, components, imports)
+        return
 
     deps.print_deps(bases, components, imports)
