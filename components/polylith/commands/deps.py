@@ -4,12 +4,10 @@ from typing import List, Set, Union
 from polylith import bricks, deps, info
 
 
-def print_report(root: Path, ns: str, bases: Set[str], components: Set[str]):
+def get_imports(root: Path, ns: str, bases: Set[str], components: Set[str]) -> dict:
     brick_imports = deps.get_brick_imports(root, ns, bases, components)
 
-    flattened = {**brick_imports["bases"], **brick_imports["components"]}
-
-    deps.print_deps(bases, components, flattened)
+    return {**brick_imports["bases"], **brick_imports["components"]}
 
 
 def pick_name(data: List[dict]) -> Set[str]:
@@ -37,4 +35,6 @@ def run(root: Path, ns: str, directory: Union[str, None]):
     bases = get_bases(root, ns, project)
     components = get_components(root, ns, project)
 
-    print_report(root, ns, bases, components)
+    imports = get_imports(root, ns, bases, components)
+
+    deps.print_deps(bases, components, imports)

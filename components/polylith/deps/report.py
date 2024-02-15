@@ -80,5 +80,4 @@ def print_deps(bases: Set[str], components: Set[str], import_data: dict):
         table.add_row(*row)
 
     console = Console(theme=theme.poly_theme)
-
     console.print(table, overflow="ellipsis")
