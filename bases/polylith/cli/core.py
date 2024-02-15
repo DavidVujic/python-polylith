@@ -120,14 +120,17 @@ def sync_command(
 
 
 @app.command("deps")
-def deps_command(directory: Annotated[str, options.directory] = ""):
+def deps_command(
+    directory: Annotated[str, options.directory] = "",
+    brick: Annotated[str, options.brick] = "",
+):
     """Visualize the dependencies between bricks."""
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
     dir_path = Path(directory).as_posix() if directory else None
 
-    commands.deps.run(root, ns, dir_path)
+    commands.deps.run(root, ns, dir_path, brick or None)
 
 
 if __name__ == "__main__":

@@ -1,14 +1,11 @@
 from functools import reduce
+from itertools import zip_longest
 from typing import List, Set, Tuple
 
 from polylith.reporting import theme
 from rich import box
 from rich.console import Console
 from rich.table import Table
-
-
-def calculate_tag(brick: str, project_data: dict) -> str:
-    return "base" if brick in project_data.get("bases", []) else "comp"
 
 
 def to_col(brick: str, tag: str) -> str:
@@ -80,5 +77,68 @@ def print_deps(bases: Set[str], components: Set[str], import_data: dict):
         table.add_row(*row)
 
     console = Console(theme=theme.poly_theme)
+    console.print(table, overflow="ellipsis")
+
+
+def without(key: str, bricks: Set[str]) -> Set[str]:
+    return {b for b in bricks if b != key}
+
+
+def sorted_usings(usings: Set[str], bases: Set[str], components: Set[str]) -> List[str]:
+    usings_bases = sorted({b for b in usings if b in bases})
+    usings_components = sorted({c for c in usings if c in components})
+
+    return usings_components + usings_bases
+
+
+def sorted_used_by(
+    brick: str, bases: Set[str], components: Set[str], import_data: dict
+) -> List[str]:
+    brick_used_by = without(brick, {k for k, v in import_data.items() if brick in v})
+
+    return sorted_usings(brick_used_by, bases, components)
+
+
+def sorted_uses(
+    brick: str, bases: Set[str], components: Set[str], import_data: dict
+) -> List[str]:
+    brick_uses = without(brick, {b for b in import_data[brick]})
+
+    return sorted_usings(brick_uses, bases, components)
+
+
+def calculate_tag(brick: str, bases: Set[str]) -> str:
+    return "base" if brick in bases else "comp"
+
+
+def print_brick_deps(
+    brick: str, bases: Set[str], components: Set[str], import_data: dict
+):
+    brick_used_by = sorted_used_by(brick, bases, components, import_data)
+    brick_uses = sorted_uses(brick, bases, components, import_data)
+
+    tag = calculate_tag(brick, bases)
+
+    console = Console(theme=theme.poly_theme)
+
+    table = Table(box=box.SIMPLE_HEAD)
+    table.add_column("[data]used by[/]")
+    table.add_column(":backhand_index_pointing_left:")
+    table.add_column(f"[{tag}]{brick}[/]")
+    table.add_column(":backhand_index_pointing_right:")
+    table.add_column("[data]uses[/]")
+
+    for item in zip_longest(brick_used_by, brick_uses):
+        used_by, uses = item
+
+        used_by_tag = calculate_tag(used_by, bases) if used_by else ""
+        uses_tag = calculate_tag(uses, bases) if uses else ""
+
+        left = f"[{used_by_tag}]{used_by}[/]" if used_by else ""
+        right = f"[{uses_tag}]{uses}[/]" if uses else ""
+
+        row = [left, "", "", "", right]
+
+        table.add_row(*row)
 
     console.print(table, overflow="ellipsis")

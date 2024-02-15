@@ -4,12 +4,10 @@ from typing import List, Set, Union
 from polylith import bricks, deps, info
 
 
-def print_report(root: Path, ns: str, bases: Set[str], components: Set[str]):
+def get_imports(root: Path, ns: str, bases: Set[str], components: Set[str]) -> dict:
     brick_imports = deps.get_brick_imports(root, ns, bases, components)
 
-    flattened = {**brick_imports["bases"], **brick_imports["components"]}
-
-    deps.print_deps(bases, components, flattened)
+    return {**brick_imports["bases"], **brick_imports["components"]}
 
 
 def pick_name(data: List[dict]) -> Set[str]:
@@ -30,11 +28,17 @@ def get_components(root: Path, ns: str, project_data: dict) -> Set[str]:
     return pick_name(bricks.get_components_data(root, ns))
 
 
-def run(root: Path, ns: str, directory: Union[str, None]):
+def run(root: Path, ns: str, directory: Union[str, None], brick: Union[str, None]):
     projects_data = info.get_projects_data(root, ns) if directory else []
     project = next((p for p in projects_data if directory in p["path"].as_posix()), {})
 
     bases = get_bases(root, ns, project)
     components = get_components(root, ns, project)
 
-    print_report(root, ns, bases, components)
+    imports = get_imports(root, ns, bases, components)
+
+    if brick and imports.get(brick):
+        deps.print_brick_deps(brick, bases, components, imports)
+        return
+
+    deps.print_deps(bases, components, imports)
