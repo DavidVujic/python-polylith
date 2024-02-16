@@ -71,13 +71,13 @@ def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
 
     printable_name = f"[proj]{name}[/]" if is_project else "[data]development[/]"
     console.print(
-        Padding(f"[data]Libraries summary for [/]{printable_name}", (1, 0, 1, 0))
+        Padding(f"[data]Library summary for [/]{printable_name}", (1, 0, 1, 0))
     )
 
     bases_len = len(flatten_imports(brick_imports, "bases"))
     components_len = len(flatten_imports(brick_imports, "components"))
 
-    console.print(f"[comp]libraries used in components[/]: [data]{components_len}[/]")
+    console.print(f"[comp]Libraries used in components[/]: [data]{components_len}[/]")
     console.print(f"[base]Libraries used in bases[/]: [data]{bases_len}[/]")
 
 
@@ -95,7 +95,7 @@ def print_libs_in_bricks(brick_imports: dict) -> None:
     components = brick_imports.get("components", {})
 
     table.add_column("[data]brick[/]")
-    table.add_column("[data]libraries[/]")
+    table.add_column("[data]library[/]")
 
     for brick, imports in sorted(components.items(), key=itemgetter(0)):
         table.add_row(f"[comp]{brick}[/]", ", ".join(sorted(imports)))
