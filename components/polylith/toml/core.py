@@ -1,4 +1,5 @@
 import re
+from functools import reduce
 from pathlib import Path
 from typing import List, Union
 
@@ -60,6 +61,42 @@ def get_project_name(data) -> str:
         return data["project"]["name"]
 
     return data["tool"]["poetry"]["name"]
+
+
+def parse_pep_621_dependency(dep: str) -> dict:
+    parts = re.split(r"[\^~=!<>]", dep)
+
+    name, *_ = parts if parts else [""]
+    version = str.replace(dep, name, "")
+
+    return {name: version} if name else {}
+
+
+def parse_poetry_dependency(acc: dict, kv: tuple) -> dict:
+    k, v = kv
+
+    if isinstance(v, dict):
+        extras = sorted(v.get("extras", []))
+        version = v.get("version", "")
+
+        name = k + str.replace(f"{extras}", "'", "") if extras else k
+        parsed = {name: version}
+    else:
+        parsed = {k: v}
+
+    return {**acc, **parsed}
+
+
+def parse_project_dependencies(data) -> dict:
+    if repo.is_poetry(data):
+        deps = data["tool"]["poetry"].get("dependencies", {})
+        res: dict = reduce(parse_poetry_dependency, deps.items(), {})
+
+        return res
+
+    deps = data["project"].get("dependencies", [])
+
+    return {k: v for dep in deps for k, v in parse_pep_621_dependency(dep).items()}
 
 
 def get_project_dependencies(data) -> dict:
