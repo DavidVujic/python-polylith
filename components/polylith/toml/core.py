@@ -101,7 +101,7 @@ def parse_project_dependencies(data) -> dict:
 
 def get_project_dependencies(data) -> dict:
     if repo.is_poetry(data):
-        deps = data["tool"]["poetry"].get("dependencies", [])
+        deps = data["tool"]["poetry"].get("dependencies", {})
 
         items = set(deps.keys())
     else:
