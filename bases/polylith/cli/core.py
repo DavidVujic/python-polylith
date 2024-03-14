@@ -93,6 +93,8 @@ def libs_command(
     if not all(results):
         raise Exit(code=1)
 
+    commands.libs.compare_versions(all_projects_data, projects_data)
+
 
 @app.command("sync")
 def sync_command(
