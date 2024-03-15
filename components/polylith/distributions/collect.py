@@ -8,16 +8,14 @@ from polylith.distributions.core import (
 )
 
 
-def known_aliases_and_sub_dependencies(
-    deps: dict, library_alias: list
-) -> Set[str]:
+def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[str]:
     """Collect known aliases (packages) for third-party libraries.
 
     When the library origin is not from a lock-file:
     collect sub-dependencies for each library, and append to the result.
     """
 
-    third_party_libs = deps["items"]
+    third_party_libs = {k for k, _v in deps["items"].items()}
     lock_file = str.endswith(deps["source"], ".lock")
 
     dists = list(importlib.metadata.distributions())

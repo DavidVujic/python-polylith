@@ -1,7 +1,8 @@
+from functools import reduce
 from pathlib import Path
 from typing import List
 
-from polylith import distributions, repo, toml
+from polylith import distributions
 from polylith.libs import report
 
 
@@ -29,8 +30,9 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
 
 def compare_versions(all_projects_data: List[dict], projects_data: List[dict]) -> None:
     development_data = next(p for p in all_projects_data if p["type"] == "development")
+    filtered_projects_data = [p for p in projects_data if p["type"] != "development"]
 
-    dev_toml = toml.read_toml_document(development_data["path"] / repo.default_toml)
-    res = toml.parse_project_dependencies(dev_toml)
+    print(development_data["deps"]["items"])
 
-    print(res)
+    for proj in filtered_projects_data:
+        print(proj["deps"]["items"])

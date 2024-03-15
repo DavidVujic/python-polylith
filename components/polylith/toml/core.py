@@ -100,14 +100,7 @@ def parse_project_dependencies(data) -> dict:
 
 
 def get_project_dependencies(data) -> dict:
-    if repo.is_poetry(data):
-        deps = data["tool"]["poetry"].get("dependencies", {})
-
-        items = set(deps.keys())
-    else:
-        deps = data["project"].get("dependencies", [])
-
-        items = {re.split(r"[\^~=!<>]", dep)[0] for dep in deps}
+    items = parse_project_dependencies(data)
 
     return {"items": items, "source": repo.default_toml}
 
