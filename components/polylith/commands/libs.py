@@ -27,8 +27,10 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
     )
 
 
-def library_versions(all_projects_data: List[dict], projects_data: List[dict]) -> None:
+def library_versions(
+    all_projects_data: List[dict], projects_data: List[dict], options: dict
+) -> None:
     development_data = next(p for p in all_projects_data if p["type"] == "development")
     filtered_projects_data = [p for p in projects_data if p["type"] != "development"]
 
-    report.print_libs_in_projects(development_data, filtered_projects_data)
+    report.print_libs_in_projects(development_data, filtered_projects_data, options)
