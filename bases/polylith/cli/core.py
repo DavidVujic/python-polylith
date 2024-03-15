@@ -74,7 +74,7 @@ def libs_command(
     strict: Annotated[bool, options.strict] = False,
     directory: Annotated[str, options.directory] = "",
     alias: Annotated[str, options.alias] = "",
-    short: Annotated[bool, options.short_workspace] = False,
+    short: Annotated[bool, options.short] = False,
 ):
     """Show third-party libraries used in the workspace."""
     root = repo.get_workspace_root(Path.cwd())

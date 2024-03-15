@@ -15,7 +15,7 @@ class LibsCommand(Command):
         option(
             long_name="short",
             short_name="s",
-            description="Display Workspace Info adjusted for many projects",
+            description="Print short view",
             flag=True,
         ),
     ]
