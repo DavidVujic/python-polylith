@@ -1,12 +1,12 @@
 import difflib
 from operator import itemgetter
 from pathlib import Path
-from typing import Set
+from typing import List, Set, Union
 
 from polylith import info, workspace
 from polylith.libs import grouping
 from polylith.reporting import theme
-from rich import box
+from rich import box, markup
 from rich.console import Console
 from rich.padding import Padding
 from rich.table import Table
@@ -127,3 +127,73 @@ def print_missing_installed_libs(
 
     console.print(f":thinking_face: {missing}")
     return False
+
+
+def printable_version(version: Union[str, None]) -> str:
+    ver = version or "-"
+
+    return f"[data]{ver}[/]"
+
+
+def get_version(lib: str, project_data: dict) -> str:
+    return project_data["deps"]["items"].get(lib)
+
+
+def find_version(
+    lib: str, project_name: str, projects_data: List[dict]
+) -> Union[str, None]:
+    project_data = next(p for p in projects_data if p["name"] == project_name)
+
+    return get_version(lib, project_data)
+
+
+def printable_header(header: str, short: bool) -> str:
+    return "\n".join(header) if short else header
+
+
+def libs_in_projects_table(
+    development_data: dict,
+    projects_data: List[dict],
+    libraries: set,
+    options: dict,
+) -> Table:
+    table = Table(box=box.SIMPLE_HEAD)
+
+    short = options["short"]
+
+    project_names = sorted({p["name"] for p in projects_data})
+    project_headers = [f"[proj]{printable_header(n, short)}[/]" for n in project_names]
+    dev_header = printable_header("development", short)
+    headers = ["[data]library[/]"] + project_headers + [f"[data]{dev_header}[/]"]
+
+    for header in headers:
+        table.add_column(header)
+
+    for lib in sorted(libraries):
+        proj_versions = [find_version(lib, n, projects_data) for n in project_names]
+        dev_version = get_version(lib, development_data)
+
+        printable_proj_versions = [printable_version(v) for v in proj_versions]
+        printable_dev_version = printable_version(dev_version)
+
+        cols = [markup.escape(lib)] + printable_proj_versions + [printable_dev_version]
+
+        table.add_row(*cols)
+
+    return table
+
+
+def print_libs_in_projects(
+    development_data: dict, projects_data: List[dict], options: dict
+) -> None:
+    flattened = {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
+
+    if not flattened:
+        return
+
+    table = libs_in_projects_table(development_data, projects_data, flattened, options)
+
+    console = Console(theme=theme.poly_theme)
+
+    console.print(Padding("[data]Library versions in projects[/]", (1, 0, 0, 0)))
+    console.print(table, overflow="ellipsis")

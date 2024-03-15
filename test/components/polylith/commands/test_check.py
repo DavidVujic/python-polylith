@@ -3,7 +3,10 @@ from polylith.commands import check
 
 def test_collect_known_aliases_and_sub_dependencies():
     fake_project_data = {
-        "deps": {"items": {"typer", "hello-world-library"}, "source": "unit-test"}
+        "deps": {
+            "items": {"typer": "1", "hello-world-library": "2"},
+            "source": "unit-test",
+        }
     }
     fake_options = {"alias": ["hello-world-library=hello"]}
 

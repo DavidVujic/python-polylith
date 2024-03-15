@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 from polylith import distributions
 from polylith.libs import report
@@ -24,3 +25,12 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
         name,
         is_strict,
     )
+
+
+def library_versions(
+    all_projects_data: List[dict], projects_data: List[dict], options: dict
+) -> None:
+    development_data = next(p for p in all_projects_data if p["type"] == "development")
+    filtered_projects_data = [p for p in projects_data if p["type"] != "development"]
+
+    report.print_libs_in_projects(development_data, filtered_projects_data, options)
