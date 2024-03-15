@@ -147,13 +147,11 @@ def find_version(
     return get_version(lib, project_data)
 
 
-def print_libs_in_projects(development_data: dict, projects_data: List[dict]) -> None:
-    flattened = {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
-
-    if not flattened:
-        return
-
+def libs_in_projects_table(
+    development_data: dict, projects_data: List[dict], libraries: set
+):
     table = Table(box=box.SIMPLE_HEAD)
+
     project_names = sorted({p["name"] for p in projects_data})
     project_headers = [f"[proj]{n}[/]" for n in project_names]
     headers = ["[data]library[/]"] + project_headers + ["[data]development[/]"]
@@ -161,15 +159,27 @@ def print_libs_in_projects(development_data: dict, projects_data: List[dict]) ->
     for header in headers:
         table.add_column(header)
 
-    for lib in sorted(flattened):
+    for lib in sorted(libraries):
         proj_versions = [find_version(lib, n, projects_data) for n in project_names]
         dev_version = get_version(lib, development_data)
 
         printable_proj_versions = [printable_version(v) for v in proj_versions]
         printable_dev_version = printable_version(dev_version)
+
         cols = [markup.escape(lib)] + printable_proj_versions + [printable_dev_version]
 
         table.add_row(*cols)
+
+    return table
+
+
+def print_libs_in_projects(development_data: dict, projects_data: List[dict]) -> None:
+    flattened = {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
+
+    if not flattened:
+        return
+
+    table = libs_in_projects_table(development_data, projects_data, flattened)
 
     console = Console(theme=theme.poly_theme)
 
