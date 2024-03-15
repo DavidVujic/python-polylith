@@ -149,7 +149,7 @@ def find_version(
 
 def libs_in_projects_table(
     development_data: dict, projects_data: List[dict], libraries: set
-):
+) -> Table:
     table = Table(box=box.SIMPLE_HEAD)
 
     project_names = sorted({p["name"] for p in projects_data})
