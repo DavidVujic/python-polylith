@@ -40,4 +40,6 @@ class LibsCommand(Command):
 
         results = {self.print_report(root, ns, data) for data in projects_data}
 
+        commands.libs.library_versions(all_projects_data, projects_data)
+
         return 0 if all(results) else 1

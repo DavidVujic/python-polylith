@@ -90,10 +90,10 @@ def libs_command(
 
     results = {commands.libs.run(root, ns, p, cli_options) for p in projects_data}
 
+    commands.libs.library_versions(all_projects_data, projects_data)
+
     if not all(results):
         raise Exit(code=1)
-
-    commands.libs.compare_versions(all_projects_data, projects_data)
 
 
 @app.command("sync")

@@ -27,7 +27,7 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
     )
 
 
-def compare_versions(all_projects_data: List[dict], projects_data: List[dict]) -> None:
+def library_versions(all_projects_data: List[dict], projects_data: List[dict]) -> None:
     development_data = next(p for p in all_projects_data if p["type"] == "development")
     filtered_projects_data = [p for p in projects_data if p["type"] != "development"]
 
