@@ -1,7 +1,7 @@
 import difflib
 from operator import itemgetter
 from pathlib import Path
-from typing import Set
+from typing import List, Set
 
 from polylith import info, workspace
 from polylith.libs import grouping
@@ -127,3 +127,49 @@ def print_missing_installed_libs(
 
     console.print(f":thinking_face: {missing}")
     return False
+
+
+def column_name(name: str) -> str:
+    return name  # "\n".join(name)
+
+
+def flatten_libraries(development_data: dict, projects_data: List[dict]) -> Set:
+    dev_libs = development_data["deps"]["items"].keys()
+
+    proj_libs = {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
+
+    return set().union(dev_libs, proj_libs)
+
+
+def printable_library_version(project_data: dict, name: str) -> str:
+    version = project_data["deps"]["items"].get(name, "-")
+
+    return f"[data]{version}[/]"
+
+
+def print_libs_in_projects(development_data: dict, projects_data: List[dict]) -> None:
+    console = Console(theme=theme.poly_theme)
+    table = Table(box=box.SIMPLE_HEAD)
+
+    table.add_column("[data]library[/]")
+    proj_cols = sorted({p["name"] for p in projects_data})
+
+    for proj_col in proj_cols:
+        table.add_column(f"[proj]{proj_col}[/]")
+
+    dev_column = column_name("development")
+    table.add_column(f"[data]{dev_column}[/]")
+
+    flattened = sorted(flatten_libraries(development_data, projects_data))
+
+    for lib in flattened:
+        dev_version = printable_library_version(development_data, lib)
+        cols = (
+            [lib]
+            + [printable_library_version(p, lib) for p in projects_data]
+            + [dev_version]
+        )
+
+        table.add_row(*cols)
+
+    console.print(table, overflow="ellipsis")

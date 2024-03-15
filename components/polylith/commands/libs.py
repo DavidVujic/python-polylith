@@ -31,7 +31,4 @@ def compare_versions(all_projects_data: List[dict], projects_data: List[dict]) -
     development_data = next(p for p in all_projects_data if p["type"] == "development")
     filtered_projects_data = [p for p in projects_data if p["type"] != "development"]
 
-    print(development_data["deps"]["items"])
-
-    for proj in filtered_projects_data:
-        print(proj["deps"]["items"])
+    report.print_libs_in_projects(development_data, filtered_projects_data)
