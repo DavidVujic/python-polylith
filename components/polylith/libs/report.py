@@ -63,7 +63,7 @@ def calculate_diff(
     return filter_close_matches(unknown_imports, deps, cutoff)
 
 
-def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
+def print_libs_summary(project_data: dict) -> None:
     console = Console(theme=theme.poly_theme)
 
     name = project_data["name"]

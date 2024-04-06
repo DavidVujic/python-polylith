@@ -14,7 +14,7 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
 
     brick_imports = report.get_third_party_imports(root, ns, project_data)
 
-    report.print_libs_summary(brick_imports, project_data)
+    report.print_libs_summary(project_data)
     report.print_libs_in_bricks(brick_imports)
 
     libs = distributions.known_aliases_and_sub_dependencies(deps, library_alias)
