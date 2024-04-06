@@ -70,15 +70,7 @@ def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
     is_project = info.is_project(project_data)
 
     printable_name = f"[proj]{name}[/]" if is_project else "[data]development[/]"
-    console.print(
-        Padding(f"[data]Library summary for [/]{printable_name}", (1, 0, 1, 0))
-    )
-
-    bases_len = len(flatten_imports(brick_imports, "bases"))
-    components_len = len(flatten_imports(brick_imports, "components"))
-
-    console.print(f"[comp]Libraries used in components[/]: [data]{components_len}[/]")
-    console.print(f"[base]Libraries used in bases[/]: [data]{bases_len}[/]")
+    console.print(Padding(f"[data]Libraries in [/]{printable_name}", (1, 0, 0, 0)))
 
 
 def print_libs_in_bricks(brick_imports: dict) -> None:
@@ -195,5 +187,5 @@ def print_libs_in_projects(
 
     console = Console(theme=theme.poly_theme)
 
-    console.print(Padding("[data]Library versions in projects[/]", (1, 0, 0, 0)))
+    console.print(Padding("[data]Library versions[/]", (1, 0, 0, 0)))
     console.print(table, overflow="ellipsis")
