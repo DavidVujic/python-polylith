@@ -121,10 +121,11 @@ def print_missing_installed_libs(
     return False
 
 
-def printable_version(version: Union[str, None]) -> str:
+def printable_version(version: Union[str, None], is_same_version: bool) -> str:
     ver = version or "-"
+    markup = "data" if is_same_version else "bold"
 
-    return f"[data]{ver}[/]"
+    return f"[{markup}]{ver}[/]"
 
 
 def get_version(lib: str, project_data: dict) -> str:
@@ -141,6 +142,12 @@ def find_version(
 
 def printable_header(header: str, short: bool) -> str:
     return "\n".join(header) if short else header
+
+
+def is_same_version(versions: list) -> bool:
+    unique = set([v for v in versions if v])
+
+    return len(unique) == 1 if unique else True
 
 
 def libs_in_projects_table(
@@ -165,8 +172,9 @@ def libs_in_projects_table(
         proj_versions = [find_version(lib, n, projects_data) for n in project_names]
         dev_version = get_version(lib, development_data)
 
-        printable_proj_versions = [printable_version(v) for v in proj_versions]
-        printable_dev_version = printable_version(dev_version)
+        is_same = is_same_version(proj_versions + [dev_version])
+        printable_proj_versions = [printable_version(v, is_same) for v in proj_versions]
+        printable_dev_version = printable_version(dev_version, is_same)
 
         cols = [markup.escape(lib)] + printable_proj_versions + [printable_dev_version]
 
