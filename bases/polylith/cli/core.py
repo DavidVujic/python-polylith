@@ -88,9 +88,14 @@ def libs_command(
         "short": short,
     }
 
-    projects_data = filtered_projects_data(all_projects_data, directory)
+    dev_data = next(p for p in all_projects_data if p["type"] == "development")
+    projects_data = (
+        filtered_projects_data(all_projects_data, directory) + [dev_data]
+        if directory
+        else all_projects_data
+    )
 
-    results = commands.libs.run(root, ns, all_projects_data, projects_data, cli_options)
+    results = commands.libs.run(root, ns, projects_data, cli_options)
 
     if not all(results):
         raise Exit(code=1)

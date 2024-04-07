@@ -35,10 +35,8 @@ def flatten_imports(acc: dict, item: dict) -> dict:
     }
 
 
-def library_versions(
-    all_projects_data: List[dict], projects_data: List[dict], options: dict
-) -> None:
-    development_data = next(p for p in all_projects_data if p["type"] == "development")
+def library_versions(projects_data: List[dict], options: dict) -> None:
+    development_data = next(p for p in projects_data if p["type"] == "development")
     filtered_projects_data = [p for p in projects_data if p["type"] != "development"]
 
     report.print_libs_in_projects(development_data, filtered_projects_data, options)
@@ -47,7 +45,6 @@ def library_versions(
 def run(
     root: Path,
     ns: str,
-    all_projects_data: List[dict],
     projects_data: List[dict],
     options: dict,
 ) -> Set[bool]:
@@ -60,6 +57,6 @@ def run(
     report.print_libs_summary()
     report.print_libs_in_bricks(flattened)
 
-    library_versions(all_projects_data, projects_data, options)
+    library_versions(projects_data, options)
 
     return {missing_libs(p, imports, options) for p in projects_data}
