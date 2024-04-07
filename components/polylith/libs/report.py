@@ -191,5 +191,5 @@ def print_libs_in_projects(
 
     console = Console(theme=theme.poly_theme)
 
-    console.print(Padding("[data]Library versions[/]", (1, 0, 0, 0)))
+    console.print(Padding("[data]Library versions in projects[/]", (1, 0, 0, 0)))
     console.print(table, overflow="ellipsis")
