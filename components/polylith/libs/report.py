@@ -3,7 +3,7 @@ from operator import itemgetter
 from pathlib import Path
 from typing import List, Set, Union
 
-from polylith import info, workspace
+from polylith import workspace
 from polylith.libs import grouping
 from polylith.reporting import theme
 from rich import box, markup
@@ -63,14 +63,10 @@ def calculate_diff(
     return filter_close_matches(unknown_imports, deps, cutoff)
 
 
-def print_libs_summary(project_data: dict) -> None:
+def print_libs_summary() -> None:
     console = Console(theme=theme.poly_theme)
 
-    name = project_data["name"]
-    is_project = info.is_project(project_data)
-
-    printable_name = f"[proj]{name}[/]" if is_project else "[data]development[/]"
-    console.print(Padding(f"[data]Libraries in [/]{printable_name}", (1, 0, 0, 0)))
+    console.print(Padding("[data]Libraries in bricks[/]", (1, 0, 0, 0)))
 
 
 def print_libs_in_bricks(brick_imports: dict) -> None:

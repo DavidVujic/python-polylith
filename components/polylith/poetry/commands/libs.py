@@ -20,21 +20,19 @@ class LibsCommand(Command):
         ),
     ]
 
-    def print_report(self, root: Path, ns: str, data: dict, options: dict) -> bool:
+    def merged_project_data(self, data: dict) -> dict:
         name = data["name"]
         path = data["path"]
 
         try:
             third_party_libs = find_third_party_libs(self.poetry, path)
-            merged = {
+            return {
                 **data,
                 **{"deps": {"items": third_party_libs, "source": "poetry.lock"}},
             }
-
-            return commands.libs.run(root, ns, merged, options)
         except ValueError as e:
             self.line_error(f"{name}: <error>{e}</error>")
-            return False
+            return data
 
     def handle(self) -> int:
         options = {
@@ -50,8 +48,12 @@ class LibsCommand(Command):
         all_projects_data = info.get_projects_data(root, ns)
         projects_data = filter_projects_data(self.poetry, directory, all_projects_data)
 
-        results = {self.print_report(root, ns, data, options) for data in projects_data}
+        merged_projects_data = [
+            self.merged_project_data(data) for data in projects_data
+        ]
 
-        commands.libs.library_versions(all_projects_data, projects_data, options)
+        results = commands.libs.run(
+            root, ns, all_projects_data, merged_projects_data, options
+        )
 
         return 0 if all(results) else 1

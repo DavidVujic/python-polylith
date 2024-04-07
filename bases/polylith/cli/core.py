@@ -90,9 +90,7 @@ def libs_command(
 
     projects_data = filtered_projects_data(all_projects_data, directory)
 
-    results = {commands.libs.run(root, ns, p, cli_options) for p in projects_data}
-
-    commands.libs.library_versions(all_projects_data, projects_data, cli_options)
+    results = commands.libs.run(root, ns, all_projects_data, projects_data, cli_options)
 
     if not all(results):
         raise Exit(code=1)
