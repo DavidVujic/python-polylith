@@ -52,7 +52,7 @@ cleo = "^2.1.0"
 hatchling = "^1.21.0"
 
 [tool.poetry.group.dev.dependencies]
-black = "^23.12.1"
+black = "^24.3.0"
 isort = "^5.10.1"
 mypy = "^1.8.0"
 flake8 = "^7.0.0"
