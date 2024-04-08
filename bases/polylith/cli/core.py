@@ -74,6 +74,7 @@ def libs_command(
     strict: Annotated[bool, options.strict] = False,
     directory: Annotated[str, options.directory] = "",
     alias: Annotated[str, options.alias] = "",
+    short: Annotated[bool, options.short] = False,
 ):
     """Show third-party libraries used in the workspace."""
     root = repo.get_workspace_root(Path.cwd())
@@ -84,11 +85,13 @@ def libs_command(
     cli_options = {
         "strict": strict,
         "alias": str.split(alias, ",") if alias else [],
+        "short": short,
     }
 
     projects_data = filtered_projects_data(all_projects_data, directory)
 
-    results = {commands.libs.run(root, ns, p, cli_options) for p in projects_data}
+    results = commands.libs.run(root, ns, projects_data, cli_options)
+    commands.libs.run_library_versions(projects_data, all_projects_data, cli_options)
 
     if not all(results):
         raise Exit(code=1)

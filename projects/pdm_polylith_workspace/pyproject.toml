@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdm-polylith-workspace"
-version = "0.1.1"
+version = "1.0.0"
 description = "a PDM build hook for a Polylith workspace"
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
 repository = "https://github.com/davidvujic/python-polylith"

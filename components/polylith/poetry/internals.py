@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Iterable, List, Set, Union
+from typing import Iterable, List, Union
 
 from poetry.factory import Factory
 from poetry.poetry import Poetry
@@ -19,7 +19,7 @@ def distributions(poetry: Poetry, path: Union[Path, None]) -> Iterable:
     return env.site_packages.distributions()
 
 
-def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
+def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> dict:
     project_poetry = get_project_poetry(poetry, path)
 
     if not project_poetry.locker.is_locked():
@@ -27,7 +27,7 @@ def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> Set:
 
     packages = project_poetry.locker.locked_repository().packages
 
-    return {p.name for p in packages}
+    return {p.name: str(p.version) for p in packages}
 
 
 def filter_projects_data(

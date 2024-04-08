@@ -1,12 +1,12 @@
 import difflib
 from operator import itemgetter
 from pathlib import Path
-from typing import Set
+from typing import List, Set, Union
 
-from polylith import info, workspace
+from polylith import workspace
 from polylith.libs import grouping
 from polylith.reporting import theme
-from rich import box
+from rich import box, markup
 from rich.console import Console
 from rich.padding import Padding
 from rich.table import Table
@@ -63,22 +63,10 @@ def calculate_diff(
     return filter_close_matches(unknown_imports, deps, cutoff)
 
 
-def print_libs_summary(brick_imports: dict, project_data: dict) -> None:
+def print_libs_summary() -> None:
     console = Console(theme=theme.poly_theme)
 
-    name = project_data["name"]
-    is_project = info.is_project(project_data)
-
-    printable_name = f"[proj]{name}[/]" if is_project else "[data]development[/]"
-    console.print(
-        Padding(f"[data]Library summary for [/]{printable_name}", (1, 0, 1, 0))
-    )
-
-    bases_len = len(flatten_imports(brick_imports, "bases"))
-    components_len = len(flatten_imports(brick_imports, "components"))
-
-    console.print(f"[comp]Libraries used in components[/]: [data]{components_len}[/]")
-    console.print(f"[base]Libraries used in bases[/]: [data]{bases_len}[/]")
+    console.print(Padding("[data]Libraries in bricks[/]", (1, 0, 0, 0)))
 
 
 def print_libs_in_bricks(brick_imports: dict) -> None:
@@ -127,3 +115,81 @@ def print_missing_installed_libs(
 
     console.print(f":thinking_face: {missing}")
     return False
+
+
+def printable_version(version: Union[str, None], is_same_version: bool) -> str:
+    ver = version or "-"
+    markup = "data" if is_same_version else "bold"
+
+    return f"[{markup}]{ver}[/]"
+
+
+def get_version(lib: str, project_data: dict) -> str:
+    return project_data["deps"]["items"].get(lib)
+
+
+def find_version(
+    lib: str, project_name: str, projects_data: List[dict]
+) -> Union[str, None]:
+    project_data = next(p for p in projects_data if p["name"] == project_name)
+
+    return get_version(lib, project_data)
+
+
+def printable_header(header: str, short: bool) -> str:
+    return "\n".join(header) if short else header
+
+
+def is_same_version(versions: list) -> bool:
+    unique = set([v for v in versions if v])
+
+    return len(unique) == 1 if unique else True
+
+
+def libs_in_projects_table(
+    development_data: dict,
+    projects_data: List[dict],
+    libraries: set,
+    options: dict,
+) -> Table:
+    table = Table(box=box.SIMPLE_HEAD)
+
+    short = options["short"]
+
+    project_names = sorted({p["name"] for p in projects_data})
+    project_headers = [f"[proj]{printable_header(n, short)}[/]" for n in project_names]
+    dev_header = printable_header("development", short)
+    headers = ["[data]library[/]"] + project_headers + [f"[data]{dev_header}[/]"]
+
+    for header in headers:
+        table.add_column(header)
+
+    for lib in sorted(libraries):
+        proj_versions = [find_version(lib, n, projects_data) for n in project_names]
+        dev_version = get_version(lib, development_data)
+
+        is_same = is_same_version(proj_versions + [dev_version])
+        printable_proj_versions = [printable_version(v, is_same) for v in proj_versions]
+        printable_dev_version = printable_version(dev_version, is_same)
+
+        cols = [markup.escape(lib)] + printable_proj_versions + [printable_dev_version]
+
+        table.add_row(*cols)
+
+    return table
+
+
+def print_libs_in_projects(
+    development_data: dict, projects_data: List[dict], options: dict
+) -> None:
+    flattened = {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
+
+    if not flattened:
+        return
+
+    table = libs_in_projects_table(development_data, projects_data, flattened, options)
+
+    console = Console(theme=theme.poly_theme)
+
+    console.print(Padding("[data]Library versions in projects[/]", (1, 0, 0, 0)))
+    console.print(table, overflow="ellipsis")
