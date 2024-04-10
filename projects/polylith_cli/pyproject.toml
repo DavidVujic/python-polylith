@@ -39,7 +39,7 @@ packages = [
 python = "^3.8"
 tomlkit = "^0.11.5"
 rich = "^13.6.0"
-typer = {extras = ["all"], version = "0.*"}
+typer = "0.*"
 
 [tool.poetry.scripts]
 poly = "polylith_cli.polylith.cli.core:app"
