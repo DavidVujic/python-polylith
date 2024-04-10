@@ -18,10 +18,12 @@ def print_brick_imports(brick_imports: dict) -> None:
     for key, values in bricks.items():
         imports_in_brick = values.difference({key})
 
-        if imports_in_brick:
-            console.print(
-                f":information: [data]{key}[/] is importing [data]{', '.join(imports_in_brick)}[/]"
-            )
+        if not imports_in_brick:
+            continue
+
+        joined = ", ".join(imports_in_brick)
+        message = f":information: [data]{key}[/] is importing [data]{joined}[/]"
+        console.print(message)
 
 
 def print_missing_deps(diff: Set[str], project_name: str) -> None:
