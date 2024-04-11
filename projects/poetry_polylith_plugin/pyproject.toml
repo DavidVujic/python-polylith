@@ -43,7 +43,7 @@ poetry-polylith-plugin = "polylith.poetry_plugin:PolylithPlugin"
 python = "^3.8"
 poetry = "^1.2"
 tomlkit = "0.*"
-rich = "^13.6.0"
+rich = "13.*"
 cleo = "^2.1.0"
 
 [build-system]
