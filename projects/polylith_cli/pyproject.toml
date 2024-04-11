@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "polylith-cli"
-version = "1.5.2"
+version = "1.5.3"
 description = "Python tooling support for the Polylith Architecture"
 authors = ['David Vujic']
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
@@ -37,8 +37,8 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.8"
-tomlkit = "^0.11.5"
-rich = "^13.6.0"
+tomlkit = "0.*"
+rich = "13.*"
 typer = "0.*"
 
 [tool.poetry.scripts]
