@@ -21,7 +21,7 @@ def brick_status(bricks: List[str], brick_name: str, imported: str) -> str:
 
 
 def to_row(name: str, tag: str, brick_imports: dict, imported: List[str]) -> List[str]:
-    bricks = brick_imports[name]
+    bricks = brick_imports.get(name) or set() 
     statuses = [brick_status(bricks, name, i) for i in imported]
 
     return [f"[{tag}]{name}[/]"] + statuses
