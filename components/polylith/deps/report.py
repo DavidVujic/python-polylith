@@ -14,7 +14,7 @@ def to_col(brick: str, tag: str) -> str:
     return f"[{tag}]{name}[/]"
 
 
-def brick_status(bricks: List[str], brick_name: str, imported: str) -> str:
+def brick_status(bricks: Set[str], brick_name: str, imported: str) -> str:
     status = theme.check_emoji if imported in bricks and imported != brick_name else "-"
 
     return f"[data]{status}[/]"
