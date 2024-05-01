@@ -87,6 +87,13 @@ def parse_poetry_dependency(acc: dict, kv: tuple) -> dict:
     return {**acc, **parsed}
 
 
+def get_pep_621_optional_dependencies(data) -> List[str]:
+    groups = data["project"].get("optional-dependencies", {})
+    matrix = [v for v in groups.values()] if isinstance(groups, dict) else []
+
+    return sum(matrix, [])
+
+
 def parse_project_dependencies(data) -> dict:
     if repo.is_poetry(data):
         deps = data["tool"]["poetry"].get("dependencies", {})
@@ -95,8 +102,11 @@ def parse_project_dependencies(data) -> dict:
         return res
 
     deps = data["project"].get("dependencies", [])
+    optional_deps = get_pep_621_optional_dependencies(data)
 
-    return {k: v for dep in deps for k, v in parse_pep_621_dependency(dep).items()}
+    all_deps = deps + optional_deps
+
+    return {k: v for dep in all_deps for k, v in parse_pep_621_dependency(dep).items()}
 
 
 def get_project_dependencies(data) -> dict:
