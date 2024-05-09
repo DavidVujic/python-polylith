@@ -11,19 +11,18 @@ class PolylithBricksHook(BuildHookInterface):
     PLUGIN_NAME = "polylith-bricks"
 
     def initialize(self, _version: str, build_data: Dict[str, Any]) -> None:
-        pyproject = Path(f"{self.root}/{repo.default_toml}")
-
-        print(f"Using {pyproject.as_posix()}.")
+        root = self.root
+        pyproject = Path(f"{root}/{repo.default_toml}")
 
         data = toml.read_toml_document(pyproject)
         bricks = toml.get_project_packages_from_polylith_section(data)
+        found_bricks = {k: v for k, v in bricks.items() if Path(f"{root}/{k}").exists()}
+
+        if not bricks or not found_bricks:
+            return
 
         top_ns = core.get_top_namespace(data, self.config)
         work_dir = core.get_work_dir(self.config)
-
-        if not bricks:
-            print("No bricks found.")
-            return
 
         if not top_ns:
             build_data["force_include"] = bricks
