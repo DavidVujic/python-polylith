@@ -8,4 +8,4 @@ def pdm_build_initialize(context):
 
     build_dir = Path(context.build_dir)
 
-    build_initialize(context.config.data, build_dir)
+    build_initialize(context.config.root, context.config.data, build_dir)
