@@ -27,7 +27,7 @@ Have a look at the [Python-specific documentation](https://davidvujic.github.io/
 You will find installation, setup, usage guides and more.
 
 ## Polylith for Python? :snake:
-This repo contains a Poetry plugin, a CLI that enables support for __Hatch__, __PDM__ and __Rye__.
+This repo contains a Poetry plugin, a CLI that enables support for __Hatch__, __PDM__, __Rye__ and __Pantsbuild__.
 There's a Hatch Build Hook plugin and a PDM build hooks to fully support these tools.
 
 * [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
@@ -59,6 +59,7 @@ There's example Polylith repositories for:
 - [Hatch](https://github.com/DavidVujic/python-polylith-example-hatch)
 - [PDM](https://github.com/DavidVujic/python-polylith-example-pdm)
 - [Rye](https://github.com/DavidVujic/python-polylith-example-rye)
+- [Pants](https://github.com/DavidVujic/python-polylith-example-pants)
 
 The repositories are example __Python__ setups of the Polylith Architecture.
 You will find examples of sharing code between different kind of projects,
