@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Tuple
+from typing import List, Optional, Tuple
 
 import pytest
 import tomlkit
@@ -16,15 +16,31 @@ theme = "{theme}"
 stable = "stable-*"
 release = "v[0-9]*"
 
+[tool.polylith.tag]
+{tag_sorting}
+
 [tool.polylith.test]
 enabled = true
 """
 
 
+def _to_toml_str_list(values: List[str]) -> str:
+    comma_separated = ",".join([f'"{v}"' for v in values or []])
+    return f"[{comma_separated}]"
+
+
+def _tag_sorting(values: Optional[List[str]]) -> str:
+    if not values:
+        return ""
+    return f"sorting = {_to_toml_str_list(values)}"
+
+
 @pytest.fixture
 def use_fake(monkeypatch):
-    def patch(theme: str):
-        config = config_template.format(theme=theme)
+    def patch(theme: str, tag_sorting: Optional[List[str]] = None):
+        config = config_template.format(
+            theme=theme, tag_sorting=_tag_sorting(tag_sorting)
+        )
         name = "_load_workspace_config"
 
         monkeypatch.setattr(core, name, lambda *args: tomlkit.loads(config))
@@ -57,6 +73,23 @@ def test_get_tag_pattern(use_loose):
 
     assert stable == "stable-*"
     assert release == "v[0-9]*"
+
+
+def test_get_tag_sort_options_from_config(use_loose):
+    options = core.get_tag_sort_options_from_config(fake_path)
+    assert options == ["-committerdate"]
+
+
+def test_get_tag_sort_options_from_config_non_default(use_fake):
+    use_fake("loose", ["-creatordate"])
+    options = core.get_tag_sort_options_from_config(fake_path)
+    assert options == ["-creatordate"]
+
+
+def test_get_tag_sort_options_from_config_multiple(use_fake):
+    use_fake("loose", ["-creatordate", "-comitterdate"])
+    options = core.get_tag_sort_options_from_config(fake_path)
+    assert options == ["-creatordate", "-comitterdate"]
 
 
 def test_is_test_generation_enabled(use_loose):
