@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import Union
+from typing import List, Union
 
 import tomlkit
 from polylith import repo
@@ -35,6 +35,16 @@ def get_tag_pattern_from_config(path: Path, key: Union[str, None]) -> str:
     patterns = toml["tool"]["polylith"].get("tag", {}).get("patterns")
 
     return patterns[key or "stable"] if patterns else get_git_tag_pattern(toml)
+
+
+def get_tag_sort_options_from_config(path: Path) -> List[str]:
+    toml: dict = _load_workspace_config(path)
+
+    options = toml["tool"]["polylith"].get("tag", {}).get("sorting")
+    # Default sorting option
+    if options is None:
+        return ["-committerdate"]
+    return options
 
 
 def is_test_generation_enabled(path: Path) -> bool:

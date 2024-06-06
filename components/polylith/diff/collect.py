@@ -43,9 +43,13 @@ def get_changed_projects(changed_files: List[Path]) -> list:
 
 def get_latest_tag(root: Path, key: Union[str, None]) -> Union[str, None]:
     tag_pattern = configuration.get_tag_pattern_from_config(root, key)
+    sorting_options = [
+        f"--sort={option}"
+        for option in configuration.get_tag_sort_options_from_config(root)
+    ]
 
     res = subprocess.run(
-        ["git", "tag", "-l", "--sort=-committerdate", f"{tag_pattern}"],
+        ["git", "tag", "-l"] + sorting_options + [f"{tag_pattern}"],
         capture_output=True,
     )
 
