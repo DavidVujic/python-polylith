@@ -56,13 +56,6 @@ def get_project_package_includes(namespace: str, data) -> List[dict]:
     return [transform_to_package(namespace, key) for key in includes.keys()]
 
 
-def get_project_name(data) -> str:
-    if repo.is_pep_621_ready(data):
-        return data["project"]["name"]
-
-    return data["tool"]["poetry"]["name"]
-
-
 def parse_pep_621_dependency(dep: str) -> dict:
     parts = re.split(r"[\^~=!<>]", dep)
 

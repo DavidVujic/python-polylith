@@ -6,11 +6,20 @@ import tomlkit
 from polylith import configuration, repo, toml
 
 
-def get_project_name(data) -> str:
-    if repo.is_pep_621_ready(data):
-        return data["project"]["name"]
+def get_project_name(toml_data) -> str:
+    if repo.is_pep_621_ready(toml_data):
+        return toml_data["project"]["name"]
 
-    return data["tool"]["poetry"]["name"]
+    return toml_data["tool"]["poetry"]["name"]
+
+
+def get_project_name_from_toml(data: dict) -> str:
+    try:
+        return get_project_name(data["toml"])
+    except KeyError as e:
+        path = data["path"]
+
+        raise KeyError(f"Error in {path}") from e
 
 
 @lru_cache
@@ -47,7 +56,7 @@ def get_packages_for_projects(root: Path) -> List[dict]:
 
     return [
         {
-            "name": get_project_name(d["toml"]),
+            "name": get_project_name_from_toml(d),
             "packages": toml.get_project_package_includes(namespace, d["toml"]),
             "path": d["path"],
             "type": d["type"],
