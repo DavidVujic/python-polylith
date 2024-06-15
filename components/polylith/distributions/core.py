@@ -1,8 +1,7 @@
 import importlib.metadata
 import re
 from functools import reduce
-from typing import Dict, List
-
+from typing import Dict, List, Set
 
 SUB_DEP_SEPARATORS = r"[\s!=;><\^~]"
 
@@ -53,7 +52,25 @@ def distributions_sub_packages(dists) -> Dict[str, List[str]]:
     return reduce(map_sub_packages, dists, {})
 
 
-def get_distributions(project_dependencies: set) -> list:
-    dists = importlib.metadata.distributions()
+def get_distributions() -> list:
+    return list(importlib.metadata.distributions())
 
-    return [dist for dist in dists if dist.metadata["name"] in project_dependencies]
+
+def get_packages_distributions(project_dependencies: set) -> set:
+    """Return the mapped top namespace from an import
+
+    Example:
+    A third-party library, such as opentelemetry-instrumentation-fastapi.
+    The return value would be the mapped top namespace: opentelemetry
+
+    Note: available for Python >= 3.10
+    """
+
+    # added in Python 3.10
+    fn = getattr(importlib.metadata, "packages_distributions", None)
+
+    dists = fn() if fn else {}
+
+    common = {k for k, v in dists.items() if project_dependencies.intersection(set(v))}
+
+    return common.difference(project_dependencies)

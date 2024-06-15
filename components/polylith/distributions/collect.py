@@ -1,10 +1,11 @@
-import importlib.metadata
 from typing import Set
 
 from polylith import alias
 from polylith.distributions.core import (
     distributions_packages,
     distributions_sub_packages,
+    get_distributions,
+    get_packages_distributions,
 )
 
 
@@ -12,13 +13,13 @@ def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[s
     """Collect known aliases (packages) for third-party libraries.
 
     When the library origin is not from a lock-file:
-    collect sub-dependencies for each library, and append to the result.
+    collect sub-dependencies and distribution top-namespace for each library, and append to the result.
     """
 
     third_party_libs = {k for k, _v in deps["items"].items()}
     lock_file = str.endswith(deps["source"], ".lock")
 
-    dists = list(importlib.metadata.distributions())
+    dists = get_distributions()
 
     dist_packages = distributions_packages(dists)
     custom_aliases = alias.parse(library_alias)
@@ -28,4 +29,6 @@ def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[s
     b = alias.pick(custom_aliases, third_party_libs)
     c = alias.pick(sub_deps, third_party_libs)
 
-    return third_party_libs.union(a, b, c)
+    d = get_packages_distributions(third_party_libs) if not lock_file else set()
+
+    return third_party_libs.union(a, b, c, d)
