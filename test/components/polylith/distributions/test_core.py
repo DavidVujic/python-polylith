@@ -82,4 +82,4 @@ def test_package_distributions_returning_empty_set():
 
     res = distributions.core.get_packages_distributions(fake_project_deps)
 
-    assert res == {}
+    assert res == set()
