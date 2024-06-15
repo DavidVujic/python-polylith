@@ -1,5 +1,7 @@
 import importlib.metadata
+import sys
 
+import pytest
 from polylith import distributions
 
 
@@ -40,3 +42,39 @@ def test_distribution_sub_packages():
 
     assert res.get(expected_dist) is not None
     assert expected_sub_package in res[expected_dist]
+
+
+@pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
+def test_package_distributions_returning_top_namespace(monkeypatch):
+    fake_dists = {
+        "something": ["something-subnamespace"],
+        "opentelemetry": ["opentelemetry-instrumentation-fastapi"],
+        "google": ["google-cloud-storage", "google-api-core"],
+        "other": ["other-sub-ns"],
+    }
+
+    fake_project_deps = {
+        "opentelemetry-instrumentation-fastapi",
+        "fastapi",
+        "something-subnamespace",
+        "google-cloud-storage",
+    }
+
+    monkeypatch.setattr(
+        distributions.core.importlib.metadata,
+        "packages_distributions",
+        lambda: fake_dists,
+    )
+
+    res = distributions.core.get_packages_distributions(fake_project_deps)
+
+    assert res == {"google", "opentelemetry", "something"}
+
+
+@pytest.mark.skipif(sys.version_info > (3, 9), reason="asserting python3.9 and lower")
+def test_package_distributions_returning_empty_set():
+    fake_project_deps = {"something-subnamespace"}
+
+    res = distributions.core.get_packages_distributions(fake_project_deps)
+
+    assert res == set()
