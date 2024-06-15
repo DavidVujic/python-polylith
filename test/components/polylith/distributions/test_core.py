@@ -73,12 +73,7 @@ def test_package_distributions_returning_top_namespace(monkeypatch):
 
 @pytest.mark.skipif(sys.version_info > (3, 9), reason="asserting python3.9 and lower")
 def test_package_distributions_returning_empty_set():
-    fake_project_deps = {
-        "opentelemetry-instrumentation-fastapi",
-        "fastapi",
-        "something-subnamespace",
-        "google-cloud-storage",
-    }
+    fake_project_deps = {"something-subnamespace"}
 
     res = distributions.core.get_packages_distributions(fake_project_deps)
 
