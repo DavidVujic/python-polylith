@@ -1,7 +1,6 @@
 import importlib.metadata
 import sys
 
-import pytest
 from polylith import distributions
 
 
@@ -44,7 +43,6 @@ def test_distribution_sub_packages():
     assert expected_sub_package in res[expected_dist]
 
 
-@pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
 def test_package_distributions_returning_top_namespace(monkeypatch):
     fake_dists = {
         "something": ["something-subnamespace"],
@@ -60,11 +58,12 @@ def test_package_distributions_returning_top_namespace(monkeypatch):
         "google-cloud-storage",
     }
 
-    monkeypatch.setattr(
-        distributions.core.importlib.metadata,
-        "packages_distributions",
-        lambda: fake_dists,
-    )
+    if sys.version_info > (3, 9):
+        monkeypatch.setattr(
+            distributions.core.importlib.metadata,
+            "packages_distributions",
+            lambda: fake_dists,
+        )
 
     res = distributions.core.get_packages_distributions(fake_project_deps)
 
