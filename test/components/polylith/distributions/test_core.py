@@ -1,5 +1,7 @@
 import importlib.metadata
+import sys
 
+import pytest
 from polylith import distributions
 
 
@@ -42,12 +44,13 @@ def test_distribution_sub_packages():
     assert expected_sub_package in res[expected_dist]
 
 
+@pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
 def test_package_distributions_returning_top_namespace(monkeypatch):
     fake_dists = {
         "something": ["something-subnamespace"],
         "opentelemetry": ["opentelemetry-instrumentation-fastapi"],
         "google": ["google-cloud-storage", "google-api-core"],
-        "other": ["other-sub-ns"]
+        "other": ["other-sub-ns"],
     }
 
     fake_project_deps = {
