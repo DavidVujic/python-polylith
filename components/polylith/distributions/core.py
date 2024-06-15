@@ -1,7 +1,7 @@
 import importlib.metadata
 import re
 from functools import reduce
-from typing import Dict, List, Set
+from typing import Dict, List
 
 SUB_DEP_SEPARATORS = r"[\s!=;><\^~]"
 
