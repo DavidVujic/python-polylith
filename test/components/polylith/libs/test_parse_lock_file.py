@@ -25,7 +25,7 @@ def test_parse_contents_of_rye_lock_file():
     parts = (str.split(row, "==") for row in filtered)
     names = {row[0] for row in parts}
 
-    assert names == expected, parts
+    assert names == expected
 
 
 def test_parse_contents_of_pdm_lock_file():
