@@ -1,4 +1,19 @@
-import tomlkit
+from pathlib import Path
+
+from polylith.libs import lock_files
+
+project_data = {"path": Path("./test/test_data")}
+
+
+def test_find_lock_file():
+    expected = {
+        "pdm.lock": "toml",
+        "requirements.lock": "text",
+    }
+
+    res = lock_files.find_lock_file(project_data)
+
+    assert res == expected
 
 
 def test_parse_contents_of_rye_lock_file():
@@ -17,13 +32,7 @@ def test_parse_contents_of_rye_lock_file():
         "uvicorn",
     }
 
-    with open("./test/test_data/requirements.lock", "r") as f:
-        data = f.readlines()
-
-    rows = (str.strip(line) for line in data)
-    filtered = (row for row in rows if row and not row.startswith(("#", "-")))
-    parts = (str.split(row, "==") for row in filtered)
-    names = {row[0] for row in parts}
+    names = lock_files.extract_lib_names(project_data, {"requirements.lock": "text"})
 
     assert names == expected
 
@@ -46,9 +55,6 @@ def test_parse_contents_of_pdm_lock_file():
         "uvicorn",
     }
 
-    with open("./test/test_data/pdm.lock", "r") as f:
-        data = tomlkit.load(f)
-
-    names = {p.get("name") for p in data.get("package", [])}
+    names = lock_files.extract_lib_names(project_data, {"pdm.lock": "toml"})
 
     assert names == expected
