@@ -25,7 +25,6 @@ requires_python = ">=3.7"
 summary = "High level compatibility layer for multiple asynchronous event loop implementations"
 groups = ["default"]
 dependencies = [
-    "exceptiongroup; python_version < \"3.11\"",
     "idna>=2.8",
     "sniffio>=1.1",
 ]
@@ -41,35 +40,10 @@ requires_python = ">=3.7"
 summary = "Composable command line interface toolkit"
 groups = ["default"]
 dependencies = [
-    "colorama; platform_system == \"Windows\"",
 ]
 files = [
     {file = "click-8.1.7-py3-none-any.whl", hash = "sha256:111"},
     {file = "click-8.1.7.tar.gz", hash = "sha256:111"},
-]
-
-[[package]]
-name = "colorama"
-version = "0.4.6"
-requires_python = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,!=3.6.*,>=2.7"
-summary = "Cross-platform colored terminal text."
-groups = ["default"]
-marker = "platform_system == \"Windows\""
-files = [
-    {file = "colorama-0.4.6-py2.py3-none-any.whl", hash = "sha256:111"},
-    {file = "colorama-0.4.6.tar.gz", hash = "sha256:111"},
-]
-
-[[package]]
-name = "exceptiongroup"
-version = "1.2.1"
-requires_python = ">=3.7"
-summary = "Backport of PEP 654 (exception groups)"
-groups = ["default"]
-marker = "python_version < \"3.11\""
-files = [
-    {file = "exceptiongroup-1.2.1-py3-none-any.whl", hash = "sha256:111"},
-    {file = "exceptiongroup-1.2.1.tar.gz", hash = "sha256:111"},
 ]
 
 [[package]]

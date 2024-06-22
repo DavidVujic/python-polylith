@@ -4,7 +4,7 @@ from typing import Set
 import tomlkit
 
 
-def find_lock_file(project_data: dict) -> dict:
+def find_lock_files(project_data: dict) -> dict:
     directory = project_data["path"]
 
     variants = {
@@ -16,8 +16,20 @@ def find_lock_file(project_data: dict) -> dict:
     return {k: v for k, v in variants.items() if Path(directory / k).exists()}
 
 
-def extract_lib_names_from_toml(path: Path, filename: str) -> Set[str]:
-    with open(path / filename, "r") as f:
+def pick_lock_file(project_data: dict) -> dict:
+    data = find_lock_files(project_data)
+    first = next(iter(data.items()), None)
+
+    if not first:
+        return {}
+
+    filename, filetype = first
+
+    return {"filename": filename, "filetype": filetype}
+
+
+def extract_lib_names_from_toml(path: Path) -> Set[str]:
+    with open(path, "r") as f:
         try:
             data = tomlkit.load(f)
         except tomlkit.exceptions.ParseError:
@@ -26,8 +38,8 @@ def extract_lib_names_from_toml(path: Path, filename: str) -> Set[str]:
     return {p.get("name") for p in data.get("package", [])}
 
 
-def extract_lib_names_from_txt(path: Path, filename: str) -> Set[str]:
-    with open(path / filename, "r") as f:
+def extract_lib_names_from_txt(path: Path) -> Set[str]:
+    with open(path, "r") as f:
         data = f.readlines()
 
     rows = (str.strip(line) for line in data)
@@ -37,16 +49,21 @@ def extract_lib_names_from_txt(path: Path, filename: str) -> Set[str]:
     return {row[0] for row in parts}
 
 
-def extract_lib_names(project_data: dict, lock_file_data: dict) -> Set[str]:
-    first = next(iter(lock_file_data.items()), None)
+def extract_lib_names(project_data: dict, filename: str, filetype: str) -> Set[str]:
+    dir_path = project_data["path"]
 
-    if not first:
+    path = Path(dir_path / filename)
+
+    if not path.exists():
         return set()
 
-    path = project_data["path"]
-    filename, filetype = first
-
     if filetype == "toml":
-        return extract_lib_names_from_toml(path, filename)
+        return extract_lib_names_from_toml(path)
 
-    return extract_lib_names_from_txt(path, filename)
+    return extract_lib_names_from_txt(path)
+
+
+def extract_libs_from_lock_file(project_data: dict) -> Set[str]:
+    lock_file_data = pick_lock_file(project_data)
+
+    return extract_lib_names(project_data, **lock_file_data)
