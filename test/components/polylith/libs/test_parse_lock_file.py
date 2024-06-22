@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import pytest
 from polylith.libs import lock_files
 
 project_data = {"path": Path("./test/test_data")}
@@ -19,45 +20,54 @@ expected_libraries = {
     "uvicorn",
 }
 
+pdm_lock_file = "pdm"
+piptools_lock_file = "piptools"
+rye_lock_file = "rye"
 
-def test_find_lock_files():
-    expected = {
-        "pdm.lock": "toml",
-        "requirements.lock": "text",
-        "requirements.txt": "text",
-    }
+test_lock_files = {
+    pdm_lock_file: "toml",
+    piptools_lock_file: "text",
+    rye_lock_file: "text",
+}
 
+
+@pytest.fixture
+def setup(monkeypatch):
+    monkeypatch.setattr(lock_files, "patterns", test_lock_files)
+
+
+def test_find_lock_files(setup):
     res = lock_files.find_lock_files(project_data)
 
-    assert res == expected
+    assert res == test_lock_files
 
 
-def test_pick_lock_file():
+def test_pick_lock_file(setup):
     res = lock_files.pick_lock_file(project_data)
 
     assert res.get("filename")
     assert res.get("filetype")
 
 
-def test_parse_contents_of_rye_lock_file():
-    names = lock_files.extract_lib_names(project_data, "requirements.lock", "text")
+def test_parse_contents_of_rye_lock_file(setup):
+    names = lock_files.extract_lib_names(project_data, rye_lock_file, "text")
 
     assert names == expected_libraries
 
 
-def test_parse_contents_of_pdm_lock_file():
-    names = lock_files.extract_lib_names(project_data, "pdm.lock", "toml")
+def test_parse_contents_of_pdm_lock_file(setup):
+    names = lock_files.extract_lib_names(project_data, pdm_lock_file, "toml")
 
     assert names == expected_libraries
 
 
-def test_parse_contents_of_pip_tools_lock_file():
-    names = lock_files.extract_lib_names(project_data, "requirements.txt", "text")
+def test_parse_contents_of_pip_tools_lock_file(setup):
+    names = lock_files.extract_lib_names(project_data, piptools_lock_file, "text")
 
     assert names == expected_libraries
 
 
-def test_parse_contents_from_lock_file():
+def test_parse_contents_from_lock_file(setup):
     names = lock_files.extract_libs_from_lock_file(project_data)
 
     assert names == expected_libraries

@@ -1,19 +1,19 @@
 from pathlib import Path
 from typing import Set
-
 import tomlkit
+
+
+patterns = {
+    "pdm.lock": "toml",
+    "requirements.lock": "text",
+    "requirements.txt": "text",
+}
 
 
 def find_lock_files(project_data: dict) -> dict:
     directory = project_data["path"]
 
-    variants = {
-        "pdm.lock": "toml",
-        "requirements.lock": "text",
-        "requirements.txt": "text",
-    }
-
-    return {k: v for k, v in variants.items() if Path(directory / k).exists()}
+    return {k: v for k, v in patterns.items() if Path(directory / k).exists()}
 
 
 def pick_lock_file(project_data: dict) -> dict:
