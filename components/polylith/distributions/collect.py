@@ -28,7 +28,6 @@ def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[s
     a = alias.pick(dist_packages, third_party_libs)
     b = alias.pick(custom_aliases, third_party_libs)
     c = alias.pick(sub_deps, third_party_libs)
-
-    d = get_packages_distributions(third_party_libs) if not lock_file else set()
+    d = get_packages_distributions(third_party_libs)
 
     return third_party_libs.union(a, b, c, d)
