@@ -1,10 +1,16 @@
 import re
+import sys
 from functools import reduce
 from pathlib import Path
 from typing import List, Union
 
 import tomlkit
 from polylith import repo
+
+if sys.version_info < (3, 11):
+    import tomlkit as tomllib
+else:
+    import tomllib
 
 
 def transform_to_package(namespace: str, include: str) -> dict:
@@ -111,3 +117,11 @@ def get_project_dependencies(data) -> dict:
 def read_toml_document(path: Path) -> tomlkit.TOMLDocument:
     with path.open(encoding="utf-8", errors="ignore") as f:
         return tomlkit.loads(f.read())
+
+
+def load_toml(path: Path) -> dict:
+    with open(path, "rb") as f:
+        try:
+            return tomllib.load(f)
+        except tomlkit.exceptions.ParseError as e:
+            raise ValueError(f"Failed loading {path}: {repr(e)}") from e

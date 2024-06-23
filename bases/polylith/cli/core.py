@@ -23,6 +23,23 @@ def filtered_projects_data(
     return [p for p in projects_data if dir_path in p["path"].as_posix()]
 
 
+def enriched_with_lock_file_data(project_data: dict, is_verbose: bool) -> dict:
+    try:
+        return commands.check.with_third_party_libs_from_lock_file(project_data)
+    except ValueError as e:
+        if is_verbose:
+            name = project_data["name"]
+            print(f"{name}: {e}")
+
+        return project_data
+
+
+def enriched_with_lock_files_data(
+    projects_data: List[dict], is_verbose: bool
+) -> List[dict]:
+    return [enriched_with_lock_file_data(p, is_verbose) for p in projects_data]
+
+
 @app.command("info")
 def info_command(short: Annotated[bool, options.short_workspace] = False):
     """Info about the Polylith workspace."""
@@ -51,7 +68,8 @@ def check_command(
         "alias": str.split(alias, ",") if alias else [],
     }
 
-    projects_data = filtered_projects_data(only_projects_data, directory)
+    filtered_projects = filtered_projects_data(only_projects_data, directory)
+    projects_data = enriched_with_lock_files_data(filtered_projects, verbose)
 
     results = {commands.check.run(root, ns, p, cli_options) for p in projects_data}
 
@@ -89,8 +107,9 @@ def libs_command(
     }
 
     projects_data = filtered_projects_data(all_projects_data, directory)
+    merged_projects_data = enriched_with_lock_files_data(projects_data, False)
 
-    results = commands.libs.run(root, ns, projects_data, cli_options)
+    results = commands.libs.run(root, ns, merged_projects_data, cli_options)
     commands.libs.run_library_versions(projects_data, all_projects_data, cli_options)
 
     if not all(results):
