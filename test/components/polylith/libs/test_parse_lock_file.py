@@ -37,7 +37,7 @@ def setup(monkeypatch):
 
 
 def test_find_lock_files(setup):
-    res = lock_files.find_lock_files(project_data)
+    res = lock_files.find_lock_files(project_data["path"])
 
     assert res == test_lock_files
 

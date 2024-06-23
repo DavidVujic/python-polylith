@@ -1,22 +1,21 @@
 from pathlib import Path
 
-import tomlkit
+from polylith.toml import load_toml
 
 patterns = {
     "pdm.lock": "toml",
+    "poetry.lock": "toml",
     "requirements.lock": "text",
     "requirements.txt": "text",
 }
 
 
-def find_lock_files(project_data: dict) -> dict:
-    directory = project_data["path"]
-
-    return {k: v for k, v in patterns.items() if Path(directory / k).exists()}
+def find_lock_files(path: Path) -> dict:
+    return {k: v for k, v in patterns.items() if Path(path / k).exists()}
 
 
 def pick_lock_file(project_data: dict) -> dict:
-    data = find_lock_files(project_data)
+    data = find_lock_files(project_data["path"])
     first = next(iter(data.items()), None)
 
     if not first:
@@ -28,8 +27,7 @@ def pick_lock_file(project_data: dict) -> dict:
 
 
 def extract_lib_names_from_toml(path: Path) -> dict:
-    with open(path, "r") as f:
-        data = tomlkit.load(f)
+    data = load_toml(path)
 
     return {p["name"]: p["version"] for p in data.get("package", [])}
 

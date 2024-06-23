@@ -106,10 +106,10 @@ def libs_command(
         "short": short,
     }
 
-    filtered_projects = filtered_projects_data(all_projects_data, directory)
-    projects_data = enriched_with_lock_files_data(filtered_projects, False)
+    projects_data = filtered_projects_data(all_projects_data, directory)
+    merged_projects_data = enriched_with_lock_files_data(projects_data, False)
 
-    results = commands.libs.run(root, ns, projects_data, cli_options)
+    results = commands.libs.run(root, ns, merged_projects_data, cli_options)
     commands.libs.run_library_versions(projects_data, all_projects_data, cli_options)
 
     if not all(results):
