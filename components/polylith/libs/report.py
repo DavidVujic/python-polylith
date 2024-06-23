@@ -40,7 +40,7 @@ def filter_close_matches(
     unknown_imports: Set[str], dependencies: Set[str], cutoff: float
 ) -> Set[str]:
     unknowns = {str.lower(u) for u in unknown_imports}
-    deps = {str.lower(d) for d in dependencies}
+    deps = {str.lower(d).replace("-", "_") for d in dependencies}
 
     return {
         u for u in unknowns if not difflib.get_close_matches(u, deps, cutoff=cutoff)

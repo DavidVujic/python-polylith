@@ -83,3 +83,18 @@ def test_calculate_diff_should_identify_close_match_case_insensitive():
     res = report.calculate_diff(brick_imports, third_party_libs)
 
     assert len(res) == 0
+
+
+def test_calculate_diff_strict_should_identify_close_match_for_dash_and_low_dash():
+    brick_imports = {
+        "bases": {"thebase": {"typer"}},
+        "components": {
+            "one": {"typing_extensions"},
+        },
+    }
+
+    third_party_libs = {"typer", "typing-extensions"}
+
+    res = report.calculate_diff(brick_imports, third_party_libs, True)
+
+    assert len(res) == 0
