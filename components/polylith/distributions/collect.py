@@ -16,8 +16,8 @@ def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[s
     collect sub-dependencies and distribution top-namespace for each library, and append to the result.
     """
 
+    lock_file = any(str.endswith(deps["source"], s) for s in {".lock", ".txt"})
     third_party_libs = {k for k, _v in deps["items"].items()}
-    lock_file = str.endswith(deps["source"], ".lock")
 
     dists = get_distributions()
 

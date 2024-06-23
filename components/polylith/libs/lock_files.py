@@ -69,16 +69,3 @@ def extract_libs(project_data: dict, filename: str, filetype: str) -> dict:
         return extract_lib_names_from_toml(path)
 
     return extract_lib_names_from_txt(path)
-
-
-def extract_libs_from_lock_file(project_data: dict) -> dict:
-    lock_file_data = pick_lock_file(project_data)
-
-    return extract_libs(project_data, **lock_file_data)
-
-
-"""
-try:
-    except (IndexError, KeyError, tomlkit.exceptions.ParseError):
-        return {}
-"""

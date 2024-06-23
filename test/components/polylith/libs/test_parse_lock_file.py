@@ -65,9 +65,3 @@ def test_parse_contents_of_pip_tools_lock_file(setup):
     names = lock_files.extract_libs(project_data, piptools_lock_file, "text")
 
     assert names == expected_libraries
-
-
-def test_parse_contents_from_lock_file(setup):
-    names = lock_files.extract_libs_from_lock_file(project_data)
-
-    assert names == expected_libraries

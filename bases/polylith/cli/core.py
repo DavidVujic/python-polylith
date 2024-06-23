@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List, Union
 
+import tomlkit
 from polylith import commands, configuration, info, repo
 from polylith.cli import create, options
 from typer import Exit, Option, Typer
@@ -21,6 +22,22 @@ def filtered_projects_data(
     dir_path = Path(directory).as_posix() if directory else Path.cwd().name
 
     return [p for p in projects_data if dir_path in p["path"].as_posix()]
+
+
+def enriched_with_lock_file_data(project_data: dict, is_verbose: bool) -> dict:
+    try:
+        return commands.check.with_third_party_libs_from_lock_file(project_data)
+    except (IndexError, KeyError, tomlkit.exceptions.ParseError) as e:
+        if is_verbose:
+            print(e)
+
+        return project_data
+
+
+def enriched_with_lock_files_data(
+    projects_data: List[dict], is_verbose: bool
+) -> List[dict]:
+    return [enriched_with_lock_file_data(p, is_verbose) for p in projects_data]
 
 
 @app.command("info")
@@ -51,7 +68,8 @@ def check_command(
         "alias": str.split(alias, ",") if alias else [],
     }
 
-    projects_data = filtered_projects_data(only_projects_data, directory)
+    filtered_projects = filtered_projects_data(only_projects_data, directory)
+    projects_data = enriched_with_lock_files_data(filtered_projects, verbose)
 
     results = {commands.check.run(root, ns, p, cli_options) for p in projects_data}
 
@@ -88,7 +106,8 @@ def libs_command(
         "short": short,
     }
 
-    projects_data = filtered_projects_data(all_projects_data, directory)
+    filtered_projects = filtered_projects_data(all_projects_data, directory)
+    projects_data = enriched_with_lock_files_data(filtered_projects, False)
 
     results = commands.libs.run(root, ns, projects_data, cli_options)
     commands.libs.run_library_versions(projects_data, all_projects_data, cli_options)
