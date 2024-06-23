@@ -63,7 +63,10 @@ def extract_libs(project_data: dict, filename: str, filetype: str) -> dict:
     if not path.exists():
         return {}
 
-    if filetype == "toml":
-        return extract_lib_names_from_toml(path)
+    try:
+        if filetype == "toml":
+            return extract_lib_names_from_toml(path)
 
-    return extract_lib_names_from_txt(path)
+        return extract_lib_names_from_txt(path)
+    except (IndexError, KeyError, ValueError) as e:
+        raise ValueError(f"Failed reading {filename}: {repr(e)}") from e

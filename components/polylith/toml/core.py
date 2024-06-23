@@ -121,4 +121,7 @@ def read_toml_document(path: Path) -> tomlkit.TOMLDocument:
 
 def load_toml(path: Path) -> dict:
     with open(path, "rb") as f:
-        return tomllib.load(f)
+        try:
+            return tomllib.load(f)
+        except tomlkit.exceptions.ParseError as e:
+            raise ValueError(f"Failed loading {path}: {repr(e)}") from e

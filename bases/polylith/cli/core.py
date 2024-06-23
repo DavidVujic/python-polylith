@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import List, Union
 
-import tomlkit
 from polylith import commands, configuration, info, repo
 from polylith.cli import create, options
 from typer import Exit, Option, Typer
@@ -27,9 +26,10 @@ def filtered_projects_data(
 def enriched_with_lock_file_data(project_data: dict, is_verbose: bool) -> dict:
     try:
         return commands.check.with_third_party_libs_from_lock_file(project_data)
-    except (IndexError, KeyError, tomlkit.exceptions.ParseError) as e:
+    except ValueError as e:
         if is_verbose:
-            print(e)
+            name = project_data["name"]
+            print(f"{name}: {e}")
 
         return project_data
 
