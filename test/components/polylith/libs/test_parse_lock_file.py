@@ -6,18 +6,18 @@ from polylith.libs import lock_files
 project_data = {"path": Path("./test/test_data")}
 
 expected_libraries = {
-    "annotated-types",
-    "anyio",
-    "click",
-    "fastapi",
-    "h11",
-    "idna",
-    "pydantic",
-    "pydantic-core",
-    "sniffio",
-    "starlette",
-    "typing-extensions",
-    "uvicorn",
+    "annotated-types": "0.7.0",
+    "anyio": "4.4.0",
+    "click": "8.1.7",
+    "fastapi": "0.109.2",
+    "h11": "0.14.0",
+    "idna": "3.7",
+    "pydantic": "2.7.4",
+    "pydantic-core": "2.18.4",
+    "sniffio": "1.3.1",
+    "starlette": "0.36.3",
+    "typing-extensions": "4.12.2",
+    "uvicorn": "0.25.0",
 }
 
 pdm_lock_file = "pdm"
@@ -50,19 +50,19 @@ def test_pick_lock_file(setup):
 
 
 def test_parse_contents_of_rye_lock_file(setup):
-    names = lock_files.extract_lib_names(project_data, rye_lock_file, "text")
+    names = lock_files.extract_libs(project_data, rye_lock_file, "text")
 
     assert names == expected_libraries
 
 
 def test_parse_contents_of_pdm_lock_file(setup):
-    names = lock_files.extract_lib_names(project_data, pdm_lock_file, "toml")
+    names = lock_files.extract_libs(project_data, pdm_lock_file, "toml")
 
     assert names == expected_libraries
 
 
 def test_parse_contents_of_pip_tools_lock_file(setup):
-    names = lock_files.extract_lib_names(project_data, piptools_lock_file, "text")
+    names = lock_files.extract_libs(project_data, piptools_lock_file, "text")
 
     assert names == expected_libraries
 

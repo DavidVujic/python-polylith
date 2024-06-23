@@ -20,7 +20,7 @@ files = [
 
 [[package]]
 name = "anyio"
-version = "3.7.1"
+version = "4.4.0"
 requires_python = ">=3.7"
 summary = "High level compatibility layer for multiple asynchronous event loop implementations"
 groups = ["default"]
@@ -48,7 +48,7 @@ files = [
 
 [[package]]
 name = "fastapi"
-version = "0.106.0"
+version = "0.109.2"
 requires_python = ">=3.8"
 summary = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
 groups = ["default"]
@@ -126,7 +126,7 @@ files = [
 
 [[package]]
 name = "starlette"
-version = "0.27.0"
+version = "0.36.3"
 requires_python = ">=3.7"
 summary = "The little ASGI library that shines."
 groups = ["default"]
