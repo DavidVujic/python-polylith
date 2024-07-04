@@ -28,7 +28,7 @@ def get_toml(path: Path) -> tomlkit.TOMLDocument:
 
 
 def get_project_files(root: Path) -> dict:
-    projects = sorted(root.glob(f"projects/**/{repo.default_toml}"))
+    projects = sorted(root.glob(f"projects/*/{repo.default_toml}"))
     development = Path(root / repo.default_toml)
 
     proj = {"projects": projects}
