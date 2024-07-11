@@ -5,6 +5,15 @@ import pytest
 from polylith import distributions
 
 
+class FakeDist:
+    def __init__(self, name: str, data: str):
+        self.data = data
+        self.metadata = {"name": name}
+
+    def read_text(self, *args):
+        return self.data
+
+
 def test_distribution_packages():
     dists = list(importlib.metadata.distributions())
 
@@ -15,6 +24,18 @@ def test_distribution_packages():
 
     assert res.get(expected_dist) is not None
     assert res[expected_dist] == [expected_package]
+
+
+def test_distribution_packages_parse_contents_of_top_level_txt():
+    dists = [FakeDist("python-jose", "jose\njose/backends\n")]
+
+    res = distributions.distributions_packages(dists)
+
+    expected_dist = "python-jose"
+    expected_packages = ["jose", "jose.backends"]
+
+    assert res.get(expected_dist) is not None
+    assert res[expected_dist] == expected_packages
 
 
 def test_parse_package_name_from_dist_requires():

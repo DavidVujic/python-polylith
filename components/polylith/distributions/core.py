@@ -25,10 +25,16 @@ def map_sub_packages(acc, dist) -> dict:
     return {**acc, **dist_subpackages(dist)}
 
 
+def parsed_top_level_namespace(namespaces: List[str]) -> List[str]:
+    return [str.replace(ns, "/", ".") for ns in namespaces]
+
+
 def top_level_packages(dist) -> List[str]:
     top_level = dist.read_text("top_level.txt")
 
-    return str.split(top_level or "")
+    namespaces = str.split(top_level or "")
+
+    return parsed_top_level_namespace(namespaces)
 
 
 def mapped_packages(dist) -> dict:
