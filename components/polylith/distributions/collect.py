@@ -1,3 +1,4 @@
+from functools import reduce
 from typing import Set
 
 from polylith import alias
@@ -9,6 +10,25 @@ from polylith.distributions.core import (
 )
 
 
+def extract_extras(name: str) -> Set[str]:
+    chars = ["[", "]"]
+    replacement = ","
+
+    res = reduce(lambda acc, char: str.replace(acc, char, replacement), chars, name)
+
+    parts = str.split(res, replacement)
+
+    return {str.strip(p) for p in parts if p}
+
+
+def extract_library_names(deps: dict) -> Set[str]:
+    names = {k for k, _v in deps["items"].items()}
+
+    with_extras = [extract_extras(n) for n in names]
+
+    return set().union(*with_extras)
+
+
 def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[str]:
     """Collect known aliases (packages) for third-party libraries.
 
@@ -17,7 +37,7 @@ def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[s
     """
 
     lock_file = any(str.endswith(deps["source"], s) for s in {".lock", ".txt"})
-    third_party_libs = {k for k, _v in deps["items"].items()}
+    third_party_libs = extract_library_names(deps)
 
     dists = get_distributions()
 
