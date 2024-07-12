@@ -1,6 +1,6 @@
 import importlib.metadata
 import re
-from functools import reduce
+from functools import lru_cache, reduce
 from typing import Dict, List
 
 SUB_DEP_SEPARATORS = r"[\s!=;><\^~]"
@@ -58,6 +58,7 @@ def distributions_sub_packages(dists) -> Dict[str, List[str]]:
     return reduce(map_sub_packages, dists, {})
 
 
+@lru_cache
 def get_distributions() -> list:
     return list(importlib.metadata.distributions())
 

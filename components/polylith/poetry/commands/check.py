@@ -1,3 +1,4 @@
+from functools import partial
 from pathlib import Path
 
 from cleo.helpers import option
@@ -29,12 +30,14 @@ class CheckCommand(Command):
     def print_report(self, root: Path, ns: str, project_data: dict) -> bool:
         path = project_data["path"]
         name = project_data["name"]
+        dists_fn = partial(internals.distributions, None, root)
 
         options = {
             "verbose": True if self.option("verbose") else False,
             "quiet": True if self.option("quiet") else False,
             "strict": True if self.option("strict") else False,
             "alias": self.option("alias") or [],
+            "dists_fn": dists_fn,
         }
 
         try:

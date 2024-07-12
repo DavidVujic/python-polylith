@@ -27,7 +27,7 @@ def collect_known_aliases(project_data: dict, options: dict) -> Set[str]:
     deps = project_data["deps"]
     library_alias = options["alias"]
 
-    return distributions.known_aliases_and_sub_dependencies(deps, library_alias)
+    return distributions.known_aliases_and_sub_dependencies(deps, library_alias, options)
 
 
 def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:

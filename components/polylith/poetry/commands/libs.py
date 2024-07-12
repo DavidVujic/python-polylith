@@ -1,10 +1,15 @@
+from functools import partial
 from pathlib import Path
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands, configuration, info, repo
 from polylith.poetry.commands.check import command_options
-from polylith.poetry.internals import filter_projects_data, find_third_party_libs
+from polylith.poetry.internals import (
+    distributions,
+    filter_projects_data,
+    find_third_party_libs,
+)
 
 
 class LibsCommand(Command):
@@ -35,14 +40,17 @@ class LibsCommand(Command):
             return data
 
     def handle(self) -> int:
+        root = repo.get_workspace_root(Path.cwd())
+        dists_fn = partial(distributions, None, root)
+
         options = {
             "strict": self.option("strict"),
             "alias": self.option("alias"),
             "short": self.option("short"),
+            "dists_fn": dists_fn,
         }
 
         directory = self.option("directory")
-        root = repo.get_workspace_root(Path.cwd())
         ns = configuration.get_namespace_from_config(root)
 
         all_projects_data = info.get_projects_data(root, ns)

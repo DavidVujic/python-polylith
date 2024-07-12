@@ -15,7 +15,9 @@ def missing_libs(project_data: dict, imports: dict, options: dict) -> bool:
 
     brick_imports = imports[name]
 
-    libs = distributions.known_aliases_and_sub_dependencies(deps, library_alias)
+    libs = distributions.known_aliases_and_sub_dependencies(
+        deps, library_alias, options
+    )
 
     return report.print_missing_installed_libs(
         brick_imports,
