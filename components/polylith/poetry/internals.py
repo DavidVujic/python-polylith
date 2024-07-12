@@ -1,5 +1,6 @@
+from functools import lru_cache
 from pathlib import Path
-from typing import Iterable, List, Union
+from typing import List, Union
 
 from poetry.factory import Factory
 from poetry.poetry import Poetry
@@ -11,12 +12,13 @@ def get_project_poetry(poetry: Poetry, path: Union[Path, None]) -> Poetry:
     return Factory().create_poetry(path) if path else poetry
 
 
-def distributions(poetry: Poetry, path: Union[Path, None]) -> Iterable:
+@lru_cache
+def distributions(poetry: Poetry, path: Union[Path, None]) -> list:
     project_poetry = get_project_poetry(poetry, path)
 
     env = EnvManager(project_poetry).get()
 
-    return env.site_packages.distributions()
+    return list(env.site_packages.distributions())
 
 
 def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> dict:
