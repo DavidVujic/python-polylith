@@ -29,7 +29,9 @@ def extract_library_names(deps: dict) -> Set[str]:
     return set().union(*with_extras)
 
 
-def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[str]:
+def known_aliases_and_sub_dependencies(
+    deps: dict, library_alias: list, options: dict
+) -> Set[str]:
     """Collect known aliases (packages) for third-party libraries.
 
     When the library origin is not from a lock-file:
@@ -39,7 +41,8 @@ def known_aliases_and_sub_dependencies(deps: dict, library_alias: list) -> Set[s
     lock_file = any(str.endswith(deps["source"], s) for s in {".lock", ".txt"})
     third_party_libs = extract_library_names(deps)
 
-    dists = get_distributions()
+    fn = options.get("dists_fn", get_distributions)
+    dists = fn()
 
     dist_packages = distributions_packages(dists)
     custom_aliases = alias.parse(library_alias)
