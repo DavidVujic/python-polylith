@@ -7,8 +7,8 @@ from polylith import configuration, diff, info, repo
 def print_views(root: Path, tag: str, short: bool, only_bricks: bool) -> None:
     ns = configuration.get_namespace_from_config(root)
     files = diff.collect.get_files(tag)
-    bases = diff.collect.get_changed_bases(files, ns)
-    components = diff.collect.get_changed_components(files, ns)
+    bases = diff.collect.get_changed_bases(root, files, ns)
+    components = diff.collect.get_changed_components(root, files, ns)
 
     projects = diff.collect.get_changed_projects(files)
     all_projects_data = info.get_bricks_in_projects(root, components, bases, ns)

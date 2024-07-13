@@ -1,3 +1,4 @@
+import re
 import subprocess
 from pathlib import Path
 from typing import List, Set, Union
@@ -5,34 +6,48 @@ from typing import List, Set, Union
 from polylith import configuration, repo
 
 
-def _parse_folder_parts(folder: str, changed_file: Path) -> str:
-    file_path = Path(changed_file.as_posix().replace(folder, ""))
+def _parse_folder_parts(pattern: str, changed_file: Path) -> str:
+    parts = re.split(pattern, changed_file.as_posix())
+    remainder = parts[-1]
+
+    file_path = Path(remainder)
 
     return next(p for p in file_path.parts if p != file_path.root)
 
 
-def _get_changed(folder: str, changed_files: List[Path]) -> set:
+def _get_changed(pattern: str, changed_files: List[Path]) -> set:
     return {
-        _parse_folder_parts(folder, f)
+        _parse_folder_parts(pattern, f)
         for f in changed_files
-        if str.startswith(f.as_posix(), folder)
+        if re.match(pattern, f.as_posix())
     }
 
 
+def _parse_path_pattern(root: Path, top_dir: str, namespace: str) -> str:
+    theme = configuration.get_theme_from_config(root)
+
+    if theme == "loose":
+        return f"{top_dir}/{namespace}/"
+
+    return rf"({top_dir}\/).+(\/src\/)({namespace})"
+
+
 def _get_changed_bricks(
-    top_dir: str, changed_files: List[Path], namespace: str
+    root: Path, top_dir: str, changed_files: List[Path], namespace: str
 ) -> list:
-    d = f"{top_dir}/{namespace}"
+    pattern = _parse_path_pattern(root, top_dir, namespace)
 
-    return sorted(_get_changed(d, changed_files))
-
-
-def get_changed_components(changed_files: List[Path], namespace: str) -> list:
-    return _get_changed_bricks(repo.components_dir, changed_files, namespace)
+    return sorted(_get_changed(pattern, changed_files))
 
 
-def get_changed_bases(changed_files: List[Path], namespace: str) -> list:
-    return _get_changed_bricks(repo.bases_dir, changed_files, namespace)
+def get_changed_components(
+    root: Path, changed_files: List[Path], namespace: str
+) -> list:
+    return _get_changed_bricks(root, repo.components_dir, changed_files, namespace)
+
+
+def get_changed_bases(root: Path, changed_files: List[Path], namespace: str) -> list:
+    return _get_changed_bricks(root, repo.bases_dir, changed_files, namespace)
 
 
 def get_changed_projects(changed_files: List[Path]) -> list:
