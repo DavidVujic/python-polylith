@@ -179,10 +179,44 @@ def libs_in_projects_table(
     return table
 
 
+def flattened_lib_names(projects_data: List[dict]) -> Set[str]:
+    return {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
+
+
+def lib_versions(
+    library: str, development_data: dict, projects_data: List[dict]
+) -> dict:
+    proj_versions = {p["name"]: get_version(library, p) for p in projects_data}
+    dev_versions = get_version(library, development_data)
+
+    filtered = {k: v for k, v in proj_versions.items() if v is not None}
+    versions = {**filtered, **{"development": dev_versions}}
+
+    return {library: versions}
+
+
+def libs_versions(development_data: dict, projects_data: List[dict]) -> dict:
+    libraries = sorted(flattened_lib_names(projects_data))
+
+    res = [lib_versions(lib, development_data, projects_data) for lib in libraries]
+
+    return {k: v for data in res for k, v in data.items()}
+
+
+def is_version_diff(lib_versions: dict) -> bool:
+    return len(set(lib_versions.values())) > 1
+
+
+def libs_versions_diff(development_data: dict, projects_data: List[dict]) -> dict:
+    versions = libs_versions(development_data, projects_data)
+
+    return {k: v for k, v in versions.items() if is_version_diff(v)}
+
+
 def print_libs_in_projects(
     development_data: dict, projects_data: List[dict], options: dict
 ) -> None:
-    flattened = {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
+    flattened = flattened_lib_names(projects_data)
 
     if not flattened:
         return
