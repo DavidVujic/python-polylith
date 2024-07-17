@@ -9,7 +9,7 @@ from polylith.poetry import internals
 command_options = [
     option(
         long_name="strict",
-        description="More strict checks when matching name of third-party libraries and imports",
+        description="More strict checks when matching name and version of third-party libraries and imports.",
         flag=True,
     ),
     option(
@@ -27,18 +27,11 @@ class CheckCommand(Command):
 
     options = command_options
 
-    def print_report(self, root: Path, ns: str, project_data: dict) -> bool:
+    def print_report(
+        self, root: Path, ns: str, project_data: dict, options: dict
+    ) -> bool:
         path = project_data["path"]
         name = project_data["name"]
-        dists_fn = partial(internals.distributions, None, root)
-
-        options = {
-            "verbose": True if self.option("verbose") else False,
-            "quiet": True if self.option("quiet") else False,
-            "strict": True if self.option("strict") else False,
-            "alias": self.option("alias") or [],
-            "dists_fn": dists_fn,
-        }
 
         try:
             third_party_libs = internals.find_third_party_libs(self.poetry, path)
@@ -64,6 +57,20 @@ class CheckCommand(Command):
             self.poetry, directory, only_projects_data
         )
 
-        results = {self.print_report(root, ns, data) for data in projects_data}
+        dists_fn = partial(internals.distributions, None, root)
+        options = {
+            "verbose": True if self.option("verbose") else False,
+            "short": False,
+            "quiet": True if self.option("quiet") else False,
+            "strict": True if self.option("strict") else False,
+            "alias": self.option("alias") or [],
+            "dists_fn": dists_fn,
+        }
 
-        return 0 if all(results) else 1
+        results = {self.print_report(root, ns, data, options) for data in projects_data}
+
+        libs_result = commands.check.check_libs_versions(
+            projects_data, all_projects_data, options
+        )
+
+        return 0 if all(results) and libs_result else 1

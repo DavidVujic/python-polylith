@@ -63,17 +63,21 @@ def check_command(
 
     cli_options = {
         "verbose": verbose,
+        "short": False,
         "quiet": quiet,
         "strict": strict,
         "alias": str.split(alias, ",") if alias else [],
     }
 
     filtered_projects = filtered_projects_data(only_projects_data, directory)
-    projects_data = enriched_with_lock_files_data(filtered_projects, verbose)
+    enriched_projects = enriched_with_lock_files_data(filtered_projects, verbose)
 
-    results = {commands.check.run(root, ns, p, cli_options) for p in projects_data}
+    results = {commands.check.run(root, ns, p, cli_options) for p in enriched_projects}
+    libs_result = commands.check.check_libs_versions(
+        filtered_projects, all_projects_data, cli_options
+    )
 
-    if not all(results):
+    if not all(results) or not libs_result:
         raise Exit(code=1)
 
 

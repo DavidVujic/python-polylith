@@ -104,7 +104,7 @@ def test_libs_versions_diff():
     dev_data = {"deps": {"items": {"rich": "13.*"}}}
     projects_data = [{"name": "one", "deps": {"items": {"rich": "13.*"}}}]
 
-    assert report.libs_versions_diff(dev_data, projects_data) == {}
+    assert report.libs_with_different_versions(dev_data, projects_data) == set()
 
 
 def test_libs_versions_diff_should_return_libs_with_different_versions():
@@ -114,9 +114,9 @@ def test_libs_versions_diff_should_return_libs_with_different_versions():
     proj_two = {"name": "two", "deps": {"items": {"rich": "11.*"}}}
     projects_data = [proj_one, proj_two]
 
-    res = report.libs_versions_diff(dev_data, projects_data)
+    res = report.libs_with_different_versions(dev_data, projects_data)
 
-    assert "rich" in res
+    assert res == {"rich"}
 
 
 def test_libs_versions_diff_should_only_return_libs_with_different_versions():
@@ -127,17 +127,6 @@ def test_libs_versions_diff_should_only_return_libs_with_different_versions():
 
     projects_data = [proj_one, proj_two]
 
-    res = report.libs_versions_diff(dev_data, projects_data)
+    res = report.libs_with_different_versions(dev_data, projects_data)
 
-    assert "rich" not in res
-
-
-def test_libs_versions_diff_should_return_libs_when_missing_in_development():
-    dev_data = {"deps": {"items": {}}}
-    proj_one = {"name": "one", "deps": {"items": {"rich": "13.*"}}}
-
-    projects_data = [proj_one]
-
-    res = report.libs_versions_diff(dev_data, projects_data)
-
-    assert "rich" in res
+    assert res == set()

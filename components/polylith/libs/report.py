@@ -183,36 +183,6 @@ def flattened_lib_names(projects_data: List[dict]) -> Set[str]:
     return {k for proj in projects_data for k, _v in proj["deps"]["items"].items()}
 
 
-def lib_versions(
-    library: str, development_data: dict, projects_data: List[dict]
-) -> dict:
-    proj_versions = {p["name"]: get_version(library, p) for p in projects_data}
-    dev_versions = get_version(library, development_data)
-
-    filtered = {k: v for k, v in proj_versions.items() if v is not None}
-    versions = {**filtered, **{"development": dev_versions}}
-
-    return {library: versions}
-
-
-def libs_versions(development_data: dict, projects_data: List[dict]) -> dict:
-    libraries = sorted(flattened_lib_names(projects_data))
-
-    res = [lib_versions(lib, development_data, projects_data) for lib in libraries]
-
-    return {k: v for data in res for k, v in data.items()}
-
-
-def is_version_diff(lib_versions: dict) -> bool:
-    return len(set(lib_versions.values())) > 1
-
-
-def libs_versions_diff(development_data: dict, projects_data: List[dict]) -> dict:
-    versions = libs_versions(development_data, projects_data)
-
-    return {k: v for k, v in versions.items() if is_version_diff(v)}
-
-
 def print_libs_in_projects(
     development_data: dict, projects_data: List[dict], options: dict
 ) -> None:
@@ -226,4 +196,42 @@ def print_libs_in_projects(
     console = Console(theme=theme.poly_theme)
 
     console.print(Padding("[data]Library versions in projects[/]", (1, 0, 0, 0)))
+    console.print(table, overflow="ellipsis")
+
+
+def has_different_version(
+    lib: str, development_data: dict, projects_data: List[dict]
+) -> bool:
+    proj_versions = [get_version(lib, p) for p in projects_data]
+    dev_version = get_version(lib, development_data)
+
+    return not is_same_version(proj_versions + [dev_version])
+
+
+def libs_with_different_versions(
+    development_data: dict, projects_data: List[dict]
+) -> Set[str]:
+    flattened = flattened_lib_names(projects_data)
+    return {
+        f
+        for f in flattened
+        if has_different_version(f, development_data, projects_data)
+    }
+
+
+def print_libs_with_different_versions(
+    libraries: Set[str],
+    development_data: dict,
+    projects_data: List[dict],
+    options: dict,
+) -> None:
+    if not libraries:
+        return
+
+    table = libs_in_projects_table(development_data, projects_data, libraries, options)
+
+    console = Console(theme=theme.poly_theme)
+    console.print(
+        Padding("[data]Different library versions in projects[/]", (1, 0, 0, 0))
+    )
     console.print(table, overflow="ellipsis")

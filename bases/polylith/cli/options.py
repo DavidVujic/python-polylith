@@ -9,8 +9,9 @@ directory = Option(
 
 short = Option(help="Print short view.")
 short_workspace = Option(help="Display Workspace Info adjusted for many projects.")
+
 strict = Option(
-    help="More strict checks when matching name of third-party libraries and imports"
+    help="More strict checks when matching name and version of third-party libraries and imports."
 )
 
 verbose = Option(help="More verbose output.")
