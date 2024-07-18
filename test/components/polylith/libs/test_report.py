@@ -98,3 +98,35 @@ def test_calculate_diff_strict_should_identify_close_match_for_dash_and_low_dash
     res = report.calculate_diff(brick_imports, third_party_libs, True)
 
     assert len(res) == 0
+
+
+def test_libs_versions_diff():
+    dev_data = {"deps": {"items": {"rich": "13.*"}}}
+    projects_data = [{"name": "one", "deps": {"items": {"rich": "13.*"}}}]
+
+    assert report.libs_with_different_versions(dev_data, projects_data) == set()
+
+
+def test_libs_versions_diff_should_return_libs_with_different_versions():
+    dev_data = {"deps": {"items": {"rich": "13.*"}}}
+
+    proj_one = {"name": "one", "deps": {"items": {"rich": "13.*"}}}
+    proj_two = {"name": "two", "deps": {"items": {"rich": "11.*"}}}
+    projects_data = [proj_one, proj_two]
+
+    res = report.libs_with_different_versions(dev_data, projects_data)
+
+    assert res == {"rich"}
+
+
+def test_libs_versions_diff_should_only_return_libs_with_different_versions():
+    dev_data = {"deps": {"items": {"rich": "13.*"}}}
+
+    proj_one = {"name": "one", "deps": {"items": {"rich": "13.*"}}}
+    proj_two = {"name": "two", "deps": {"items": {}}}
+
+    projects_data = [proj_one, proj_two]
+
+    res = report.libs_with_different_versions(dev_data, projects_data)
+
+    assert res == set()
