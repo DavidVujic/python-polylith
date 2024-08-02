@@ -52,7 +52,7 @@ def test_pick_aliases_by_case_insensitive_keys():
         "PyYAML": ["_yaml", "yaml"],
     }
 
-    keys = {"jinja2", "pyyaml", "opencv-python", "pyjwt"}
+    keys = {"one", "two", "jinja2", "pyyaml", "opencv-python", "pyjwt"}
 
     res = alias.pick(aliases, keys)
 
