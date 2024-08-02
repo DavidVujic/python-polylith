@@ -16,7 +16,9 @@ def parse(aliases: List[str]) -> Dict[str, List[str]]:
 
 
 def pick(aliases: Dict[str, List[str]], keys: Set) -> Set:
-    matrix = [v for k, v in aliases.items() if k in keys]
+    normalized_keys = {str.lower(k) for k in keys}
+
+    matrix = [v for k, v in aliases.items() if str.lower(k) in normalized_keys]
 
     flattened: List = sum(matrix, [])
 
