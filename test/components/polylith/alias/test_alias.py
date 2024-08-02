@@ -44,6 +44,21 @@ def test_pick_aliases_by_keys():
     assert res == {"cv2", "mpl_toolkits", "matplotlib"}
 
 
+def test_pick_aliases_by_case_insensitive_keys():
+    aliases = {
+        "opencv-python": ["cv2"],
+        "PyJWT": ["jwt"],
+        "Jinja2": ["jinja2"],
+        "PyYAML": ["_yaml", "yaml"],
+    }
+
+    keys = {"one", "two", "jinja2", "pyyaml", "opencv-python", "pyjwt"}
+
+    res = alias.pick(aliases, keys)
+
+    assert res == {"cv2", "jinja2", "jwt", "_yaml", "yaml"}
+
+
 def test_pick_empty_alias_by_keys():
     aliases = {}
 
