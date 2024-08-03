@@ -29,12 +29,33 @@ def parsed_top_level_namespace(namespaces: List[str]) -> List[str]:
     return [str.replace(ns, "/", ".") for ns in namespaces]
 
 
+@lru_cache
+def parsed_namespaces_from_files(name: str) -> List[str]:
+    files = importlib.metadata.files(name) or []
+
+    normalized_name = str.replace(name, "-", "_")
+    to_ignore = {
+        name,
+        normalized_name,
+        str.lower(name),
+        str.lower(normalized_name),
+        "..",
+    }
+
+    filtered = [f for f in files if f.suffix == ".py"]
+    top_folders = {f.parts[0] for f in filtered if len(f.parts) > 1}
+    namespaces = {t for t in top_folders if t not in to_ignore}
+
+    return list(namespaces)
+
+
 def top_level_packages(dist) -> List[str]:
+    name = dist.metadata["name"]
     top_level = dist.read_text("top_level.txt")
 
     namespaces = str.split(top_level or "")
 
-    return parsed_top_level_namespace(namespaces)
+    return parsed_top_level_namespace(namespaces) or parsed_namespaces_from_files(name)
 
 
 def mapped_packages(dist) -> dict:
