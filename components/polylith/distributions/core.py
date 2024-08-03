@@ -29,9 +29,16 @@ def parsed_top_level_namespace(namespaces: List[str]) -> List[str]:
     return [str.replace(ns, "/", ".") for ns in namespaces]
 
 
+def get_files_from_metadata(name: str) -> list:
+    try:
+        return importlib.metadata.files(name) or []
+    except importlib.metadata.PackageNotFoundError:
+        return []
+
+
 @lru_cache
 def parsed_namespaces_from_files(name: str) -> List[str]:
-    files = importlib.metadata.files(name) or []
+    files = get_files_from_metadata(name)
 
     normalized_name = str.replace(name, "-", "_")
     to_ignore = {

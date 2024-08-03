@@ -60,6 +60,14 @@ def test_distribution_packages_with_no_top_level_ns_information(reset, monkeypat
     assert res == {}
 
 
+def test_distribution_packages_for_missing_metadata_is_handled(reset):
+    dists = [FakeDist("some_package")]
+
+    res = distributions.distributions_packages(dists)
+
+    assert res == {}
+
+
 def test_distribution_packages_with_top_level_ns_information_in_files(
     reset, monkeypatch
 ):
