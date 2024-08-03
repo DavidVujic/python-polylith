@@ -1,14 +1,9 @@
 import importlib.metadata
 import sys
-from typing import Union
+from typing import List, Union
 
 import pytest
 from polylith import distributions
-
-
-@pytest.fixture
-def reset():
-    distributions.core.parsed_namespaces_from_files.cache_clear()
 
 
 class FakeDist:
@@ -16,15 +11,17 @@ class FakeDist:
         self,
         name: str,
         read_text_data: Union[str, None] = None,
+        files: Union[List[importlib.metadata.PathDistribution], None] = None,
     ):
         self.read_text_data = read_text_data
         self.metadata = {"name": name}
+        self.files = files or []
 
     def read_text(self, *args):
         return self.read_text_data
 
 
-def test_distribution_packages(reset):
+def test_distribution_packages():
     dists = list(importlib.metadata.distributions())
 
     res = distributions.distributions_packages(dists)
@@ -36,8 +33,8 @@ def test_distribution_packages(reset):
     assert res[expected_dist] == [expected_package]
 
 
-def test_distribution_packages_parse_contents_of_top_level_txt(reset):
-    dists = [FakeDist("python-jose", "jose\njose/backends\n")]
+def test_distribution_packages_parse_contents_of_top_level_txt():
+    dists = [FakeDist(name="python-jose", read_text_data="jose\njose/backends\n")]
 
     res = distributions.distributions_packages(dists)
 
@@ -48,11 +45,7 @@ def test_distribution_packages_parse_contents_of_top_level_txt(reset):
     assert res[expected_dist] == expected_packages
 
 
-def test_distribution_packages_with_no_top_level_ns_information(reset, monkeypatch):
-    monkeypatch.setattr(
-        distributions.core.importlib.metadata, "files", lambda name: None
-    )
-
+def test_distribution_packages_with_no_top_level_ns_information():
     dists = [FakeDist("some_package")]
 
     res = distributions.distributions_packages(dists)
@@ -60,7 +53,7 @@ def test_distribution_packages_with_no_top_level_ns_information(reset, monkeypat
     assert res == {}
 
 
-def test_distribution_packages_for_missing_metadata_is_handled(reset):
+def test_distribution_packages_for_missing_metadata_is_handled():
     dists = [FakeDist("some_package")]
 
     res = distributions.distributions_packages(dists)
@@ -68,9 +61,7 @@ def test_distribution_packages_for_missing_metadata_is_handled(reset):
     assert res == {}
 
 
-def test_distribution_packages_with_top_level_ns_information_in_files(
-    reset, monkeypatch
-):
+def test_distribution_packages_with_top_level_ns_information_in_files():
     files = [
         importlib.metadata.PackagePath("some_module.py"),
         importlib.metadata.PackagePath("hello/world.py"),
@@ -78,18 +69,14 @@ def test_distribution_packages_with_top_level_ns_information_in_files(
         importlib.metadata.PackagePath("something/else.sh"),
     ]
 
-    monkeypatch.setattr(
-        distributions.core.importlib.metadata, "files", lambda name: files
-    )
-
-    dists = [FakeDist("some_package")]
+    dists = [FakeDist(name="some_package", files=files)]
 
     res = distributions.distributions_packages(dists)
 
     assert res == {"some_package": ["hello"]}
 
 
-def test_parse_package_name_from_dist_requires(reset):
+def test_parse_package_name_from_dist_requires():
     expected = {
         "greenlet": "greenlet !=0.4.17",
         "mysqlclient": "mysqlclient >=1.4.0 ; extra == 'mysql'",
@@ -104,7 +91,7 @@ def test_parse_package_name_from_dist_requires(reset):
         assert k == distributions.core.parse_sub_package_name(v)
 
 
-def test_distribution_sub_packages(reset):
+def test_distribution_sub_packages():
     dists = list(importlib.metadata.distributions())
 
     res = distributions.distributions_sub_packages(dists)
@@ -117,7 +104,7 @@ def test_distribution_sub_packages(reset):
 
 
 @pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
-def test_package_distributions_returning_top_namespace(reset, monkeypatch):
+def test_package_distributions_returning_top_namespace(monkeypatch):
     fake_dists = {
         "something": ["something-subnamespace"],
         "opentelemetry": ["opentelemetry-instrumentation-fastapi"],
@@ -144,7 +131,7 @@ def test_package_distributions_returning_top_namespace(reset, monkeypatch):
 
 
 @pytest.mark.skipif(sys.version_info > (3, 9), reason="asserting python3.9 and lower")
-def test_package_distributions_returning_empty_set(reset):
+def test_package_distributions_returning_empty_set():
     fake_project_deps = {"something-subnamespace"}
 
     res = distributions.core.get_packages_distributions(fake_project_deps)

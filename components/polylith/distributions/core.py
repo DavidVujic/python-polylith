@@ -25,20 +25,9 @@ def map_sub_packages(acc, dist) -> dict:
     return {**acc, **dist_subpackages(dist)}
 
 
-def parsed_top_level_namespace(namespaces: List[str]) -> List[str]:
-    return [str.replace(ns, "/", ".") for ns in namespaces]
-
-
-def get_files_from_metadata(name: str) -> list:
-    try:
-        return importlib.metadata.files(name) or []
-    except importlib.metadata.PackageNotFoundError:
-        return []
-
-
-@lru_cache
-def parsed_namespaces_from_files(name: str) -> List[str]:
-    files = get_files_from_metadata(name)
+def parsed_namespaces_from_files(dist) -> List[str]:
+    name = dist.metadata["name"]
+    files = dist.files or []
 
     normalized_name = str.replace(name, "-", "_")
     to_ignore = {
@@ -56,13 +45,16 @@ def parsed_namespaces_from_files(name: str) -> List[str]:
     return list(namespaces)
 
 
+def parsed_top_level_namespace(namespaces: List[str]) -> List[str]:
+    return [str.replace(ns, "/", ".") for ns in namespaces]
+
+
 def top_level_packages(dist) -> List[str]:
-    name = dist.metadata["name"]
     top_level = dist.read_text("top_level.txt")
 
     namespaces = str.split(top_level or "")
 
-    return parsed_top_level_namespace(namespaces) or parsed_namespaces_from_files(name)
+    return parsed_top_level_namespace(namespaces) or parsed_namespaces_from_files(dist)
 
 
 def mapped_packages(dist) -> dict:
