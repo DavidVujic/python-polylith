@@ -14,6 +14,16 @@ def get_project_poetry(poetry: Poetry, path: Union[Path, None]) -> Poetry:
 
 @lru_cache
 def distributions(poetry: Poetry, path: Union[Path, None]) -> list:
+    """Get distributions from the current Poetry context.
+
+    When running code within Poetry, the current environment is the one Poetry uses and
+    not the environment in the current project or workspace.
+
+    Querying importlib.metadata will fail to find the libraries added to the workspace.
+
+    This function uses the Poetry internals to fetch the distributions,
+    that internally queries the metadata based on the current path.
+    """
     project_poetry = get_project_poetry(poetry, path)
 
     env = EnvManager(project_poetry).get()
