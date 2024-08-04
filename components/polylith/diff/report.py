@@ -37,11 +37,14 @@ def print_detected_changes(changes: List[str], markup: str, short: bool) -> None
 
 
 def print_detected_changes_in_bricks(
-    bases: List[str], components: List[str], imports: dict, options: dict,
+    changed_bases: List[str],
+    changed_components: List[str],
+    import_data: dict,
+    options: dict,
 ) -> None:
     short = options.get("short", False)
-    sorted_bases = sorted(bases)
-    sorted_components = sorted(components)
+    sorted_bases = sorted(changed_bases)
+    sorted_components = sorted(changed_components)
 
     if short:
         print_detected_changes(sorted_components + sorted_bases, "data", short)
