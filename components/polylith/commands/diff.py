@@ -1,12 +1,19 @@
 from pathlib import Path
 from typing import Union
 
-from polylith import configuration, diff, info, repo
+from polylith import configuration, deps, diff, info, repo
+
+
+def get_imports(root: Path, ns: str, bases: list, components: list) -> dict:
+    brick_imports = deps.get_brick_imports(root, ns, set(bases), set(components))
+
+    return {**brick_imports["bases"], **brick_imports["components"]}
 
 
 def print_views(root: Path, tag: str, options: dict) -> None:
     short = options.get("short", False)
     only_bricks = options.get("bricks", False)
+    with_deps = only_bricks and options.get("deps", False)
 
     ns = configuration.get_namespace_from_config(root)
     files = diff.collect.get_files(tag)
@@ -33,7 +40,9 @@ def print_views(root: Path, tag: str, options: dict) -> None:
 
         return
 
-    diff.report.print_detected_changes_in_bricks(bases, components, options)
+    imports = get_imports(root, ns, bases, components) if with_deps else {}
+
+    diff.report.print_detected_changes_in_bricks(bases, components, imports, options)
 
 
 def run(tag_name: Union[str, None], options: dict):
