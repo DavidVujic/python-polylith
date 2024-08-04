@@ -4,7 +4,10 @@ from typing import Union
 from polylith import configuration, diff, info, repo
 
 
-def print_views(root: Path, tag: str, short: bool, only_bricks: bool) -> None:
+def print_views(root: Path, tag: str, options: dict) -> None:
+    short = options.get("short", False)
+    only_bricks = options.get("bricks", False)
+
     ns = configuration.get_namespace_from_config(root)
     files = diff.collect.get_files(tag)
     bases = diff.collect.get_changed_bases(root, files, ns)
@@ -30,10 +33,10 @@ def print_views(root: Path, tag: str, short: bool, only_bricks: bool) -> None:
 
         return
 
-    diff.report.print_detected_changes_in_bricks(bases, components, short)
+    diff.report.print_detected_changes_in_bricks(bases, components, options)
 
 
-def run(tag_name: Union[str, None], short: bool, only_bricks: bool):
+def run(tag_name: Union[str, None], options: dict):
     root = repo.get_workspace_root(Path.cwd())
 
     tag = diff.collect.get_latest_tag(root, tag_name)
@@ -42,4 +45,4 @@ def run(tag_name: Union[str, None], short: bool, only_bricks: bool):
         print("No tags found in repository.")
         return
 
-    print_views(root, tag, short, only_bricks)
+    print_views(root, tag, options)

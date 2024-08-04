@@ -20,6 +20,11 @@ class DiffCommand(Command):
             flag=True,
         ),
         option(
+            long_name="deps",
+            description="Print bricks that depend on the changes. Use with --bricks.",
+            flag=True,
+        ),
+        option(
             long_name="since",
             description="Changed since a specific tag",
             flag=False,
@@ -28,9 +33,13 @@ class DiffCommand(Command):
 
     def handle(self) -> int:
         since = self.option("since")
-        short = True if self.option("short") else False
-        bricks = True if self.option("bricks") else False
 
-        commands.diff.run(since, short, bricks)
+        options = {
+            "short": self.option("short"),
+            "bricks": self.option("bricks"),
+            "deps": self.option("deps"),
+        }
+
+        commands.diff.run(since, options)
 
         return 0
