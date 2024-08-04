@@ -1,11 +1,11 @@
 from pathlib import Path
-from typing import List, Union
+from typing import List, Set, Union
 
 from polylith import configuration, deps, diff, info, repo
 
 
-def get_imports(root: Path, ns: str, bases: list, components: list) -> dict:
-    brick_imports = deps.get_brick_imports(root, ns, set(bases), set(components))
+def get_imports(root: Path, ns: str, bases: Set[str], components: Set[str]) -> dict:
+    brick_imports = deps.get_brick_imports(root, ns, bases, components)
 
     return {**brick_imports["bases"], **brick_imports["components"]}
 
@@ -14,6 +14,45 @@ def get_projects_data(root: Path, ns: str) -> List[dict]:
     data = info.get_projects_data(root, ns)
 
     return [p for p in data if info.is_project(p)]
+
+
+def flatten_bricks(projects_data: List[dict], brick_type: str) -> Set[str]:
+    matrix = [p[brick_type] for p in projects_data]
+
+    flattened: List[str] = sum(matrix, [])
+
+    return set(flattened)
+
+
+def flatten_dependent_bricks(
+    changed_bricks: Set[str], bases: Set[str], components: Set[str], import_data: dict
+) -> Set[str]:
+    matrix = [
+        deps.report.sorted_used_by(brick, bases, components, import_data)
+        for brick in changed_bricks
+    ]
+
+    flattened: List[str] = sum(matrix, [])
+    filtered = set(flattened).difference(changed_bricks)
+
+    return filtered
+
+
+def calculate_dependent_bricks(
+    root: Path, ns: str, projects_data: List[dict], changed_bricks: Set[str]
+) -> dict:
+    bases = flatten_bricks(projects_data, "bases")
+    components = flatten_bricks(projects_data, "components")
+    import_data = get_imports(root, ns, bases, components)
+
+    dependent_bricks = flatten_dependent_bricks(
+        changed_bricks, bases, components, import_data
+    )
+
+    dependent_bases = sorted({b for b in dependent_bricks if b in bases})
+    dependent_components = sorted({c for c in dependent_bricks if c in components})
+
+    return {"bases": dependent_bases, "components": dependent_components}
 
 
 def print_views(root: Path, tag: str, options: dict) -> None:
@@ -26,6 +65,7 @@ def print_views(root: Path, tag: str, options: dict) -> None:
 
     changed_bases = diff.collect.get_changed_bases(root, files, ns)
     changed_components = diff.collect.get_changed_components(root, files, ns)
+    changed_bricks = set(changed_bases + changed_components)
     changed_projects = diff.collect.get_changed_projects(files)
 
     projects_data = get_projects_data(root, ns)
@@ -45,12 +85,14 @@ def print_views(root: Path, tag: str, options: dict) -> None:
 
         return
 
-    imports = (
-        get_imports(root, ns, changed_bases, changed_components) if with_deps else {}
+    dependent_bricks = (
+        calculate_dependent_bricks(root, ns, projects_data, changed_bricks)
+        if with_deps
+        else {}
     )
 
     diff.report.print_detected_changes_in_bricks(
-        changed_bases, changed_components, imports, options
+        changed_bases, changed_components, dependent_bricks, options
     )
 
 

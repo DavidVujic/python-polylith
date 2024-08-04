@@ -36,21 +36,49 @@ def print_detected_changes(changes: List[str], markup: str, short: bool) -> None
         console.print(f"[data]:gear: Changes found in [/][{markup}]{brick}[/]")
 
 
+def calculate_print_friendly_brick_type(bricks: List[str], markup: str) -> str:
+    plural = len(bricks) > 1
+
+    if markup == "base":
+        return "bases" if plural else "base"
+
+    return "components" if plural else "component"
+
+
+def print_detected_dependent(bricks: List[str], markup: str) -> None:
+    if not bricks:
+        return
+
+    console = Console(theme=theme.poly_theme)
+
+    brick_type = calculate_print_friendly_brick_type(bricks, markup)
+    printable_bricks = [f"[{markup}]{b}[/]" for b in bricks]
+    joined = ", ".join(printable_bricks)
+
+    console.print(f"[data]:gear: Dependent {brick_type}: [/]{joined}")
+
+
 def print_detected_changes_in_bricks(
     changed_bases: List[str],
     changed_components: List[str],
-    import_data: dict,
+    dependent_bricks: dict,
     options: dict,
 ) -> None:
     short = options.get("short", False)
-    sorted_bases = sorted(changed_bases)
-    sorted_components = sorted(changed_components)
+    bases = sorted(changed_bases)
+    components = sorted(changed_components)
+
+    dependent_bases = sorted(dependent_bricks.get("bases", []))
+    dependent_components = sorted(dependent_bricks.get("components", []))
 
     if short:
-        print_detected_changes(sorted_components + sorted_bases, "data", short)
+        bricks = components + bases + dependent_components + dependent_bases
+        print_detected_changes(bricks, "data", short)
     else:
-        print_detected_changes(sorted_components, "comp", short)
-        print_detected_changes(sorted_bases, "base", short)
+        print_detected_changes(components, "comp", short)
+        print_detected_changes(bases, "base", short)
+        print_detected_dependent(dependent_components, "comp")
+        print_detected_dependent(dependent_bases, "base")
 
 
 def print_detected_changes_in_projects(projects: List[str], short: bool) -> None:
