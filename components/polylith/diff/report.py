@@ -57,20 +57,17 @@ def print_detected_changes_in_bricks(
     short = options.get("short", False)
     with_deps = options.get("deps", False)
 
-    bases = sorted(changed_bases)
-    components = sorted(changed_components)
+    dependent_bases = sorted(dependent_bricks.get("bases", set()))
+    dependent_components = sorted(dependent_bricks.get("components", set()))
 
-    dependent_bases = sorted(dependent_bricks.get("bases", []))
-    dependent_components = sorted(dependent_bricks.get("components", []))
+    bricks = changed_components + changed_bases + dependent_components + dependent_bases
 
     if short:
-        bricks = components + bases + dependent_components + dependent_bases
         print_detected_changes(bricks, "data", short)
-
         return
 
-    print_detected_changes(components, "comp", short)
-    print_detected_changes(bases, "base", short)
+    print_detected_changes(changed_components, "comp", short)
+    print_detected_changes(changed_bases, "base", short)
 
     if with_deps:
         print_detected_dependent(dependent_bases, dependent_components)
