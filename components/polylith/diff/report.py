@@ -36,17 +36,41 @@ def print_detected_changes(changes: List[str], markup: str, short: bool) -> None
         console.print(f"[data]:gear: Changes found in [/][{markup}]{brick}[/]")
 
 
+def print_detected_dependent(bases: List[str], components: List[str]) -> None:
+    console = Console(theme=theme.poly_theme)
+
+    printable_bases = [f"[base]{b}[/]" for b in bases]
+    printable_components = [f"[comp]{c}[/]" for c in components]
+
+    printable_bricks = printable_components + printable_bases
+    joined = ", ".join(printable_bricks) or "-"
+
+    console.print(f"[data]:gear: Used by: [/]{joined}")
+
+
 def print_detected_changes_in_bricks(
-    bases: List[str], components: List[str], short: bool
+    changed_bases: List[str],
+    changed_components: List[str],
+    dependent_bricks: dict,
+    options: dict,
 ) -> None:
-    sorted_bases = sorted(bases)
-    sorted_components = sorted(components)
+    short = options.get("short", False)
+    with_deps = options.get("deps", False)
+
+    dependent_bases = sorted(dependent_bricks.get("bases", set()))
+    dependent_components = sorted(dependent_bricks.get("components", set()))
+
+    bricks = changed_components + changed_bases + dependent_components + dependent_bases
 
     if short:
-        print_detected_changes(sorted_components + sorted_bases, "data", short)
-    else:
-        print_detected_changes(sorted_components, "comp", short)
-        print_detected_changes(sorted_bases, "base", short)
+        print_detected_changes(bricks, "data", short)
+        return
+
+    print_detected_changes(changed_components, "comp", short)
+    print_detected_changes(changed_bases, "base", short)
+
+    if with_deps:
+        print_detected_dependent(dependent_bases, dependent_components)
 
 
 def print_detected_changes_in_projects(projects: List[str], short: bool) -> None:

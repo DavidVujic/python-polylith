@@ -86,9 +86,14 @@ def diff_command(
     since: Annotated[str, Option(help="Changed since a specific tag.")] = "",
     short: Annotated[bool, options.short] = False,
     bricks: Annotated[bool, Option(help="Print changed bricks.")] = False,
+    deps: Annotated[
+        bool, Option(help="Print bricks that depend on changes. Use with --bricks.")
+    ] = False,
 ):
     """Shows changed bricks compared to the latest git tag."""
-    commands.diff.run(since, short, bricks)
+    options = {"short": short, "bricks": bricks, "deps": deps}
+
+    commands.diff.run(since, options)
 
 
 @app.command("libs")
