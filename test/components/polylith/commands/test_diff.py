@@ -26,5 +26,5 @@ def test_calculate_dependent_bricks(monkeypatch):
         Path.cwd(), "test", projects_data, changed_bricks
     )
 
-    assert res["bases"] == ["base_one"]
-    assert res["components"] == ["two"]
+    assert res["bases"] == {"base_one"}
+    assert res["components"] == {"two"}
