@@ -49,8 +49,8 @@ def calculate_dependent_bricks(
         changed_bricks, bases, components, import_data
     )
 
-    dependent_bases = sorted({b for b in dependent_bricks if b in bases})
-    dependent_components = sorted({c for c in dependent_bricks if c in components})
+    dependent_bases = {b for b in dependent_bricks if b in bases}
+    dependent_components = {c for c in dependent_bricks if c in components}
 
     return {"bases": dependent_bases, "components": dependent_components}
 
@@ -58,7 +58,7 @@ def calculate_dependent_bricks(
 def print_views(root: Path, tag: str, options: dict) -> None:
     short = options.get("short", False)
     only_bricks = options.get("bricks", False)
-    with_deps = only_bricks and options.get("deps", False)
+    with_deps = options.get("deps", False)
 
     ns = configuration.get_namespace_from_config(root)
     files = diff.collect.get_files(tag)

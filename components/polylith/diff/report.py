@@ -36,26 +36,16 @@ def print_detected_changes(changes: List[str], markup: str, short: bool) -> None
         console.print(f"[data]:gear: Changes found in [/][{markup}]{brick}[/]")
 
 
-def calculate_print_friendly_brick_type(bricks: List[str], markup: str) -> str:
-    plural = len(bricks) > 1
-
-    if markup == "base":
-        return "bases" if plural else "base"
-
-    return "components" if plural else "component"
-
-
-def print_detected_dependent(bricks: List[str], markup: str) -> None:
-    if not bricks:
-        return
-
+def print_detected_dependent(bases: List[str], components: List[str]) -> None:
     console = Console(theme=theme.poly_theme)
 
-    brick_type = calculate_print_friendly_brick_type(bricks, markup)
-    printable_bricks = [f"[{markup}]{b}[/]" for b in bricks]
-    joined = ", ".join(printable_bricks)
+    printable_bases = [f"[base]{b}[/]" for b in bases]
+    printable_components = [f"[comp]{c}[/]" for c in components]
 
-    console.print(f"[data]:gear: Dependent {brick_type}: [/]{joined}")
+    printable_bricks = printable_components + printable_bases
+    joined = ", ".join(printable_bricks) or "-"
+
+    console.print(f"[data]:gear: Used by: [/]{joined}")
 
 
 def print_detected_changes_in_bricks(
@@ -65,6 +55,8 @@ def print_detected_changes_in_bricks(
     options: dict,
 ) -> None:
     short = options.get("short", False)
+    with_deps = options.get("deps", False)
+
     bases = sorted(changed_bases)
     components = sorted(changed_components)
 
@@ -74,11 +66,14 @@ def print_detected_changes_in_bricks(
     if short:
         bricks = components + bases + dependent_components + dependent_bases
         print_detected_changes(bricks, "data", short)
-    else:
-        print_detected_changes(components, "comp", short)
-        print_detected_changes(bases, "base", short)
-        print_detected_dependent(dependent_components, "comp")
-        print_detected_dependent(dependent_bases, "base")
+
+        return
+
+    print_detected_changes(components, "comp", short)
+    print_detected_changes(bases, "base", short)
+
+    if with_deps:
+        print_detected_dependent(dependent_bases, dependent_components)
 
 
 def print_detected_changes_in_projects(projects: List[str], short: bool) -> None:
