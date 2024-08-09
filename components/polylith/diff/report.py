@@ -29,7 +29,7 @@ def print_detected_changes(changes: List[str], markup: str, short: bool) -> None
     console = Console(theme=theme.poly_theme)
 
     if short:
-        console.print(",".join(changes))
+        console.out(",".join(changes))
         return
 
     for brick in changes:
