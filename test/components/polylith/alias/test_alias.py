@@ -59,6 +59,20 @@ def test_pick_aliases_by_case_insensitive_keys():
     assert res == {"cv2", "jinja2", "jwt", "_yaml", "yaml"}
 
 
+def test_pick_aliases_by_keys_using_normalized_names():
+    aliases = {
+        "name_with_underscore": ["with_underscore"],
+        "name-with-hyphen": ["with_hyphen"],
+        "name.something": ["with_dot"],
+    }
+
+    keys = {"name-with-underscore", "name-with-hyphen", "name-something"}
+
+    res = alias.pick(aliases, keys)
+
+    assert res == {"with_underscore", "with_hyphen", "with_dot"}
+
+
 def test_pick_empty_alias_by_keys():
     aliases = {}
 

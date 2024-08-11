@@ -15,10 +15,18 @@ def parse(aliases: List[str]) -> Dict[str, List[str]]:
     return reduce(_to_key_with_values, aliases, {})
 
 
-def pick(aliases: Dict[str, List[str]], keys: Set) -> Set:
-    normalized_keys = {str.lower(k) for k in keys}
+def _normalized_name(name: str) -> str:
+    chars = {"-", "."}
 
-    matrix = [v for k, v in aliases.items() if str.lower(k) in normalized_keys]
+    normalized = reduce(lambda acc, char: str.replace(acc, char, "_"), chars, name)
+
+    return str.lower(normalized)
+
+
+def pick(aliases: Dict[str, List[str]], keys: Set) -> Set:
+    normalized_keys = {_normalized_name(k) for k in keys}
+
+    matrix = [v for k, v in aliases.items() if _normalized_name(k) in normalized_keys]
 
     flattened: List = sum(matrix, [])
 
