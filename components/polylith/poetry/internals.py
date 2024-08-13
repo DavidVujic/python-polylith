@@ -42,6 +42,16 @@ def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> dict:
     return {p.name: str(p.version) for p in packages}
 
 
+def merge_project_data(poetry: Poetry, project_data: dict) -> dict:
+    path = project_data["path"]
+
+    third_party_libs = find_third_party_libs(poetry, path)
+    return {
+        **project_data,
+        **{"deps": {"items": third_party_libs, "source": "poetry.lock"}},
+    }
+
+
 def filter_projects_data(
     poetry: Poetry, directory: Union[str, None], projects_data: List[dict]
 ) -> List[dict]:

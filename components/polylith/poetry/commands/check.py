@@ -27,37 +27,19 @@ class CheckCommand(Command):
 
     options = command_options
 
-    def print_report(
-        self, root: Path, ns: str, project_data: dict, options: dict
-    ) -> bool:
-        path = project_data["path"]
+    def merged_project_data(self, project_data: dict) -> dict:
         name = project_data["name"]
 
         try:
-            third_party_libs = internals.find_third_party_libs(self.poetry, path)
-            merged = {
-                **project_data,
-                **{"deps": {"items": third_party_libs, "source": "poetry.lock"}},
-            }
-
-            return commands.check.run(root, ns, merged, options)
+            return internals.merge_project_data(self.poetry, project_data)
         except ValueError as e:
             self.line_error(f"{name}: <error>{e}</error>")
-            return False
+            return project_data
 
     def handle(self) -> int:
-        directory = self.option("directory")
         root = repo.get_workspace_root(Path.cwd())
-        ns = configuration.get_namespace_from_config(root)
-
-        all_projects_data = info.get_projects_data(root, ns)
-        only_projects_data = [p for p in all_projects_data if info.is_project(p)]
-
-        projects_data = internals.filter_projects_data(
-            self.poetry, directory, only_projects_data
-        )
-
         dists_fn = partial(internals.distributions, None, root)
+
         options = {
             "verbose": True if self.option("verbose") else False,
             "short": False,
@@ -67,7 +49,23 @@ class CheckCommand(Command):
             "dists_fn": dists_fn,
         }
 
-        results = {self.print_report(root, ns, data, options) for data in projects_data}
+        directory = self.option("directory")
+        ns = configuration.get_namespace_from_config(root)
+
+        all_projects_data = info.get_projects_data(root, ns)
+        only_projects_data = [p for p in all_projects_data if info.is_project(p)]
+
+        projects_data = internals.filter_projects_data(
+            self.poetry, directory, only_projects_data
+        )
+
+        merged_projects_data = [
+            self.merged_project_data(data) for data in projects_data
+        ]
+
+        results = {
+            commands.check.run(root, ns, data, options) for data in merged_projects_data
+        }
 
         libs_result = commands.check.check_libs_versions(
             projects_data, all_projects_data, options
