@@ -2,6 +2,8 @@
 
 A repo containing tooling support for the Polylith Architecture in Python.
 
+The main use case is to support having one or more microservices (or apps) in a Monorepo, and share code between the services.
+
 [![DavidVujic](https://circleci.com/gh/DavidVujic/python-polylith.svg?style=svg)](https://app.circleci.com/pipelines/github/DavidVujic/python-polylith?branch=main&filter=all)
 
 [![CodeScene Code Health](https://codescene.io/projects/36630/status-badges/code-health)](https://codescene.io/projects/36630)
@@ -14,35 +16,16 @@ A repo containing tooling support for the Polylith Architecture in Python.
 
 
 ## What's Polylith? :thinking:
-Polylith is an architecture (with tooling support) originally built for Clojure. The code in this repo brings __Polylith to Python__.
-
-From the [official Polylith Architecture docs](https://polylith.gitbook.io/polylith/):
 >... Polylith is a software architecture that applies functional thinking at the system scale. It helps us build simple, maintainable, testable, and scalable backend systems. ...
+(from the [Polylith Architecture docs](https://polylith.gitbook.io/polylith/))
 
-Polylith is using a components-first architecture. Similar to LEGO, components are building blocks.
-A component can be shared across apps, serverless functions and microservices.
+Polylith is an architecture for monorepos (with tooling support) and was originally built for Clojure.
+This repo brings __Polylith to Python__.
 
-## Documentation :books:
-Have a look at the [Python-specific documentation](https://davidvujic.github.io/python-polylith-docs/).
-You will find installation, setup, usage guides and more.
-
-## Polylith for Python? :snake:
-This repo contains a Poetry plugin, a CLI that enables support for __Hatch__, __PDM__, __Rye__ and __Pantsbuild__.
-There's a Hatch Build Hook plugin and a PDM build hooks to fully support these tools.
-
-* [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
-* [a CLI](https://pypi.org/project/polylith-cli)
-* [a Hatch Build Hook](https://pypi.org/project/hatch-polylith-bricks/)
-* [a PDM Build Hook for projects](https://pypi.org/project/pdm-polylith-bricks/)
-* [a PDM Build Hook for the workspace](https://pypi.org/project/pdm-polylith-workspace/)
-
-The Poetry plugin adds Polylith specific tooling support to Poetry.
-The CLI adds tooling support for Polylith, and enables different kinds of Package & Dependency Management tools (such as Hatch and PDM).
-
-The Hatch Build Hook adds support for building Libraries from Polylith with Hatch (and Rye, using hatchling as a build backend by default).
-
-The PDM Build Hook for projects add support for building apps, services and libraries from Polylith using PDM.
-The PDM Build Hook for the workspace makes the virtual environment aware of the way Polylith organizes code (i.e. the bases and components folders).
+Polylith is using a components-first architecture.
+You can think of it as building blocks, very much like LEGO bricks.
+All code lives in a Monorepo, available for reuse.
+Python code - the bricks - is separated from the infrastructure and the actual building of artifacts.
 
 ### Use cases
 
@@ -53,7 +36,29 @@ The main use case is to support having one or more microservices (or apps) in a 
 Polylith for Python has support for building libraries to be published at PyPI, even if it isn't the main use case.
 More details about how to package libraries in the docs about [Packaging & deploying](https://davidvujic.github.io/python-polylith-docs/deployment/#packaging-a-library).
 
-## :sparkles: Examples :sparkles:
+## Documentation :books:
+Have a look at the [Python-specific documentation](https://davidvujic.github.io/python-polylith-docs/).
+You will find installation, setup, usage guides, examples and more.
+
+## Python Monorepos with Polylith :snake:
+You can use Polylith with Poetry, Hatch, PDM, Rye and Pantsbuild.
+This repo contains a Poetry plugin, a standalone CLI and build hooks.
+
+* [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
+* [a CLI](https://pypi.org/project/polylith-cli)
+* [a Hatch Build Hook](https://pypi.org/project/hatch-polylith-bricks/)
+* [a PDM Build Hook for projects](https://pypi.org/project/pdm-polylith-bricks/)
+* [a PDM Build Hook for the workspace](https://pypi.org/project/pdm-polylith-workspace/)
+
+The Poetry plugin adds Polylith specific tooling support to Poetry.
+The CLI adds tooling support for Polylith, and enables different kinds of Package & Dependency Management tools (such as Hatch, PDM and Rye).
+
+The Hatch Build Hook adds support for building Libraries from Polylith with Hatch (also Rye and Pantsbuild, by using hatchling as the build backend).
+
+The PDM Build Hook for projects add support for building apps, services and libraries from Polylith using PDM.
+The PDM Build Hook for the workspace makes the virtual environment aware of the way Polylith organizes code (i.e. the bases and components folders).
+
+## :sparkles: Examples and Production systems :sparkles:
 There's example Polylith repositories for:
 - [Poetry](https://github.com/DavidVujic/python-polylith-example)
 - [Hatch](https://github.com/DavidVujic/python-polylith-example-hatch)
@@ -64,6 +69,8 @@ There's example Polylith repositories for:
 The repositories are example __Python__ setups of the Polylith Architecture.
 You will find examples of sharing code between different kind of projects,
 and developer tooling setup such as `mypy` and the `venv`.
+
+There's more examples and production systems in the [documentation](https://davidvujic.github.io/python-polylith-docs/examples/).
 
 ## Videos
 - Python with the Polylith Architecture - [an overview](https://youtu.be/3w2ffHZb6gc) (about 15 minutes)
