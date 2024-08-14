@@ -19,7 +19,7 @@ The main use case is to support having one or more microservices (or apps) in a 
 >... Polylith is a software architecture that applies functional thinking at the system scale. It helps us build simple, maintainable, testable, and scalable backend systems. ...
 (from the [Polylith Architecture docs](https://polylith.gitbook.io/polylith/))
 
-Polylith is an architecture for monorepos (with tooling support) and was originally built for Clojure.
+Polylith is an architecture, with tooling support, that was originally built for Clojure.
 This repo brings __Polylith to Python__.
 
 Polylith is using a components-first architecture.
