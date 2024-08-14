@@ -8,12 +8,12 @@ from poetry.utils.env import EnvManager
 from polylith import project
 
 
-def get_project_poetry(poetry: Poetry, path: Union[Path, None]) -> Poetry:
-    return Factory().create_poetry(path) if path else poetry
+def get_project_poetry(path: Path) -> Poetry:
+    return Factory().create_poetry(path)
 
 
 @lru_cache
-def distributions(poetry: Poetry, path: Union[Path, None]) -> list:
+def distributions(path: Path) -> list:
     """Get distributions from the current Poetry context.
 
     When running code within Poetry, the current environment is the one Poetry uses and
@@ -24,15 +24,15 @@ def distributions(poetry: Poetry, path: Union[Path, None]) -> list:
     This function uses the Poetry internals to fetch the distributions,
     that internally queries the metadata based on the current path.
     """
-    project_poetry = get_project_poetry(poetry, path)
+    project_poetry = get_project_poetry(path)
 
     env = EnvManager(project_poetry).get()
 
     return list(env.site_packages.distributions())
 
 
-def find_third_party_libs(poetry: Poetry, path: Union[Path, None]) -> dict:
-    project_poetry = get_project_poetry(poetry, path)
+def find_third_party_libs(poetry: Poetry, path: Path) -> dict:
+    project_poetry = get_project_poetry(path)
 
     if not project_poetry.locker.is_locked():
         raise ValueError("poetry.lock not found. Run `poetry lock` to create it.")

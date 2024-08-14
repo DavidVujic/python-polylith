@@ -38,7 +38,7 @@ class CheckCommand(Command):
 
     def handle(self) -> int:
         root = repo.get_workspace_root(Path.cwd())
-        dists_fn = partial(internals.distributions, None, root)
+        dists_fn = partial(internals.distributions, root)
 
         options = {
             "verbose": True if self.option("verbose") else False,

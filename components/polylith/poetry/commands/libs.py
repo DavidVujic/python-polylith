@@ -36,7 +36,7 @@ class LibsCommand(Command):
 
     def handle(self) -> int:
         root = repo.get_workspace_root(Path.cwd())
-        dists_fn = partial(distributions, None, root)
+        dists_fn = partial(distributions, root)
 
         options = {
             "strict": self.option("strict"),

@@ -25,8 +25,6 @@ def test_find_third_party_libs():
 def test_distributions():
     path = Path.cwd()
 
-    dev_poetry = Factory().create_poetry(path)
-
-    res = internals.distributions(dev_poetry, path)
+    res = internals.distributions(path)
 
     assert res is not None and len(list(res))
