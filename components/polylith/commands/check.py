@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Set
+from typing import List
 
 from polylith import check, distributions, libs
 
@@ -21,15 +21,6 @@ def with_third_party_libs_from_lock_file(project_data: dict) -> dict:
     }
 
     return merged
-
-
-def collect_known_aliases(project_data: dict, options: dict) -> Set[str]:
-    deps = project_data["deps"]
-    library_alias = options["alias"]
-
-    return distributions.known_aliases_and_sub_dependencies(
-        deps, library_alias, options
-    )
 
 
 def check_libs_versions(
@@ -61,9 +52,13 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
     is_strict = options["strict"]
 
     name = project_data["name"]
+    deps = project_data["deps"]
+    alias = options["alias"]
 
     collected_imports = check.report.collect_all_imports(root, ns, project_data)
-    collected_libs = collect_known_aliases(project_data, options)
+    collected_libs = distributions.known_aliases_and_sub_dependencies(
+        deps, alias, options
+    )
 
     details = check.report.create_report(
         project_data,
