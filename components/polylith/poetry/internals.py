@@ -14,7 +14,7 @@ def get_project_poetry(path: Path) -> Poetry:
 
 @lru_cache
 def distributions(path: Path) -> list:
-    """Get distributions from the current Poetry context.
+    """Get distributions from the current Poetry project context.
 
     When running code within Poetry, the current environment is the one Poetry uses and
     not the environment in the current project or workspace.
