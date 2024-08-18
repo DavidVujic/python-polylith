@@ -137,8 +137,25 @@ Create a workspace, with a basic Polylith folder structure.
 rye run poly create workspace --name my_namespace --theme loose
 ```
 
-### Edit the configuration
-The default build backend for Rye is Hatch. Add the `hatch-polylith-bricks` build hook plugin to the `pyproject.toml` file.
+## Setup for uv users
+``` shell
+uv init -name my_repo  # name your repo
+
+cd my_repo
+
+uv add polylith-cli --dev
+
+uv sync  # create a virtual environment and lock files
+```
+
+Create a workspace, with a basic Polylith folder structure.
+
+``` shell
+uv run poly create workspace --name my_namespace --theme loose
+```
+
+### Rye and uv users: edit the configuration
+The default build backend for Rye and uv is Hatch. Add the `hatch-polylith-bricks` build hook plugin to the `pyproject.toml` file.
 
 ``` toml
 [build-system]
@@ -149,35 +166,50 @@ build-backend = "hatchling.build"
 # this section is needed to enable the hook in the build process, even if empty.
 ```
 
-Make Rye (and Hatch) aware of the way Polylith organizes source code:
+Make Rye and uv (and Hatch) aware of the way Polylith organizes source code:
 ``` toml
 [tool.hatch.build]
 dev-mode-dirs = ["components", "bases", "development", "."]
 ```
 
-Remove the `[project.scripts]` and `[tool.hatch.build.targets.wheel]` sections.
-
 Run the `sync` command to update the virtual environment:
 
+
+Rye:
 ``` shell
 rye sync
 ```
 
-Finally, remove the `src` boilerplate code that was added by Rye in the first step:
+uv:
+``` shell
+uv sync
+```
+
+Finally, remove the `src` boilerplate code that was added by Rye and uv in the first step:
 ``` shell
 rm -r src
 ```
 
-### Ready for coding!
+### Rye and uv users: ready for coding!
 
 Add components, bases and projects:
 
+Rye:
 ``` shell
 rye run poly create component --name my_component
 
 rye run poly create base --name my_example_endpoint
 
 rye run poly create project --name my_example_project
+```
+
+uv:
+``` shell
+uv run poly create component --name my_component
+
+uv run poly create base --name my_example_endpoint
+
+uv run poly create project --name my_example_project
 ```
 
 For details, have a look at the [documentation](https://davidvujic.github.io/python-polylith-docs/).

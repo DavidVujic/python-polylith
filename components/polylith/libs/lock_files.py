@@ -5,6 +5,7 @@ from polylith.toml import load_toml
 patterns = {
     "pdm.lock": "toml",
     "poetry.lock": "toml",
+    "uv.lock": "toml",
     "requirements.lock": "text",
     "requirements.txt": "text",
 }
