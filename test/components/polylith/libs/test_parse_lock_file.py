@@ -23,11 +23,13 @@ expected_libraries = {
 pdm_lock_file = "pdm"
 piptools_lock_file = "piptools"
 rye_lock_file = "rye"
+uv_lock_file = "uv"
 
 test_lock_files = {
     pdm_lock_file: "toml",
     piptools_lock_file: "text",
     rye_lock_file: "text",
+    uv_lock_file: "toml",
 }
 
 
@@ -63,5 +65,11 @@ def test_parse_contents_of_pdm_lock_file(setup):
 
 def test_parse_contents_of_pip_tools_lock_file(setup):
     names = lock_files.extract_libs(project_data, piptools_lock_file, "text")
+
+    assert names == expected_libraries
+
+
+def test_parse_contents_of_uv_lock_file(setup):
+    names = lock_files.extract_libs(project_data, uv_lock_file, "toml")
 
     assert names == expected_libraries
