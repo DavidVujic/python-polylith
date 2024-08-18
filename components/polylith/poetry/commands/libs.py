@@ -29,7 +29,7 @@ class LibsCommand(Command):
         name = project_data["name"]
 
         try:
-            return merge_project_data(self.poetry, project_data)
+            return merge_project_data(project_data)
         except ValueError as e:
             self.line_error(f"{name}: <error>{e}</error>")
             return project_data

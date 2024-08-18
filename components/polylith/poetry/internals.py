@@ -31,7 +31,7 @@ def distributions(path: Path) -> list:
     return list(env.site_packages.distributions())
 
 
-def find_third_party_libs(poetry: Poetry, path: Path) -> dict:
+def find_third_party_libs(path: Path) -> dict:
     project_poetry = get_project_poetry(path)
 
     if not project_poetry.locker.is_locked():
@@ -42,10 +42,10 @@ def find_third_party_libs(poetry: Poetry, path: Path) -> dict:
     return {p.name: str(p.version) for p in packages}
 
 
-def merge_project_data(poetry: Poetry, project_data: dict) -> dict:
+def merge_project_data(project_data: dict) -> dict:
     path = project_data["path"]
 
-    third_party_libs = find_third_party_libs(poetry, path)
+    third_party_libs = find_third_party_libs(path)
     return {
         **project_data,
         **{"deps": {"items": third_party_libs, "source": "poetry.lock"}},
