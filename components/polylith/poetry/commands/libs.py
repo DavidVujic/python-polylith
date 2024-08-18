@@ -8,7 +8,7 @@ from polylith.poetry.commands.check import command_options
 from polylith.poetry.internals import (
     distributions,
     filter_projects_data,
-    find_third_party_libs,
+    merge_project_data,
 )
 
 
@@ -25,23 +25,18 @@ class LibsCommand(Command):
         ),
     ]
 
-    def merged_project_data(self, data: dict) -> dict:
-        name = data["name"]
-        path = data["path"]
+    def merged_project_data(self, project_data: dict) -> dict:
+        name = project_data["name"]
 
         try:
-            third_party_libs = find_third_party_libs(self.poetry, path)
-            return {
-                **data,
-                **{"deps": {"items": third_party_libs, "source": "poetry.lock"}},
-            }
+            return merge_project_data(project_data)
         except ValueError as e:
             self.line_error(f"{name}: <error>{e}</error>")
-            return data
+            return project_data
 
     def handle(self) -> int:
         root = repo.get_workspace_root(Path.cwd())
-        dists_fn = partial(distributions, None, root)
+        dists_fn = partial(distributions, root)
 
         options = {
             "strict": self.option("strict"),
