@@ -19,7 +19,9 @@ def get_authors(path: Path) -> str:
     data = get_pyproject_data(path)
     section = get_metadata_section(data)
 
-    return section.get("authors", []).as_string()
+    authors = section.get("authors")
+
+    return authors.as_string() if authors else ""
 
 
 def get_python_version(path: Path) -> str:
