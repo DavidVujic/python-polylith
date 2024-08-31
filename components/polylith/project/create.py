@@ -18,12 +18,15 @@ def create_project(path: Path, template: str, name: str, description: str) -> No
     authors = repo.get_authors(path)
     python_version = repo.get_python_version(path)
 
+    description_field = f'description = "{description}"' if description else ""
+    authors_field = f"authors = {authors}" if authors else ""
+
     project_toml = create_project_toml(
         template,
         {
             "name": name,
-            "description": description,
-            "authors": authors,
+            "description": description_field,
+            "authors": authors_field,
             "python_version": python_version,
         },
     )

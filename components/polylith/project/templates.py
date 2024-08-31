@@ -2,8 +2,8 @@ poetry_pyproject = """\
 [tool.poetry]
 name = "{name}"
 version = "0.1.0"
-description = "{description}"
-authors = {authors}
+{description}
+{authors}
 license = ""
 
 packages = []
@@ -24,8 +24,8 @@ build-backend = "hatchling.build"
 [project]
 name = "{name}"
 version = "0.1.0"
-description = "{description}"
-authors = {authors}
+{description}
+{authors}
 
 requires-python = "{python_version}"
 
@@ -44,8 +44,8 @@ build-backend = "pdm.backend"
 [project]
 name = "{name}"
 version = "0.1.0"
-description = "{description}"
-authors = {authors}
+{description}
+{authors}
 
 requires-python = "{python_version}"
 
