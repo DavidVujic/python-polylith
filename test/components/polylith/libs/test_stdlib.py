@@ -49,3 +49,33 @@ def test_stdlib_3_12():
         "smtpd",
     }
     assert py312.difference(py311) == set()
+
+
+def test_stdlib_3_13():
+    py312 = stdlib.standard_libs["3.12"]
+    py313 = stdlib.standard_libs["3.13"]
+
+    assert py312.difference(py313) == {
+        "aifc",
+        "audioop",
+        "cgi",
+        "cgitb",
+        "chunk",
+        "crypt",
+        "imghdr",
+        "lib2to3",
+        "mailcap",
+        "msilib",
+        "nis",
+        "nntplib",
+        "ossaudiodev",
+        "pipes",
+        "sndhdr",
+        "spwd",
+        "sunau",
+        "telnetlib",
+        "uu",
+        "xdrlib",
+    }
+
+    assert py313.difference(py312) == set()

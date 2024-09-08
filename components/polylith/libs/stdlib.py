@@ -261,11 +261,47 @@ def to_py312(stdlib: set) -> set:
     return union(stdlib, news, removed)
 
 
+def to_py313(stdlib: set) -> set:
+    news: set = set()
+    removed = {
+        "aifc",
+        "audioop",
+        "cgi",
+        "cgitb",
+        "chunk",
+        "crypt",
+        "imghdr",
+        "lib2to3",
+        "mailcap",
+        "msilib",
+        "nis",
+        "nntplib",
+        "ossaudiodev",
+        "pipes",
+        "sndhdr",
+        "spwd",
+        "sunau",
+        "telnetlib",
+        "uu",
+        "xdrlib",
+    }
+
+    return union(stdlib, news, removed)
+
+
 py38 = with_extras(stdlib_python_3_8)
 py39 = to_py39(py38)
 py310 = to_py310(py39)
 py311 = to_py311(py310)
 py312 = to_py312(py311)
+py313 = to_py313(py312)
 
 
-standard_libs = {"3.8": py38, "3.9": py39, "3.10": py310, "3.11": py311, "3.12": py312}
+standard_libs = {
+    "3.8": py38,
+    "3.9": py39,
+    "3.10": py310,
+    "3.11": py311,
+    "3.12": py312,
+    "3.13": py313,
+}
