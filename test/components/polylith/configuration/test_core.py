@@ -74,6 +74,8 @@ def test_get_tag_pattern(use_loose):
     assert stable == "stable-*"
     assert release == "v[0-9]*"
 
+    assert core.get_tag_pattern_from_config(fake_path, "non_existing_tag") is None
+
 
 def test_get_tag_sort_options_from_config(use_loose):
     options = core.get_tag_sort_options_from_config(fake_path)

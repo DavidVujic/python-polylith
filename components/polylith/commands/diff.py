@@ -99,10 +99,10 @@ def print_views(root: Path, tag: str, options: dict) -> None:
 def run(tag_name: Union[str, None], options: dict):
     root = repo.get_workspace_root(Path.cwd())
 
-    tag = diff.collect.get_latest_tag(root, tag_name)
+    tag = diff.collect.get_latest_tag(root, tag_name) or tag_name
 
     if not tag:
-        print("No tags found in repository.")
+        print("No matching tags or commits found in repository.")
         return
 
     print_views(root, tag, options)
