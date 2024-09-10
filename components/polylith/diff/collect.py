@@ -58,6 +58,10 @@ def get_changed_projects(changed_files: List[Path]) -> list:
 
 def get_latest_tag(root: Path, key: Union[str, None]) -> Union[str, None]:
     tag_pattern = configuration.get_tag_pattern_from_config(root, key)
+
+    if not tag_pattern:
+        return None
+
     sorting_options = [
         f"--sort={option}"
         for option in configuration.get_tag_sort_options_from_config(root)

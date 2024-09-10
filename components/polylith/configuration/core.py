@@ -29,12 +29,15 @@ def get_git_tag_pattern(toml: dict) -> str:
     return toml["tool"]["polylith"]["git_tag_pattern"]
 
 
-def get_tag_pattern_from_config(path: Path, key: Union[str, None]) -> str:
+def get_tag_pattern_from_config(path: Path, key: Union[str, None]) -> Union[str, None]:
     toml: dict = _load_workspace_config(path)
 
     patterns = toml["tool"]["polylith"].get("tag", {}).get("patterns")
 
-    return patterns[key or "stable"] if patterns else get_git_tag_pattern(toml)
+    if not key:
+        return patterns["stable"] if patterns else get_git_tag_pattern(toml)
+
+    return patterns.get(key)
 
 
 def get_tag_sort_options_from_config(path: Path) -> List[str]:

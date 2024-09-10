@@ -86,7 +86,7 @@ def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
 def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:
     console = Console(theme=theme.poly_theme)
 
-    console.print(Padding(f"[data]Diff: based on the {tag} tag[/]", (1, 0, 1, 0)))
+    console.print(Padding(f"[data]Diff: based on {tag}[/]", (1, 0, 1, 0)))
 
     if not bases and not components:
         console.print("[data]No brick changes found.[/]")
