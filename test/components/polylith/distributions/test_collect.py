@@ -38,7 +38,7 @@ def test_collect_known_aliases_and_sub_dependencies():
 
     fake_alias = ["hello-world-library=hello"]
 
-    res = collect.known_aliases_and_sub_dependencies(fake_deps, fake_alias, {})
+    res = collect.known_aliases_and_sub_dependencies(fake_deps, fake_alias, {}, False)
 
     assert "typer" in res
     assert "typing-extensions" in res

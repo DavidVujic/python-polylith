@@ -55,16 +55,21 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
     deps = project_data["deps"]
     alias = options["alias"]
 
+    from_lock_file = libs.is_from_lock_file(deps)
+
     collected_imports = check.report.collect_all_imports(root, ns, project_data)
     collected_libs = distributions.known_aliases_and_sub_dependencies(
-        deps, alias, options
+        deps,
+        alias,
+        options,
+        from_lock_file,
     )
 
     details = check.report.create_report(
         project_data,
         collected_imports,
         collected_libs,
-        is_strict,
+        is_strict or from_lock_file,
     )
 
     res = all([not details["brick_diff"], not details["libs_diff"]])
