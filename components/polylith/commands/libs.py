@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List, Set
 
 from polylith import distributions
-from polylith.libs import report
+from polylith.libs import is_from_lock_file, report
 
 
 def missing_libs(project_data: dict, imports: dict, options: dict) -> bool:
@@ -15,15 +15,17 @@ def missing_libs(project_data: dict, imports: dict, options: dict) -> bool:
 
     brick_imports = imports[name]
 
+    from_lock_file = is_from_lock_file(deps)
+
     libs = distributions.known_aliases_and_sub_dependencies(
-        deps, library_alias, options
+        deps, library_alias, options, from_lock_file
     )
 
     return report.print_missing_installed_libs(
         brick_imports,
         libs,
         name,
-        is_strict,
+        is_strict or from_lock_file,
     )
 
 

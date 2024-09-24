@@ -71,3 +71,7 @@ def extract_libs(project_data: dict, filename: str, filetype: str) -> dict:
         return extract_lib_names_from_txt(path)
     except (IndexError, KeyError, ValueError) as e:
         raise ValueError(f"Failed reading {filename}: {repr(e)}") from e
+
+
+def is_from_lock_file(deps: dict) -> bool:
+    return any(deps["source"] == s for s in set(patterns.keys()))
