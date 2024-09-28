@@ -24,12 +24,14 @@ pdm_lock_file = "pdm"
 piptools_lock_file = "piptools"
 rye_lock_file = "rye"
 uv_lock_file = "uv"
+uv_workspace_lock_file = "uv_workspaces"
 
 test_lock_files = {
     pdm_lock_file: "toml",
     piptools_lock_file: "text",
     rye_lock_file: "text",
     uv_lock_file: "toml",
+    uv_workspace_lock_file: "toml",
 }
 
 
@@ -45,7 +47,7 @@ def test_find_lock_files(setup):
 
 
 def test_pick_lock_file(setup):
-    res = lock_files.pick_lock_file(project_data)
+    res = lock_files.pick_lock_file(project_data["path"])
 
     assert res.get("filename")
     assert res.get("filetype")

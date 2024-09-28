@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 from polylith.toml import load_toml
 
@@ -15,8 +16,8 @@ def find_lock_files(path: Path) -> dict:
     return {k: v for k, v in patterns.items() if Path(path / k).exists()}
 
 
-def pick_lock_file(project_data: dict) -> dict:
-    data = find_lock_files(project_data["path"])
+def pick_lock_file(path: Path) -> dict:
+    data = find_lock_files(path)
     first = next(iter(data.items()), None)
 
     if not first:
@@ -27,10 +28,14 @@ def pick_lock_file(project_data: dict) -> dict:
     return {"filename": filename, "filetype": filetype}
 
 
-def extract_lib_names_from_toml(path: Path) -> dict:
+def extract_libs_from_packages(packages: List[dict]) -> dict:
+    return {p["name"]: p["version"] for p in packages}
+
+
+def extract_libs_from_toml(path: Path) -> dict:
     data = load_toml(path)
 
-    return {p["name"]: p["version"] for p in data.get("package", [])}
+    return extract_libs_from_packages(data.get("package", []))
 
 
 def parse_name(row: str) -> str:
@@ -46,7 +51,7 @@ def parse_version(row: str) -> str:
     return res[0]
 
 
-def extract_lib_names_from_txt(path: Path) -> dict:
+def extract_libs_from_txt(path: Path) -> dict:
     with open(path, "r") as f:
         data = f.readlines()
 
@@ -66,12 +71,40 @@ def extract_libs(project_data: dict, filename: str, filetype: str) -> dict:
 
     try:
         if filetype == "toml":
-            return extract_lib_names_from_toml(path)
+            return extract_libs_from_toml(path)
 
-        return extract_lib_names_from_txt(path)
+        return extract_libs_from_txt(path)
     except (IndexError, KeyError, ValueError) as e:
         raise ValueError(f"Failed reading {filename}: {repr(e)}") from e
 
 
 def is_from_lock_file(deps: dict) -> bool:
     return any(deps["source"] == s for s in set(patterns.keys()))
+
+
+def pick_packages(data: dict, name: str) -> list:
+    package = next(p for p in data["package"] if p["name"] == name)
+
+    package_sub_deps = package.get("dependencies", [])
+    nested_package_deps = [pick_packages(data, p) for p in package_sub_deps]
+
+    flattened = sum(nested_package_deps, [])
+
+    return [package] + flattened if flattened else [package]
+
+
+def extract_workspace_member_libs(root: Path, filename: str, member_name: str) -> dict:
+    path = Path(root / filename)
+
+    if not path.exists():
+        return {}
+
+    data = load_toml(path)
+    members = data.get("manifest", {}).get("members", [])
+
+    if member_name not in members:
+        return {}
+
+    packages = pick_packages(data, member_name)
+
+    return extract_libs_from_packages(packages)
