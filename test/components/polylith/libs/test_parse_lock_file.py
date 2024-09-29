@@ -78,6 +78,16 @@ def test_parse_contents_of_uv_lock_file(setup):
     assert names == expected_libraries
 
 
+def _extract_workspace_member_libs(name: str) -> dict:
+    data = {**project_data, **{"name": name}}
+    return lock_files.extract_workspace_member_libs(
+        test_path,
+        data,
+        uv_workspace_lock_file,
+        "toml",
+    )
+
+
 def test_parse_contents_of_uv_workspaces_aware_lock_file(setup):
     expected_gcp_libs = {
         "functions-framework": "3.5.0",
@@ -100,29 +110,12 @@ def test_parse_contents_of_uv_workspaces_aware_lock_file(setup):
 
     expected_consumer_libs = {"confluent-kafka": "2.3.0"}
 
-    lock_file_format = "toml"
-
-    gcp_libs = lock_files.extract_workspace_member_libs(
-        test_path,
-        project_data | {"name": "my-gcp-function-project"},
-        uv_workspace_lock_file,
-        lock_file_format,
-    )
-
-    consumer_libs = lock_files.extract_workspace_member_libs(
-        test_path,
-        project_data | {"name": "consumer-project"},
-        uv_workspace_lock_file,
-        lock_file_format,
-    )
-
-    aws_lambda_libs = lock_files.extract_workspace_member_libs(
-        test_path,
-        project_data | {"name": "my-aws-lambda-project"},
-        uv_workspace_lock_file,
-        lock_file_format,
-    )
+    gcp_libs = _extract_workspace_member_libs("my-gcp-function-project")
+    consumer_libs = _extract_workspace_member_libs("consumer-project")
+    aws_lambda_libs = _extract_workspace_member_libs("my-aws-lambda-project")
+    non_existing = _extract_workspace_member_libs("this-workspace-member-doesnt-exist")
 
     assert gcp_libs == expected_gcp_libs
     assert consumer_libs == expected_consumer_libs
     assert aws_lambda_libs == {}
+    assert non_existing == {}
