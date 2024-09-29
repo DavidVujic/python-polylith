@@ -4,23 +4,49 @@ from typing import List
 from polylith import check, distributions, libs
 
 
-def with_third_party_libs_from_lock_file(project_data: dict) -> dict:
-    lock_file_data = libs.pick_lock_file(project_data)
+def extract_libs_from_project_lock_file(project_data: dict) -> dict:
+    lock_file_data = libs.pick_lock_file(project_data["path"])
 
     if not lock_file_data:
-        return project_data
+        return {}
 
     filename = lock_file_data["filename"]
     filetype = lock_file_data["filetype"]
 
     third_party_libs = libs.extract_libs(project_data, filename, filetype)
 
-    merged = {
-        **project_data,
-        **{"deps": {"items": third_party_libs, "source": filename}},
-    }
+    return {"deps": {"items": third_party_libs, "source": filename}}
 
-    return merged
+
+def extract_libs_from_workspace_lock_file(root: Path, project_data: dict) -> dict:
+    lock_file_data = libs.pick_lock_file(root)
+
+    if not lock_file_data:
+        return {}
+
+    filename = lock_file_data["filename"]
+    filetype = lock_file_data["filetype"]
+
+    third_party_libs = libs.extract_workspace_member_libs(
+        root,
+        project_data,
+        filename,
+        filetype,
+    )
+
+    return {"deps": {"items": third_party_libs, "source": filename}}
+
+
+def extract_libs_from_lock_file(root: Path, project_data: dict) -> dict:
+    from_project = extract_libs_from_project_lock_file(project_data)
+
+    return from_project or extract_libs_from_workspace_lock_file(root, project_data)
+
+
+def with_third_party_libs_from_lock_file(root: Path, project_data: dict) -> dict:
+    third_party_libs = extract_libs_from_lock_file(root, project_data)
+
+    return {**project_data, **third_party_libs}
 
 
 def check_libs_versions(
