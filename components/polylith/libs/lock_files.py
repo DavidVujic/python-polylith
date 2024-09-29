@@ -1,3 +1,4 @@
+from functools import reduce
 from pathlib import Path
 from typing import List
 
@@ -93,6 +94,14 @@ def pick_packages(data: dict, name: str) -> list:
     return [package] + flattened if flattened else [package]
 
 
+def normalized(name: str) -> str:
+    chars = {"_", "."}
+
+    normalized = reduce(lambda acc, char: str.replace(acc, char, "-"), chars, name)
+
+    return str.lower(normalized)
+
+
 def extract_workspace_member_libs(
     root: Path,
     project_data: dict,
@@ -109,7 +118,7 @@ def extract_workspace_member_libs(
 
     data = load_toml(path)
     members = data.get("manifest", {}).get("members", [])
-    member_name = project_data["name"]
+    member_name = normalized(project_data["name"])
 
     if member_name not in members:
         return {}
