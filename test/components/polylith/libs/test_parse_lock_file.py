@@ -3,7 +3,8 @@ from pathlib import Path
 import pytest
 from polylith.libs import lock_files
 
-project_data = {"path": Path("./test/test_data")}
+test_path = Path("./test/test_data")
+project_data = {"path": test_path}
 
 expected_libraries = {
     "annotated-types": "0.7.0",
@@ -75,3 +76,53 @@ def test_parse_contents_of_uv_lock_file(setup):
     names = lock_files.extract_libs(project_data, uv_lock_file, "toml")
 
     assert names == expected_libraries
+
+
+def test_parse_contents_of_uv_workspaces_aware_lock_file(setup):
+    expected_gcp_libs = {
+        "functions-framework": "3.5.0",
+        "click": "8.1.7",
+        "colorama": "0.4.6",
+        "cloudevents": "1.11.0",
+        "deprecation": "2.1.0",
+        "packaging": "24.1",
+        "flask": "3.0.3",
+        "blinker": "1.8.2",
+        "importlib-metadata": "8.2.0",
+        "zipp": "3.20.0",
+        "itsdangerous": "2.2.0",
+        "jinja2": "3.1.4",
+        "markupsafe": "2.1.5",
+        "werkzeug": "3.0.3",
+        "gunicorn": "23.0.0",
+        "watchdog": "4.0.2",
+    }
+
+    expected_consumer_libs = {"confluent-kafka": "2.3.0"}
+
+    lock_file_format = "toml"
+
+    gcp_libs = lock_files.extract_workspace_member_libs(
+        test_path,
+        project_data | {"name": "my-gcp-function-project"},
+        uv_workspace_lock_file,
+        lock_file_format,
+    )
+
+    consumer_libs = lock_files.extract_workspace_member_libs(
+        test_path,
+        project_data | {"name": "consumer-project"},
+        uv_workspace_lock_file,
+        lock_file_format,
+    )
+
+    aws_lambda_libs = lock_files.extract_workspace_member_libs(
+        test_path,
+        project_data | {"name": "my-aws-lambda-project"},
+        uv_workspace_lock_file,
+        lock_file_format,
+    )
+
+    assert gcp_libs == expected_gcp_libs
+    assert consumer_libs == expected_consumer_libs
+    assert aws_lambda_libs == {}

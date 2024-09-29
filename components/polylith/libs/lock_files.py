@@ -86,7 +86,7 @@ def pick_packages(data: dict, name: str) -> list:
     package = next(p for p in data["package"] if p["name"] == name)
 
     package_sub_deps = package.get("dependencies", [])
-    nested_package_deps = [pick_packages(data, p) for p in package_sub_deps]
+    nested_package_deps = [pick_packages(data, p["name"]) for p in package_sub_deps]
 
     flattened = sum(nested_package_deps, [])
 
@@ -115,5 +115,6 @@ def extract_workspace_member_libs(
         return {}
 
     packages = pick_packages(data, member_name)
+    extracted = extract_libs_from_packages(packages)
 
-    return extract_libs_from_packages(packages)
+    return {k: v for k, v in extracted.items() if k != member_name}
