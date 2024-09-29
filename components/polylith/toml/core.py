@@ -1,6 +1,6 @@
 import re
 import sys
-from functools import reduce
+from functools import lru_cache, reduce
 from pathlib import Path
 from typing import List, Union
 
@@ -119,6 +119,7 @@ def read_toml_document(path: Path) -> tomlkit.TOMLDocument:
         return tomlkit.loads(f.read())
 
 
+@lru_cache
 def load_toml(path: Path) -> dict:
     with open(path, "rb") as f:
         try:
