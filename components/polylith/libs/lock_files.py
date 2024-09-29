@@ -93,7 +93,15 @@ def pick_packages(data: dict, name: str) -> list:
     return [package] + flattened if flattened else [package]
 
 
-def extract_workspace_member_libs(root: Path, filename: str, member_name: str) -> dict:
+def extract_workspace_member_libs(
+    root: Path,
+    project_data: dict,
+    filename: str,
+    filetype: str,
+) -> dict:
+    if filetype != "toml":
+        return {}
+
     path = Path(root / filename)
 
     if not path.exists():
@@ -101,6 +109,7 @@ def extract_workspace_member_libs(root: Path, filename: str, member_name: str) -
 
     data = load_toml(path)
     members = data.get("manifest", {}).get("members", [])
+    member_name = project_data["name"]
 
     if member_name not in members:
         return {}
