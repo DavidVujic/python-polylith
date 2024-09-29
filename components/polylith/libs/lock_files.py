@@ -83,6 +83,27 @@ def is_from_lock_file(deps: dict) -> bool:
     return any(deps["source"] == s for s in set(patterns.keys()))
 
 
+def get_workspace_members(data: dict) -> List[str]:
+    return data.get("manifest", {}).get("members", [])
+
+
+def get_workspace_enabled_lock_file_data(
+    root: Path, filename: str, filetype: str
+) -> dict:
+    if filetype != "toml":
+        return {}
+
+    path = Path(root / filename)
+
+    if not path.exists():
+        return {}
+
+    data = load_toml(path)
+    members = get_workspace_members(data)
+
+    return data if members else {}
+
+
 def pick_packages(data: dict, name: str) -> list:
     package = next(p for p in data["package"] if p["name"] == name)
 
@@ -102,22 +123,8 @@ def normalized(name: str) -> str:
     return str.lower(normalized)
 
 
-def extract_workspace_member_libs(
-    root: Path,
-    project_data: dict,
-    filename: str,
-    filetype: str,
-) -> dict:
-    if filetype != "toml":
-        return {}
-
-    path = Path(root / filename)
-
-    if not path.exists():
-        return {}
-
-    data = load_toml(path)
-    members = data.get("manifest", {}).get("members", [])
+def extract_workspace_member_libs(data: dict, project_data: dict) -> dict:
+    members = get_workspace_members(data)
     member_name = normalized(project_data["name"])
 
     if member_name not in members:
@@ -127,6 +134,6 @@ def extract_workspace_member_libs(
         packages = pick_packages(data, member_name)
         extracted = extract_libs_from_packages(packages)
     except KeyError as e:
-        raise ValueError(f"Failed parsing {filename}: {repr(e)}") from e
+        raise ValueError(f"Failed parsing lock-file data: {repr(e)}") from e
 
     return {k: v for k, v in extracted.items() if k != member_name}

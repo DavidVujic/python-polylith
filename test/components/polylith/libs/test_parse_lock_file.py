@@ -79,12 +79,15 @@ def test_parse_contents_of_uv_lock_file(setup):
 
 
 def _extract_workspace_member_libs(name: str) -> dict:
-    data = {**project_data, **{"name": name}}
+    data = lock_files.get_workspace_enabled_lock_file_data(
+        test_path, uv_workspace_lock_file, "toml"
+    )
+
+    extended_project_data = {**project_data, **{"name": name}}
+
     return lock_files.extract_workspace_member_libs(
-        test_path,
         data,
-        uv_workspace_lock_file,
-        "toml",
+        extended_project_data,
     )
 
 

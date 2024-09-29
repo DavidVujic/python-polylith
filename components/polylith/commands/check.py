@@ -27,12 +27,12 @@ def extract_libs_from_workspace_lock_file(root: Path, project_data: dict) -> dic
     filename = lock_file_data["filename"]
     filetype = lock_file_data["filetype"]
 
-    third_party_libs = libs.extract_workspace_member_libs(
-        root,
-        project_data,
-        filename,
-        filetype,
-    )
+    data = libs.get_workspace_enabled_lock_file_data(root, filename, filetype)
+
+    if not data:
+        return {}
+
+    third_party_libs = libs.extract_workspace_member_libs(data, project_data)
 
     return {"deps": {"items": third_party_libs, "source": filename}}
 
