@@ -115,7 +115,13 @@ def test_parse_contents_of_uv_workspaces_aware_lock_file(setup):
     aws_lambda_libs = _extract_workspace_member_libs("my-aws-lambda-project")
     non_existing = _extract_workspace_member_libs("this-workspace-member-doesnt-exist")
 
+    gcp_libs_from_normalized_name = _extract_workspace_member_libs(
+        "my_gcp_Function-project"
+    )
+
     assert gcp_libs == expected_gcp_libs
     assert consumer_libs == expected_consumer_libs
     assert aws_lambda_libs == {}
     assert non_existing == {}
+
+    assert gcp_libs_from_normalized_name == expected_gcp_libs
