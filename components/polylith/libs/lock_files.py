@@ -114,7 +114,10 @@ def extract_workspace_member_libs(
     if member_name not in members:
         return {}
 
-    packages = pick_packages(data, member_name)
-    extracted = extract_libs_from_packages(packages)
+    try:
+        packages = pick_packages(data, member_name)
+        extracted = extract_libs_from_packages(packages)
+    except KeyError as e:
+        raise ValueError(f"Failed parsing {filename}: {repr(e)}") from e
 
     return {k: v for k, v in extracted.items() if k != member_name}
