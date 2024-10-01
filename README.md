@@ -81,6 +81,7 @@ There's more examples and production systems in the [documentation](https://davi
 - The standalone Polylith CLI - [An intro to the polylith-cli - tooling support for Polylith with Python and Hatch](https://youtu.be/K__3Uah3by0)
 
 ## Talks
+- __ PyCon DE & PyData Berlin 2024__ - [Python Monorepos: The Polylith Developer Experience](https://youtu.be/wGWjt9GJLU4?si=1nOpThiwayc4Crvm) (about 29 minutes)
 - __Python Web Conference 2023__ - Microservices, Monolith, Monorepos: the differences & how nicely Polylith solves the trade offs - [A Fresh Take on Monorepos in Python](https://youtu.be/HU61vjZPPfQ) (about 36 minutes)
 
 ## Podcasts
