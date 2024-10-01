@@ -132,7 +132,7 @@ def sync_command(
     strict: Annotated[bool, options.strict] = False,
     quiet: Annotated[bool, options.quiet] = False,
     directory: Annotated[str, options.directory] = "",
-    verbose: Annotated[str, options.verbose] = "",
+    verbose: Annotated[bool, options.verbose] = False,
 ):
     """Update pyproject.toml with missing bricks."""
     root = repo.get_workspace_root(Path.cwd())
