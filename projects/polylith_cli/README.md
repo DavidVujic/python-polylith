@@ -155,18 +155,7 @@ uv run poly create workspace --name my_namespace --theme loose
 ```
 
 ### Rye and uv users: edit the configuration
-The default build backend for Rye and uv is Hatch. Add the `hatch-polylith-bricks` build hook plugin to the `pyproject.toml` file.
-
-``` toml
-[build-system]
-requires = ["hatchling", "hatch-polylith-bricks"]
-build-backend = "hatchling.build"
-
-[tool.hatch.build.hooks.polylith-bricks]
-# this section is needed to enable the hook in the build process, even if empty.
-```
-
-Make Rye and uv (and Hatch) aware of the way Polylith organizes source code:
+The default build backend for Rye and uv is Hatch. Make Rye and uv (and Hatch) aware of the way Polylith organizes source code:
 ``` toml
 [tool.hatch.build]
 dev-mode-dirs = ["components", "bases", "development", "."]
