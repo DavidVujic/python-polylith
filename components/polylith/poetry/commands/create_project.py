@@ -12,7 +12,8 @@ def create_project(root: Path, options: dict):
     package = options["package"]
     desc = options["description"] or ""
 
-    project.create_project(root, project.templates.poetry_pyproject, package, desc)
+    template = project.get_project_template(root)
+    project.create_project(root, template, package, desc)
 
 
 class CreateProjectCommand(Command):
