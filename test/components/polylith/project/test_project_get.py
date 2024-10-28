@@ -43,6 +43,15 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 """
 
+unknown_toml = """\
+[project]
+name = "unit-test"
+
+[build-system]
+requires = ["some-backend"]
+build-backend = "some.backend"
+"""
+
 
 def test_get_project_name_from_poetry_project():
     data = {"toml": tomlkit.loads(poetry_toml), "path": Path.cwd()}
@@ -100,3 +109,10 @@ def test_get_project_template_returns_pdm_template():
     res = get.guess_project_template(data)
 
     assert 'requires = ["pdm-backend", "pdm-polylith-bricks"]' in res
+
+
+def test_get_project_template_for_unknown_raise_error():
+    data = tomlkit.loads(unknown_toml)
+
+    with pytest.raises(ValueError):
+        get.guess_project_template(data)

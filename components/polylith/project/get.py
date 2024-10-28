@@ -81,6 +81,8 @@ def guess_project_template(pyproject: dict) -> str:
         template = templates.hatch_pyproject
     elif repo.is_pdm(pyproject):
         template = templates.pdm_pyproject
+    else:
+        raise ValueError("Failed to guess the type of Project")
 
     return template
 
