@@ -16,6 +16,25 @@ requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 """
 
+poetry_pep621_pyproject = """\
+[tool.poetry]
+packages = []
+
+[project]
+name = "{name}"
+version = "0.1.0"
+{description}
+{authors}
+
+requires-python = "{python_version}"
+
+dependencies = []
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+"""
+
 hatch_pyproject = """\
 [build-system]
 requires = ["hatchling", "hatch-polylith-bricks"]

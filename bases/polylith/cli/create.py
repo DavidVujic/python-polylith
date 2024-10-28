@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from polylith import project, repo
+from polylith import project
 from polylith.bricks import base, component
 from polylith.commands.create import create
 from polylith.workspace.create import create_workspace
@@ -29,16 +29,10 @@ def component_command(
 
 
 def _create_project(root: Path, options: dict):
-    root_pyproject: dict = project.get_toml(root / repo.default_toml)
     name = options["package"]
     description = options["description"]
 
-    if repo.is_poetry(root_pyproject):
-        template = project.templates.poetry_pyproject
-    elif repo.is_hatch(root_pyproject):
-        template = project.templates.hatch_pyproject
-    elif repo.is_pdm(root_pyproject):
-        template = project.templates.pdm_pyproject
+    template = project.get_project_template(root)
 
     if not template:
         print("Failed to guess the used Package & Dependency Management")

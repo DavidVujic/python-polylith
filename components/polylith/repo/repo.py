@@ -80,7 +80,4 @@ def is_pdm(pyproject: dict) -> bool:
 
 
 def is_pep_621_ready(pyproject: dict) -> bool:
-    if is_poetry(pyproject):
-        return False
-
     return pyproject.get("project", {}).get("name") is not None

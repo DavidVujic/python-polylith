@@ -93,8 +93,12 @@ def get_pep_621_optional_dependencies(data) -> List[str]:
     return sum(matrix, [])
 
 
+def is_poetry_without_pep_621_support(data) -> bool:
+    return repo.is_poetry(data) and not repo.is_pep_621_ready(data)
+
+
 def parse_project_dependencies(data) -> dict:
-    if repo.is_poetry(data):
+    if is_poetry_without_pep_621_support(data):
         deps = data["tool"]["poetry"].get("dependencies", {})
         res: dict = reduce(parse_poetry_dependency, deps.items(), {})
 

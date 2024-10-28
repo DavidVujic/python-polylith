@@ -4,6 +4,7 @@ from typing import List
 
 import tomlkit
 from polylith import configuration, repo, toml
+from polylith.project import templates
 
 
 def get_project_name(toml_data) -> str:
@@ -64,3 +65,29 @@ def get_packages_for_projects(root: Path) -> List[dict]:
         }
         for d in toml_files
     ]
+
+
+def _get_poetry_template(pyproject: dict) -> str:
+    if repo.is_pep_621_ready(pyproject):
+        return templates.poetry_pep621_pyproject
+
+    return templates.poetry_pyproject
+
+
+def guess_project_template(pyproject: dict) -> str:
+    if repo.is_poetry(pyproject):
+        template = _get_poetry_template(pyproject)
+    elif repo.is_hatch(pyproject):
+        template = templates.hatch_pyproject
+    elif repo.is_pdm(pyproject):
+        template = templates.pdm_pyproject
+    else:
+        raise ValueError("Failed to guess the type of Project")
+
+    return template
+
+
+def get_project_template(root: Path) -> str:
+    root_pyproject = get_toml(root / repo.default_toml)
+
+    return guess_project_template(root_pyproject)
