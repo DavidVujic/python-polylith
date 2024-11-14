@@ -21,7 +21,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.8"
 hatchling = "^1.21.0"
 tomlkit = "0.*"
 
