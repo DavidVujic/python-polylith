@@ -66,7 +66,7 @@ def print_views(root: Path, tag: str, options: dict) -> None:
     changed_bases = diff.collect.get_changed_bases(root, files, ns)
     changed_components = diff.collect.get_changed_components(root, files, ns)
     changed_bricks = set(changed_bases + changed_components)
-    changed_projects = diff.collect.get_changed_projects(files)
+    changed_projects = diff.collect.get_changed_projects(root, files)
 
     projects_data = get_projects_data(root, ns)
 
