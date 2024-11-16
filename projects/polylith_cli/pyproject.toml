@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "polylith-cli"
-version = "1.20.2"
+version = "1.21.0"
 description = "Python tooling support for the Polylith Architecture"
 authors = ['David Vujic']
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
