@@ -25,6 +25,9 @@ def _is_in_workspace(root: Path, top_dir: str, changed_file: Path) -> bool:
 
 
 def _is_match(root: Path, top_dir: str, pattern: str, file_path: Path) -> bool:
+    if re.match(pattern, file_path.as_posix()):
+        return True
+
     found = re.search(pattern, file_path.as_posix())
 
     return found is not None and _is_in_workspace(root, top_dir, file_path)
