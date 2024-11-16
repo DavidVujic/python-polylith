@@ -15,11 +15,28 @@ def _parse_folder_parts(pattern: str, changed_file: Path) -> str:
     return next(p for p in file_path.parts if p != file_path.root)
 
 
-def _get_changed(pattern: str, changed_files: List[Path]) -> set:
+def _is_in_workspace(root: Path, top_dir: str, changed_file: Path) -> bool:
+    file_path = changed_file.as_posix()
+
+    if file_path.startswith(top_dir):
+        return True
+
+    return f"{root.name}/{top_dir}" in file_path
+
+
+def _is_match(root: Path, top_dir: str, pattern: str, file_path: Path) -> bool:
+    found = re.search(pattern, file_path.as_posix())
+
+    return found is not None and _is_in_workspace(root, top_dir, file_path)
+
+
+def _get_changed(
+    root: Path, top_dir: str, pattern: str, changed_files: List[Path]
+) -> set:
     return {
         _parse_folder_parts(pattern, f)
         for f in changed_files
-        if re.match(pattern, f.as_posix())
+        if _is_match(root, top_dir, pattern, f)
     }
 
 
@@ -37,7 +54,7 @@ def _get_changed_bricks(
 ) -> list:
     pattern = _parse_path_pattern(root, top_dir, namespace)
 
-    return sorted(_get_changed(pattern, changed_files))
+    return sorted(_get_changed(root, top_dir, pattern, changed_files))
 
 
 def get_changed_components(
@@ -50,8 +67,8 @@ def get_changed_bases(root: Path, changed_files: List[Path], namespace: str) -> 
     return _get_changed_bricks(root, repo.bases_dir, changed_files, namespace)
 
 
-def get_changed_projects(changed_files: List[Path]) -> list:
-    res = _get_changed(repo.projects_dir, changed_files)
+def get_changed_projects(root: Path, changed_files: List[Path]) -> list:
+    res = _get_changed(root, repo.projects_dir, repo.projects_dir, changed_files)
     filtered = {p for p in res if p != repo.projects_dir}
     return sorted(filtered)
 
