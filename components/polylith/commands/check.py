@@ -123,16 +123,15 @@ def _print_brick_imports(all_imports: List[dict]) -> None:
 
 
 def run(root: Path, ns: str, projects_data: List[dict], options: dict) -> bool:
-    res = [run_each(root, ns, p, options) for p in projects_data]
-
-    run_result = [r[0] for r in res]
-    brick_imports = [r[1]["brick_imports"] for r in res]
-    third_party_imports = [r[1]["third_party_imports"] for r in res]
-
     is_verbose = options["verbose"] and not options["quiet"]
+    res = [run_each(root, ns, p, options) for p in projects_data]
+    results = [r[0] for r in res]
 
     if is_verbose:
+        brick_imports = [r[1]["brick_imports"] for r in res]
+        third_party_imports = [r[1]["third_party_imports"] for r in res]
+
         _print_brick_imports(brick_imports)
         _print_brick_imports(third_party_imports)
 
-    return all(run_result)
+    return all(results)
