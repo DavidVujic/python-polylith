@@ -50,32 +50,6 @@ def with_third_party_libs_from_lock_file(root: Path, project_data: dict) -> dict
     return {**project_data, **third_party_libs}
 
 
-def _merge(acc: dict, data: dict) -> dict:
-    return {**acc, **data}
-
-
-def report_brick_imports(projects_details: List[dict], options: dict) -> None:
-    is_verbose = options["verbose"]
-    is_quiet = options["quiet"]
-
-    if is_quiet:
-        return
-
-    if not is_verbose:
-        return
-
-    all_brick_imports = [details["brick_imports"] for details in projects_details]
-    all_third_party_imports = [
-        details["third_party_imports"] for details in projects_details
-    ]
-
-    merged_brick_imports: dict = reduce(_merge, all_brick_imports, {})
-    merged_third_party_imports: dict = reduce(_merge, all_third_party_imports, {})
-
-    check.report.print_brick_imports(merged_brick_imports)
-    check.report.print_brick_imports(merged_third_party_imports)
-
-
 def check_libs_versions(
     projects_data: List[dict], all_projects_data: List[dict], options: dict
 ) -> bool:
@@ -135,12 +109,23 @@ def run_each(
     return res, details
 
 
+def _print_brick_imports(all_imports: List[dict]) -> None:
+    merged: dict = reduce(lambda acc, data: {**acc, **data}, all_imports, {})
+
+    check.report.print_brick_imports(merged)
+
+
 def run(root: Path, ns: str, projects_data: List[dict], options: dict) -> bool:
     res = [run_each(root, ns, p, options) for p in projects_data]
 
     run_result = [r[0] for r in res]
-    details = [r[1] for r in res]
+    brick_imports = [r[1]["brick_imports"] for r in res]
+    third_party_imports = [r[1]["third_party_imports"] for r in res]
 
-    report_brick_imports(details, options)
+    is_verbose = options["verbose"] and not options["quiet"]
+
+    if is_verbose:
+        _print_brick_imports(brick_imports)
+        _print_brick_imports(third_party_imports)
 
     return all(run_result)
