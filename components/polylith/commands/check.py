@@ -1,5 +1,6 @@
+from functools import reduce
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 from polylith import check, distributions, libs
 
@@ -72,8 +73,9 @@ def check_libs_versions(
     return False if libraries else True
 
 
-def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
-    is_verbose = options["verbose"]
+def run_each(
+    root: Path, ns: str, project_data: dict, options: dict
+) -> Tuple[bool, dict]:
     is_quiet = options["quiet"]
     is_strict = options["strict"]
 
@@ -104,8 +106,32 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
         check.report.print_missing_deps(details["brick_diff"], name)
         check.report.print_missing_deps(details["libs_diff"], name)
 
-        if is_verbose:
-            check.report.print_brick_imports(details["brick_imports"])
-            check.report.print_brick_imports(details["third_party_imports"])
+    return res, details
 
-    return res
+
+def _merge(data: List[dict], key: str) -> dict:
+    return reduce(lambda acc, d: {**acc, **d[key]}, data, {})
+
+
+def _print_brick_imports(all_imports: List[dict]) -> None:
+    merged_bases = _merge(all_imports, "bases")
+    merged_components = _merge(all_imports, "components")
+
+    merged = {"bases": merged_bases, "components": merged_components}
+
+    check.report.print_brick_imports(merged)
+
+
+def run(root: Path, ns: str, projects_data: List[dict], options: dict) -> bool:
+    is_verbose = options["verbose"] and not options["quiet"]
+    res = [run_each(root, ns, p, options) for p in projects_data]
+    results = [r[0] for r in res]
+
+    if is_verbose:
+        brick_imports = [r[1]["brick_imports"] for r in res]
+        third_party_imports = [r[1]["third_party_imports"] for r in res]
+
+        _print_brick_imports(brick_imports)
+        _print_brick_imports(third_party_imports)
+
+    return all(results)
