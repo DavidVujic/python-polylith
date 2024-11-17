@@ -109,8 +109,15 @@ def run_each(
     return res, details
 
 
+def _merge(data: List[dict], key: str) -> dict:
+    return reduce(lambda acc, d: {**acc, **d[key]}, data, {})
+
+
 def _print_brick_imports(all_imports: List[dict]) -> None:
-    merged: dict = reduce(lambda acc, data: {**acc, **data}, all_imports, {})
+    merged_bases = _merge(all_imports, "bases")
+    merged_components = _merge(all_imports, "components")
+
+    merged = {"bases": merged_bases, "components": merged_components}
 
     check.report.print_brick_imports(merged)
 
