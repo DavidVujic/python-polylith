@@ -7,23 +7,30 @@ from polylith.reporting import theme
 from rich.console import Console
 
 
-def print_brick_imports(brick_imports: dict) -> None:
+def _print_imports(bricks: dict) -> None:
     console = Console(theme=theme.poly_theme)
 
-    bases = brick_imports["bases"]
-    components = brick_imports["components"]
+    items = sorted(bricks.items())
 
-    bricks = {**bases, **components}
+    for item in items:
+        key, values = item
 
-    for key, values in bricks.items():
         imports_in_brick = values.difference({key})
 
         if not imports_in_brick:
             continue
 
-        joined = ", ".join(imports_in_brick)
+        joined = ", ".join(sorted(imports_in_brick))
         message = f":information: [data]{key}[/] is importing [data]{joined}[/]"
         console.print(message)
+
+
+def print_brick_imports(brick_imports: dict) -> None:
+    bases = brick_imports["bases"]
+    components = brick_imports["components"]
+
+    _print_imports(bases)
+    _print_imports(components)
 
 
 def print_missing_deps(diff: Set[str], project_name: str) -> None:
@@ -37,12 +44,6 @@ def print_missing_deps(diff: Set[str], project_name: str) -> None:
     console.print(f":thinking_face: Cannot locate {missing} in {project_name}")
 
 
-def fetch_brick_imports(root: Path, ns: str, all_imports: dict) -> dict:
-    extracted = grouping.extract_brick_imports(all_imports, ns)
-
-    return collect.with_unknown_components(root, ns, extracted)
-
-
 def collect_all_imports(root: Path, ns: str, project_data: dict) -> dict:
     bases = {b for b in project_data.get("bases", [])}
     components = {c for c in project_data.get("components", [])}
@@ -54,8 +55,8 @@ def collect_all_imports(root: Path, ns: str, project_data: dict) -> dict:
     all_imports_in_components = imports.fetch_all_imports(components_paths)
 
     brick_imports = {
-        "bases": fetch_brick_imports(root, ns, all_imports_in_bases),
-        "components": fetch_brick_imports(root, ns, all_imports_in_components),
+        "bases": grouping.extract_brick_imports(all_imports_in_bases, ns),
+        "components": grouping.extract_brick_imports(all_imports_in_components, ns),
     }
 
     third_party_imports = {

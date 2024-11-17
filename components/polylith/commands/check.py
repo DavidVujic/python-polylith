@@ -1,5 +1,6 @@
+from functools import reduce
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 from polylith import check, distributions, libs
 
@@ -49,6 +50,32 @@ def with_third_party_libs_from_lock_file(root: Path, project_data: dict) -> dict
     return {**project_data, **third_party_libs}
 
 
+def _merge(acc: dict, data: dict) -> dict:
+    return {**acc, **data}
+
+
+def report_brick_imports(projects_details: List[dict], options: dict) -> None:
+    is_verbose = options["verbose"]
+    is_quiet = options["quiet"]
+
+    if is_quiet:
+        return
+
+    if not is_verbose:
+        return
+
+    all_brick_imports = [details["brick_imports"] for details in projects_details]
+    all_third_party_imports = [
+        details["third_party_imports"] for details in projects_details
+    ]
+
+    merged_brick_imports: dict = reduce(_merge, all_brick_imports, {})
+    merged_third_party_imports: dict = reduce(_merge, all_third_party_imports, {})
+
+    check.report.print_brick_imports(merged_brick_imports)
+    check.report.print_brick_imports(merged_third_party_imports)
+
+
 def check_libs_versions(
     projects_data: List[dict], all_projects_data: List[dict], options: dict
 ) -> bool:
@@ -72,8 +99,9 @@ def check_libs_versions(
     return False if libraries else True
 
 
-def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
-    is_verbose = options["verbose"]
+def run_each(
+    root: Path, ns: str, project_data: dict, options: dict
+) -> Tuple[bool, dict]:
     is_quiet = options["quiet"]
     is_strict = options["strict"]
 
@@ -104,8 +132,15 @@ def run(root: Path, ns: str, project_data: dict, options: dict) -> bool:
         check.report.print_missing_deps(details["brick_diff"], name)
         check.report.print_missing_deps(details["libs_diff"], name)
 
-        if is_verbose:
-            check.report.print_brick_imports(details["brick_imports"])
-            check.report.print_brick_imports(details["third_party_imports"])
+    return res, details
 
-    return res
+
+def run(root: Path, ns: str, projects_data: List[dict], options: dict) -> bool:
+    res = [run_each(root, ns, p, options) for p in projects_data]
+
+    run_result = [r[0] for r in res]
+    details = [r[1] for r in res]
+
+    report_brick_imports(details, options)
+
+    return all(run_result)

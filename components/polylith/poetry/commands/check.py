@@ -63,12 +63,10 @@ class CheckCommand(Command):
             self.merged_project_data(data) for data in projects_data
         ]
 
-        results = {
-            commands.check.run(root, ns, data, options) for data in merged_projects_data
-        }
+        result = commands.check.run(root, ns, merged_projects_data, options)
 
         libs_result = commands.check.check_libs_versions(
             projects_data, all_projects_data, options
         )
 
-        return 0 if all(results) and libs_result else 1
+        return 0 if result and libs_result else 1
