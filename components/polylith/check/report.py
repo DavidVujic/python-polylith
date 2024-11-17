@@ -7,10 +7,11 @@ from polylith.reporting import theme
 from rich.console import Console
 
 
-def _print_imports(bricks: dict) -> None:
+def _print_imports(bricks: dict, brick_type: str) -> None:
     console = Console(theme=theme.poly_theme)
 
     items = sorted(bricks.items())
+    tag = "base" if brick_type == "bases" else "comp"
 
     for item in items:
         key, values = item
@@ -21,7 +22,7 @@ def _print_imports(bricks: dict) -> None:
             continue
 
         joined = ", ".join(sorted(imports_in_brick))
-        message = f":information: [data]{key}[/] is importing [data]{joined}[/]"
+        message = f":information: [{tag}]{key}[/] is importing [data]{joined}[/]"
         console.print(message)
 
 
@@ -29,8 +30,8 @@ def print_brick_imports(brick_imports: dict) -> None:
     bases = brick_imports["bases"]
     components = brick_imports["components"]
 
-    _print_imports(bases)
-    _print_imports(components)
+    _print_imports(bases, "bases")
+    _print_imports(components, "components")
 
 
 def print_missing_deps(diff: Set[str], project_name: str) -> None:
