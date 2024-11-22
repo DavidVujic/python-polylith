@@ -1,5 +1,8 @@
+from functools import lru_cache
 from pathlib import Path
 from typing import Union
+
+import tomlkit
 
 workspace_file = "workspace.toml"
 root_file = ".git"
@@ -12,6 +15,18 @@ projects_dir = "projects"
 development_dir = "development"
 
 
+@lru_cache
+def load_workspace_config(path: Path) -> tomlkit.TOMLDocument:
+    fullpath = path / workspace_file
+
+    if not fullpath.exists():
+        fullpath = path / default_toml
+
+    content = fullpath.read_text()
+
+    return tomlkit.loads(content)
+
+
 def is_drive_root(cwd: Path) -> bool:
     return cwd == Path(cwd.root) or cwd == cwd.parent
 
@@ -22,6 +37,14 @@ def is_repo_root(cwd: Path) -> bool:
     return fullpath.exists()
 
 
+def is_python_workspace_root(path: Path) -> bool:
+    data = load_workspace_config(path)
+
+    ns = data.get("tool", {}).get("polylith", {}).get("namespace")
+
+    return True if ns else False
+
+
 def find_upwards(cwd: Path, name: str) -> Union[Path, None]:
     if is_drive_root(cwd):
         return None
@@ -29,7 +52,10 @@ def find_upwards(cwd: Path, name: str) -> Union[Path, None]:
     fullpath = cwd / name
 
     if fullpath.exists():
-        return fullpath
+        if name == workspace_file:
+            return fullpath
+
+        return fullpath if is_python_workspace_root(cwd) else None
 
     if is_repo_root(cwd):
         return None
@@ -45,9 +71,13 @@ def find_upwards_dir(cwd: Path, name: str) -> Union[Path, None]:
 
 def find_workspace_root(cwd: Path) -> Union[Path, None]:
     workspace_root = find_upwards_dir(cwd, workspace_file)
+
     if workspace_root:
         return workspace_root
-    return find_upwards_dir(cwd, root_file)
+
+    repo_root = find_upwards_dir(cwd, root_file)
+
+    return repo_root or find_upwards_dir(cwd, default_toml)
 
 
 def get_workspace_root(cwd: Path) -> Path:

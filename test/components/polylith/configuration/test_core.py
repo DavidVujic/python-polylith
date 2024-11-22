@@ -41,9 +41,9 @@ def use_fake(monkeypatch):
         config = config_template.format(
             theme=theme, tag_sorting=_tag_sorting(tag_sorting)
         )
-        name = "_load_workspace_config"
+        name = "load_workspace_config"
 
-        monkeypatch.setattr(core, name, lambda *args: tomlkit.loads(config))
+        monkeypatch.setattr(core.repo, name, lambda *args: tomlkit.loads(config))
 
     return patch
 
