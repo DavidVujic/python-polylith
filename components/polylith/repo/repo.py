@@ -28,12 +28,21 @@ def load_root_project_config(path: Path) -> tomlkit.TOMLDocument:
     return load_content(fullpath)
 
 
+def has_workspace_config(data: tomlkit.TOMLDocument) -> bool:
+    ns = data.get("tool", {}).get("polylith", {}).get("namespace")
+
+    return True if ns else False
+
+
 @lru_cache
 def load_workspace_config(path: Path) -> tomlkit.TOMLDocument:
     fullpath = path / workspace_file
 
     if fullpath.exists():
-        return load_content(fullpath)
+        content = load_content(fullpath)
+
+        if has_workspace_config(content):
+            return content
 
     return load_root_project_config(path)
 
@@ -51,9 +60,7 @@ def is_repo_root(cwd: Path) -> bool:
 def is_python_workspace_root(path: Path) -> bool:
     data = load_root_project_config(path)
 
-    ns = data.get("tool", {}).get("polylith", {}).get("namespace")
-
-    return True if ns else False
+    return has_workspace_config(data)
 
 
 def find_upwards(cwd: Path, name: str) -> Union[Path, None]:
