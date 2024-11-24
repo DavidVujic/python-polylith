@@ -32,10 +32,10 @@ def load_root_project_config(path: Path) -> tomlkit.TOMLDocument:
 def load_workspace_config(path: Path) -> tomlkit.TOMLDocument:
     fullpath = path / workspace_file
 
-    if not fullpath.exists():
-        return load_root_project_config(path)
+    if fullpath.exists():
+        return load_content(fullpath)
 
-    return load_content(fullpath)
+    return load_root_project_config(path)
 
 
 def is_drive_root(cwd: Path) -> bool:
