@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdm-polylith-bricks"
-version = "1.0.9"
+version = "1.1.0"
 description = "a PDM build hook for Polylith"
 authors = ["David Vujic"]
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
