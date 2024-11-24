@@ -15,16 +15,27 @@ projects_dir = "projects"
 development_dir = "development"
 
 
+def load_content(fullpath: Path) -> tomlkit.TOMLDocument:
+    content = fullpath.read_text()
+
+    return tomlkit.loads(content)
+
+
+@lru_cache
+def load_root_project_config(path: Path) -> tomlkit.TOMLDocument:
+    fullpath = path / default_toml
+
+    return load_content(fullpath)
+
+
 @lru_cache
 def load_workspace_config(path: Path) -> tomlkit.TOMLDocument:
     fullpath = path / workspace_file
 
     if not fullpath.exists():
-        fullpath = path / default_toml
+        return load_root_project_config(path)
 
-    content = fullpath.read_text()
-
-    return tomlkit.loads(content)
+    return load_content(fullpath)
 
 
 def is_drive_root(cwd: Path) -> bool:
@@ -38,7 +49,7 @@ def is_repo_root(cwd: Path) -> bool:
 
 
 def is_python_workspace_root(path: Path) -> bool:
-    data = load_workspace_config(path)
+    data = load_root_project_config(path)
 
     ns = data.get("tool", {}).get("polylith", {}).get("namespace")
 
