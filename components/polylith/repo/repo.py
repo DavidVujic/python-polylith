@@ -96,7 +96,7 @@ def get_workspace_root(cwd: Path) -> Path:
 
     if not root:
         raise ValueError(
-            "Didn't find the workspace root. Expected to find a workspace.toml or .git file."
+            "Didn't find the workspace root. Expected to find a workspace.toml or pyproject.toml with Workspace config."
         )
 
     return root
