@@ -1,7 +1,6 @@
-import shutil
 from pathlib import Path
 
-from polylith import parsing
+from polylith import building
 
 
 def get_work_dir(config: dict) -> Path:
@@ -13,28 +12,15 @@ def get_work_dir(config: dict) -> Path:
 
 
 def copy_bricks_as_is(bricks: dict, build_dir: Path) -> None:
-    for source, brick in bricks.items():
-        parsing.copy_brick(source, brick, build_dir)
+    building.copy_bricks_as_is(bricks, build_dir)
 
 
-def copy_and_rewrite_bricks(
+def copy_and_rewrite(
     bricks: dict, top_ns: str, work_dir: Path, build_dir: Path
 ) -> None:
-    ns = parsing.parse_brick_namespace_from_path(bricks)
+    rewritten = building.copy_and_rewrite_bricks(bricks, top_ns, work_dir, build_dir)
 
-    for source, brick in bricks.items():
-        path = parsing.copy_brick(source, brick, work_dir)
-        rewritten_bricks = parsing.rewrite_modules(path, ns, top_ns)
+    for item in rewritten:
+        print(f"Updated {item} with new top namespace for local imports.")
 
-        destination_dir = build_dir / top_ns
-        parsing.copy_brick(path.as_posix(), brick, destination_dir)
-
-        for item in rewritten_bricks:
-            print(f"Updated {item} with new top namespace for local imports.")
-
-
-def cleanup(work_dir: Path) -> None:
-    if not work_dir.exists() or not work_dir.is_dir():
-        return
-
-    shutil.rmtree(work_dir.as_posix())
+    building.cleanup(work_dir)
