@@ -10,6 +10,7 @@ readme = "README.md"
 
 packages = [
     {include = "polylith/pdm_workspace_hooks", from = "../../bases"},
+    {include = "polylith/building",from = "../../components"},
     {include = "polylith/configuration",from = "../../components"},
     {include = "polylith/parsing",from = "../../components"},
     {include = "polylith/pdm",from = "../../components"},
