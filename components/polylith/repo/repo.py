@@ -25,6 +25,9 @@ def load_content(fullpath: Path) -> tomlkit.TOMLDocument:
 def load_root_project_config(path: Path) -> tomlkit.TOMLDocument:
     fullpath = path / default_toml
 
+    if not fullpath.exists():
+        return tomlkit.TOMLDocument()
+
     return load_content(fullpath)
 
 
