@@ -7,34 +7,36 @@ from typer import Exit, Typer
 app = Typer()
 
 
-def get_pyproject(build_dir: Path) -> Path:
+def get_pyproject(build_dir: Path) -> dict:
     pyproject = build_dir / repo.default_toml
 
     if not pyproject.exists():
         raise Exit(code=1)
 
-    return pyproject
-
-
-def get_bricks(pyproject: Path) -> dict:
     data = toml.read_toml_document(pyproject)
+    return data
 
-    return toml.get_project_packages_from_polylith_section(data)
+
+def calculate_root(bricks: dict) -> Union[str, None]:
+    brick_path = next((v for v in bricks.values()), None)
+
+    return str.split(brick_path, "/")[0] if brick_path else None
 
 
-def calculate_destination_dir(pyproject: Path) -> Union[Path, None]:
-    bricks = get_bricks(pyproject)
+def calculate_destination_dir(data: dict) -> Union[Path, None]:
+    bricks = toml.get_project_packages_from_polylith_section(data)
 
     if not bricks:
         return None
 
-    custom_top_ns = toml.get_custom_top_namespace_from_polylith_section(pyproject)
-    top_ns = next((v for v in bricks.values()), None)
+    custom_top_ns = toml.get_custom_top_namespace_from_polylith_section(data)
 
     if custom_top_ns:
         return Path(custom_top_ns)
 
-    return Path(top_ns) if top_ns else None
+    root = calculate_root(bricks)
+
+    return Path(root) if root else None
 
 
 @app.command("setup")
@@ -46,13 +48,13 @@ def setup_command():
     work_dir = building.get_work_dir({})
     build_dir = Path.cwd()
 
-    pyproject = get_pyproject(build_dir)
-    bricks = get_bricks(pyproject)
+    data = get_pyproject(build_dir)
+    bricks = toml.get_project_packages_from_polylith_section(data)
 
     if not bricks:
         return
 
-    custom_top_ns = toml.get_custom_top_namespace_from_polylith_section(pyproject)
+    custom_top_ns = toml.get_custom_top_namespace_from_polylith_section(data)
 
     if not custom_top_ns:
         building.copy_bricks_as_is(bricks, build_dir)
@@ -66,13 +68,13 @@ def teardown_command():
     work_dir = building.get_work_dir({})
     build_dir = Path.cwd()
 
-    pyproject = get_pyproject(build_dir)
-    bricks = get_bricks(pyproject)
+    data = get_pyproject(build_dir)
+    bricks = toml.get_project_packages_from_polylith_section(data)
 
     if not bricks:
         return
 
-    destination_dir = calculate_destination_dir(pyproject)
+    destination_dir = calculate_destination_dir(data)
 
     building.cleanup(work_dir)
     building.cleanup(destination_dir)
