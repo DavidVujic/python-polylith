@@ -7,12 +7,6 @@ from typing import List
 from polylith import parsing
 
 
-def get_work_dir(options: dict) -> Path:
-    work_dir = options.get("work-dir", ".polylith_tmp")
-
-    return Path(work_dir)
-
-
 def copy_bricks_as_is(bricks: dict, build_dir: Path) -> None:
     for source, brick in bricks.items():
         parsing.copy_brick(source, brick, build_dir)
@@ -40,13 +34,10 @@ def copy_and_rewrite_bricks(
 
     options = {"ns": ns, "top_ns": top_ns, "work_dir": work_dir, "build_dir": build_dir}
 
-    matrix = [
-        copy_and_rewrite(source, brick, options) for source, brick in bricks.items()
-    ]
+    res = [copy_and_rewrite(source, brick, options) for source, brick in bricks.items()]
+    flattened: List[str] = reduce(operator.iadd, res, [])
 
-    rewritten: List[str] = reduce(operator.iadd, matrix, [])
-
-    return sorted(rewritten)
+    return sorted(flattened)
 
 
 def cleanup(work_dir: Path) -> None:
