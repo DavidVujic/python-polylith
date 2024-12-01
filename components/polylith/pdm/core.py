@@ -6,9 +6,7 @@ from polylith import building
 def get_work_dir(config: dict) -> Path:
     build_config = config.get("tool", {}).get("pdm", {}).get("build", {})
 
-    work_dir = build_config.get("work-dir", ".polylith_tmp")
-
-    return Path(work_dir)
+    return building.get_work_dir(build_config)
 
 
 def copy_bricks_as_is(bricks: dict, build_dir: Path) -> None:
