@@ -11,6 +11,7 @@ class PolylithBricksHook(BuildHookInterface):
     PLUGIN_NAME = "polylith-bricks"
 
     def initialize(self, version: str, build_data: Dict[str, Any]) -> None:
+        include_key = "force_include_editable" if version == "editable" else "force_include"
         root = self.root
         pyproject = Path(f"{root}/{repo.default_toml}")
 
@@ -25,7 +26,7 @@ class PolylithBricksHook(BuildHookInterface):
         work_dir = core.get_work_dir(self.config)
 
         if not top_ns:
-            build_data["force_include"] = bricks
+            build_data[include_key] = bricks
             return
 
         ns = parsing.parse_brick_namespace_from_path(bricks)
@@ -37,9 +38,7 @@ class PolylithBricksHook(BuildHookInterface):
             for item in rewritten_bricks:
                 print(f"Updated {item} with new top namespace for local imports.")
 
-        include_key = "force_include_editable" if version == "editable" else "force_include"
         key = work_dir.as_posix()
-
         build_data[include_key][key] = top_ns
 
     def finalize(self, *args, **kwargs) -> None:
