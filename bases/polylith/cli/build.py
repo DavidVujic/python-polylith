@@ -2,13 +2,21 @@ from pathlib import Path
 
 import tomlkit
 from polylith import building, repo, toml
+from polylith.cli import options
 from typer import Exit, Typer
+from typing_extensions import Annotated
 
 app = Typer()
 
 
-def get_work_dir() -> Path:
-    return building.get_work_dir({})
+def get_work_dir(directory: str) -> Path:
+    work_dir = building.get_work_dir({})
+
+    return Path(directory) / work_dir
+
+
+def get_build_dir(directory: str) -> Path:
+    return Path(directory) if directory else Path.cwd()
 
 
 def get_project_data(build_dir: Path) -> tomlkit.TOMLDocument:
@@ -21,13 +29,13 @@ def get_project_data(build_dir: Path) -> tomlkit.TOMLDocument:
 
 
 @app.command("setup")
-def setup_command():
+def setup_command(directory: Annotated[str, options.directory] = ""):
     """Prepare a project before building a wheel or a source distribution (sdist).
     Run it before the build command of your Package & Dependency Management tool.
 
     """
-    work_dir = get_work_dir()
-    build_dir = Path.cwd()
+    work_dir = get_work_dir(directory)
+    build_dir = get_build_dir(directory)
 
     data = get_project_data(build_dir)
     bricks = toml.get_project_packages_from_polylith_section(data)
@@ -44,10 +52,10 @@ def setup_command():
 
 
 @app.command("teardown")
-def teardown_command():
+def teardown_command(directory: Annotated[str, options.directory] = ""):
     """Clean up temporary directories. Run it after the build command of your Package & Dependency Management tool."""
-    work_dir = get_work_dir()
-    build_dir = Path.cwd()
+    work_dir = get_work_dir(directory)
+    build_dir = get_build_dir(directory)
 
     data = get_project_data(build_dir)
     bricks = toml.get_project_packages_from_polylith_section(data)
@@ -58,4 +66,6 @@ def teardown_command():
     destination_dir = building.calculate_destination_dir(data)
 
     building.cleanup(work_dir)
-    building.cleanup(destination_dir)
+
+    if destination_dir:
+        building.cleanup(destination_dir)
