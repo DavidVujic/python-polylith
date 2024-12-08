@@ -14,6 +14,7 @@ packages = [
     {include = "polylith/pdm_workspace_hooks",from = "bases"},
     {include = "polylith/alias",from = "components"},
     {include = "polylith/bricks",from = "components"},
+    {include = "polylith/building",from = "components"},
     {include = "polylith/check",from = "components"},
     {include = "polylith/configuration",from = "components"},
     {include = "polylith/commands",from = "components"},

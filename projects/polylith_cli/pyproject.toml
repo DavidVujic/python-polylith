@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "polylith-cli"
-version = "1.23.1"
+version = "1.24.0"
 description = "Python tooling support for the Polylith Architecture"
 authors = ['David Vujic']
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
@@ -12,6 +12,7 @@ packages = [
     {include = "polylith/cli",from = "../../bases"},
     {include = "polylith/alias",from = "../../components"},
     {include = "polylith/bricks",from = "../../components"},
+    {include = "polylith/building",from = "../../components"},
     {include = "polylith/check",from = "../../components"},
     {include = "polylith/commands",from = "../../components"},
     {include = "polylith/configuration",from = "../../components"},
@@ -25,6 +26,7 @@ packages = [
     {include = "polylith/info",from = "../../components"},
     {include = "polylith/interface",from = "../../components"},
     {include = "polylith/libs",from = "../../components"},
+    {include = "polylith/parsing",from = "../../components"},
     {include = "polylith/project",from = "../../components"},
     {include = "polylith/readme",from = "../../components"},
     {include = "polylith/repo",from = "../../components"},

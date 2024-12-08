@@ -17,5 +17,4 @@ def build_initialize(root: Path, config_data: dict, build_dir: Path) -> None:
     if not top_ns:
         core.copy_bricks_as_is(bricks, build_dir)
     else:
-        core.copy_and_rewrite_bricks(bricks, top_ns, work_dir, build_dir)
-        core.cleanup(work_dir)
+        core.copy_and_rewrite(bricks, top_ns, work_dir, build_dir)

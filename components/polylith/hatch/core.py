@@ -1,13 +1,11 @@
 from pathlib import Path
 from typing import Union
 
-from polylith import toml
+from polylith import building, toml
 
 
 def get_work_dir(config: dict) -> Path:
-    work_dir = config.get("work-dir", ".polylith_tmp")
-
-    return Path(work_dir)
+    return building.get_work_dir(config)
 
 
 def get_top_namespace(pyproject: dict, config: dict) -> Union[str, None]:
