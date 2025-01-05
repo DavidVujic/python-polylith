@@ -45,7 +45,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
-poetry = "^1.2"
+poetry = "*"
 tomlkit = "0.*"
 rich = "13.*"
 cleo = "^2.1.0"
