@@ -104,10 +104,19 @@ def get_workspace_enabled_lock_file_data(
     return data if members else {}
 
 
+def pick_package_sub_deps(package: dict) -> list:
+    package_sub_deps = package.get("dependencies", [])
+
+    package_optional_deps_section = package.get("optional-dependencies", {})
+    package_optional_deps: List[dict] = sum(package_optional_deps_section.values(), [])
+
+    return package_sub_deps + package_optional_deps
+
+
 def pick_packages(data: dict, name: str) -> list:
     package = next(p for p in data["package"] if p["name"] == name)
 
-    package_sub_deps = package.get("dependencies", [])
+    package_sub_deps = pick_package_sub_deps(package)
     nested_package_deps = [pick_packages(data, p["name"]) for p in package_sub_deps]
 
     flattened = sum(nested_package_deps, [])
