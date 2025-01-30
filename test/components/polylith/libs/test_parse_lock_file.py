@@ -128,3 +128,36 @@ def test_parse_contents_of_uv_workspaces_aware_lock_file(setup):
     assert non_existing == {}
 
     assert gcp_libs_from_normalized_name == expected_gcp_libs
+
+
+def test_parse_contents_of_uv_workspaces_aware_lock_file_with_optional_dependencies(
+    setup,
+):
+    expected_regular = {
+        "fastapi": "0.106.0",
+        "anyio": "3.7.1",
+        "exceptiongroup": "1.2.2",
+        "idna": "3.7",
+        "sniffio": "1.3.1",
+        "pydantic": "2.8.2",
+        "annotated-types": "0.7.0",
+        "pydantic-core": "2.20.1",
+        "typing-extensions": "4.12.2",
+        "starlette": "0.27.0",
+        "uvicorn": "0.25.0",
+        "click": "8.1.7",
+        "colorama": "0.4.6",
+        "h11": "0.14.0",
+    }
+
+    expected_optionals = {
+        "requests": "2.32.3",
+        "certifi": "2024.12.14",
+        "charset-normalizer": "3.4.1",
+        "urllib3": "2.3.0",
+    }
+    expected = {**expected_regular, **expected_optionals}
+
+    my_fastapi_libs = _extract_workspace_member_libs("my-fastapi-project")
+
+    assert my_fastapi_libs == expected
