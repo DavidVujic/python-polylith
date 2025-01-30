@@ -52,7 +52,7 @@ rich = "13.*"
 cleo = "^2.1.0"
 hatchling = "^1.21.0"
 typer = "0.*"
-pyyaml = "^6.0.2"
+pyyaml = "*"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
