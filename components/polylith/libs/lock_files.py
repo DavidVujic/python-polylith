@@ -42,8 +42,9 @@ def extract_libs_from_toml(path: Path) -> dict:
 
 
 def parse_conda(pkg_description: dict) -> Tuple[str, str]:
-    pkg_name = pkg_description["conda"].split("/")[-1]
-    name, version, _ = pkg_name.split("-")
+    pkg_fullname = pkg_description["conda"].split("/")[-1]
+    pkg_name_version = pkg_fullname.rpartition("-")[0]
+    name, _, version = pkg_name_version.rpartition("-")
 
     return name, version
 
