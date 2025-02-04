@@ -113,13 +113,15 @@ def pick_package_sub_deps(package: dict) -> list:
     return package_sub_deps + package_optional_deps
 
 
-def pick_packages(data: dict, name: str) -> list:
+def pick_packages(data: dict, name: str, picked: list) -> list:
+    if any(True for c in picked if c["name"] == name):
+        return []
+
     package = next(p for p in data["package"] if p["name"] == name)
+    sub_deps = pick_package_sub_deps(package)
+    nested_deps = [pick_packages(data, p["name"], picked + [package]) for p in sub_deps]
 
-    package_sub_deps = pick_package_sub_deps(package)
-    nested_package_deps = [pick_packages(data, p["name"]) for p in package_sub_deps]
-
-    flattened = sum(nested_package_deps, [])
+    flattened = sum(nested_deps, [])
 
     return [package] + flattened if flattened else [package]
 
@@ -140,7 +142,7 @@ def extract_workspace_member_libs(data: dict, project_data: dict) -> dict:
         return {}
 
     try:
-        packages = pick_packages(data, member_name)
+        packages = pick_packages(data, member_name, [])
         extracted = extract_libs_from_packages(packages)
     except KeyError as e:
         raise ValueError(f"Failed parsing lock-file data: {repr(e)}") from e

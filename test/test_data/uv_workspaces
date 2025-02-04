@@ -13,6 +13,7 @@ members = [
     "my-fastapi-project",
     "my-gcp-function-project",
     "python-polylith-example-with-uv",
+    "polylith-cli",
 ]
 
 [[package]]
@@ -160,6 +161,18 @@ name = "markdown-it-py"
 version = "3.0.0"
 dependencies = [
     { name = "mdurl" },
+]
+
+[package.optional-dependencies]
+plugins = [
+    { name = "mdit-py-plugins" },
+]
+
+[[package]]
+name = "mdit-py-plugins"
+version = "0.4.2"
+dependencies = [
+    { name = "markdown-it-py" },
 ]
 
 [[package]]

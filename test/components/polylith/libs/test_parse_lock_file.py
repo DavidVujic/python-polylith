@@ -112,6 +112,19 @@ def test_parse_contents_of_uv_workspaces_aware_lock_file(setup):
     }
 
     expected_consumer_libs = {"confluent-kafka": "2.3.0"}
+    expected_cli_libs_with_recursive_deps = {
+        "rich": "13.8.0",
+        "tomlkit": "0.13.2",
+        "typer": "0.12.5",
+        "markdown-it-py": "3.0.0",
+        "pygments": "2.18.0",
+        "mdurl": "0.1.2",
+        "mdit-py-plugins": "0.4.2",
+        "click": "8.1.7",
+        "colorama": "0.4.6",
+        "shellingham": "1.5.4",
+        "typing-extensions": "4.12.2",
+    }
 
     gcp_libs = _extract_workspace_member_libs("my-gcp-function-project")
     consumer_libs = _extract_workspace_member_libs("consumer-project")
@@ -122,12 +135,16 @@ def test_parse_contents_of_uv_workspaces_aware_lock_file(setup):
         "my_gcp_Function-project"
     )
 
+    cli_libs = _extract_workspace_member_libs("polylith-cli")
+
     assert gcp_libs == expected_gcp_libs
     assert consumer_libs == expected_consumer_libs
     assert aws_lambda_libs == {}
     assert non_existing == {}
 
     assert gcp_libs_from_normalized_name == expected_gcp_libs
+
+    assert cli_libs == expected_cli_libs_with_recursive_deps
 
 
 def test_parse_contents_of_uv_workspaces_aware_lock_file_with_optional_dependencies(
