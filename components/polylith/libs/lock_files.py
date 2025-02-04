@@ -30,7 +30,7 @@ def pick_lock_file(path: Path) -> dict:
 
 
 def extract_libs_from_packages(packages: List[dict]) -> dict:
-    return {p["name"]: p["version"] for p in packages}
+    return {p["name"]: p.get("version", "") for p in packages}
 
 
 def extract_libs_from_toml(path: Path) -> dict:
