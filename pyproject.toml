@@ -60,6 +60,7 @@ isort = "^5.10.1"
 mypy = "^1.8.0"
 flake8 = "^7.0.0"
 pytest = "^7.4.4"
+types-pyyaml = "^6.0.12.20241230"
 
 [tool.poetry.scripts]
 poly = "polylith.cli.core:app"
