@@ -48,6 +48,7 @@ def parse_conda(pkg_description: dict) -> Tuple[str, str]:
 
     return name, version
 
+
 def parse_pypi(pkg_description: dict) -> Tuple[str, str]:
     return pkg_description["name"], pkg_description["version"]
 
