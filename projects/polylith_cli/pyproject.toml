@@ -9,32 +9,33 @@ license = "MIT"
 readme = "README.md"
 
 packages = [
-    {include = "polylith/cli",from = "../../bases"},
-    {include = "polylith/alias",from = "../../components"},
-    {include = "polylith/bricks",from = "../../components"},
-    {include = "polylith/building",from = "../../components"},
-    {include = "polylith/check",from = "../../components"},
-    {include = "polylith/commands",from = "../../components"},
-    {include = "polylith/configuration",from = "../../components"},
-    {include = "polylith/deps",from = "../../components"},
-    {include = "polylith/development",from = "../../components"},
-    {include = "polylith/diff",from = "../../components"},
-    {include = "polylith/dirs",from = "../../components"},
-    {include = "polylith/distributions",from = "../../components"},
-    {include = "polylith/files",from = "../../components"},
-    {include = "polylith/imports",from = "../../components"},
-    {include = "polylith/info",from = "../../components"},
-    {include = "polylith/interface",from = "../../components"},
-    {include = "polylith/libs",from = "../../components"},
-    {include = "polylith/parsing",from = "../../components"},
-    {include = "polylith/project",from = "../../components"},
-    {include = "polylith/readme",from = "../../components"},
-    {include = "polylith/repo",from = "../../components"},
-    {include = "polylith/reporting",from = "../../components"},
-    {include = "polylith/sync",from = "../../components"},
-    {include = "polylith/test",from = "../../components"},
-    {include = "polylith/toml",from = "../../components"},
-    {include = "polylith/workspace",from = "../../components"},
+    { include = "polylith/cli", from = "../../bases" },
+    { include = "polylith/alias", from = "../../components" },
+    { include = "polylith/bricks", from = "../../components" },
+    { include = "polylith/building", from = "../../components" },
+    { include = "polylith/check", from = "../../components" },
+    { include = "polylith/commands", from = "../../components" },
+    { include = "polylith/configuration", from = "../../components" },
+    { include = "polylith/deps", from = "../../components" },
+    { include = "polylith/development", from = "../../components" },
+    { include = "polylith/diff", from = "../../components" },
+    { include = "polylith/dirs", from = "../../components" },
+    { include = "polylith/distributions", from = "../../components" },
+    { include = "polylith/files", from = "../../components" },
+    { include = "polylith/imports", from = "../../components" },
+    { include = "polylith/info", from = "../../components" },
+    { include = "polylith/interface", from = "../../components" },
+    { include = "polylith/libs", from = "../../components" },
+    { include = "polylith/parsing", from = "../../components" },
+    { include = "polylith/project", from = "../../components" },
+    { include = "polylith/readme", from = "../../components" },
+    { include = "polylith/repo", from = "../../components" },
+    { include = "polylith/reporting", from = "../../components" },
+    { include = "polylith/sync", from = "../../components" },
+    { include = "polylith/test", from = "../../components" },
+    { include = "polylith/toml", from = "../../components" },
+    { include = "polylith/workspace", from = "../../components" },
+    { include = "polylith/yaml", from = "../../components" },
 ]
 
 [tool.poetry.dependencies]
@@ -42,6 +43,7 @@ python = "^3.8"
 tomlkit = "0.*"
 rich = "13.*"
 typer = "0.*"
+pyyaml = "*"
 
 [tool.poetry.scripts]
 poly = "polylith_cli.polylith.cli.core:app"

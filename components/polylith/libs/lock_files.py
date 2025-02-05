@@ -1,11 +1,13 @@
 from functools import reduce
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 from polylith.toml import load_toml
+from polylith.yaml import load_yaml
 
 patterns = {
     "pdm.lock": "toml",
+    "pixi.lock": "yaml",
     "poetry.lock": "toml",
     "uv.lock": "toml",
     "requirements.lock": "text",
@@ -37,6 +39,31 @@ def extract_libs_from_toml(path: Path) -> dict:
     data = load_toml(path)
 
     return extract_libs_from_packages(data.get("package", []))
+
+
+def parse_conda(pkg_description: dict) -> Tuple[str, str]:
+    pkg_fullname = pkg_description["conda"].split("/")[-1]
+    pkg_name_version = pkg_fullname.rpartition("-")[0]
+    name, _, version = pkg_name_version.rpartition("-")
+
+    return name, version
+
+
+def parse_pypi(pkg_description: dict) -> Tuple[str, str]:
+    return pkg_description["name"], pkg_description["version"]
+
+
+def extract_libs_from_yaml(path: Path) -> dict:
+    data = load_yaml(path)
+    pkgs = data["packages"]
+
+    conda_pkgs = [parse_conda(p) for p in pkgs if "conda" in p.keys()]
+    conda_d = {name: version for name, version in conda_pkgs}
+
+    pypi_pkgs = [parse_pypi(p) for p in pkgs if "pypi" in p.keys()]
+    pypi_d = {name: version for name, version in pypi_pkgs}
+
+    return {**conda_d, **pypi_d}
 
 
 def parse_name(row: str) -> str:
@@ -73,6 +100,8 @@ def extract_libs(project_data: dict, filename: str, filetype: str) -> dict:
     try:
         if filetype == "toml":
             return extract_libs_from_toml(path)
+        elif filetype == "yaml":
+            return extract_libs_from_yaml(path)
 
         return extract_libs_from_txt(path)
     except (IndexError, KeyError, ValueError) as e:
