@@ -57,9 +57,9 @@ pyyaml = "*"
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
 isort = "^5.10.1"
-mypy = "^1.8.0"
+mypy = "^1.14.0"
 flake8 = "^7.0.0"
-pytest = "^7.4.4"
+pytest = "^8.3.5"
 types-pyyaml = "^6.0.12.20241230"
 
 [tool.poetry.scripts]
