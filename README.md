@@ -73,16 +73,19 @@ and developer tooling setup such as `mypy` and the `venv`.
 There's more examples and production systems in the [documentation](https://davidvujic.github.io/python-polylith-docs/examples/).
 
 ## Videos
+
+### Talks
+- __FOSDEM 2025__ - [Python Monorepos: The Polylith Developer Experience](https://youtu.be/vtJS2O_P0ek?si=9P97dsisqn74V25R) (about 27 minutes with Q&A)
+- __PyCon DE & PyData Berlin 2024__ - [Python Monorepos: The Polylith Developer Experience](https://youtu.be/wGWjt9GJLU4?si=1nOpThiwayc4Crvm) (about 29 minutes)
+- __Python Web Conference 2023__ - Microservices, Monolith, Monorepos: the differences & how nicely Polylith solves the trade offs - [A Fresh Take on Monorepos in Python](https://youtu.be/HU61vjZPPfQ) (about 36 minutes)
+
+### Guides
 - Python with the Polylith Architecture - [an overview](https://youtu.be/3w2ffHZb6gc) (about 15 minutes)
 - Python Poetry Polylith Plugin - [the tooling support & commands](https://youtu.be/AdKpTP9pjHI) (about 13 minutes)
 - The Developer Experience
     - [developing a Dad Joke Service with Polylith](https://youtu.be/oG4OFEer3Tk) (about 27 minutes)
     - [the Polylith Dev Experience using Hatch and Rye](https://youtu.be/BXPQBXuiRwM?si=rQ70ESrY-hRDazBi) (about 7 minutes)
 - The standalone Polylith CLI - [An intro to the polylith-cli - tooling support for Polylith with Python and Hatch](https://youtu.be/K__3Uah3by0)
-
-## Talks
-- __PyCon DE & PyData Berlin 2024__ - [Python Monorepos: The Polylith Developer Experience](https://youtu.be/wGWjt9GJLU4?si=1nOpThiwayc4Crvm) (about 29 minutes)
-- __Python Web Conference 2023__ - Microservices, Monolith, Monorepos: the differences & how nicely Polylith solves the trade offs - [A Fresh Take on Monorepos in Python](https://youtu.be/HU61vjZPPfQ) (about 36 minutes)
 
 ## Podcasts
 - __Talk Python To Me__: [Monorepos in Python](https://talkpython.fm/episodes/show/399/monorepos-in-python)
@@ -97,6 +100,8 @@ There's more examples and production systems in the [documentation](https://davi
 - [Kafka messaging with Python & Polylith](https://davidvujic.blogspot.com/2023/08/kafka-messaging-with-python-and-polylith.html)
 - [Runestone Monorepo and Server Structure](https://medium.com/@thaopham03/runestone-monorepo-and-server-structure-0754dbc52f48) by Minh-Thao Pham
 - [Python Monorepo Visualization](https://davidvujic.blogspot.com/2024/02/python-monorepo-visualization.html)
+- [Simple Kubernetes in Python Monorepos](https://davidvujic.blogspot.com/2024/08/simple-kubernetes-in-python-monorepos.html)
+- [Moving all our Python code to a monorepo: pytendi](https://attendi.nl/moving-all-our-python-code-to-a-monorepo-pytendi/) by Omar Elbaghdadi
 
 ## Repo Visualization
 A visualization of this repo (that itself is a Polylith workspace) using the `poly info` command.
