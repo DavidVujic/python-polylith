@@ -100,6 +100,7 @@ There's more examples and production systems in the [documentation](https://davi
 - [Kafka messaging with Python & Polylith](https://davidvujic.blogspot.com/2023/08/kafka-messaging-with-python-and-polylith.html)
 - [Runestone Monorepo and Server Structure](https://medium.com/@thaopham03/runestone-monorepo-and-server-structure-0754dbc52f48) by Minh-Thao Pham
 - [Python Monorepo Visualization](https://davidvujic.blogspot.com/2024/02/python-monorepo-visualization.html)
+- [Simple Kubernetes in Python Monorepos](https://davidvujic.blogspot.com/2024/08/simple-kubernetes-in-python-monorepos.html)
 
 ## Repo Visualization
 A visualization of this repo (that itself is a Polylith workspace) using the `poly info` command.
