@@ -101,6 +101,7 @@ There's more examples and production systems in the [documentation](https://davi
 - [Runestone Monorepo and Server Structure](https://medium.com/@thaopham03/runestone-monorepo-and-server-structure-0754dbc52f48) by Minh-Thao Pham
 - [Python Monorepo Visualization](https://davidvujic.blogspot.com/2024/02/python-monorepo-visualization.html)
 - [Simple Kubernetes in Python Monorepos](https://davidvujic.blogspot.com/2024/08/simple-kubernetes-in-python-monorepos.html)
+- [Moving all our Python code to a monorepo: pytendi](https://attendi.nl/moving-all-our-python-code-to-a-monorepo-pytendi/) by Omar Elbaghdadi
 
 ## Repo Visualization
 A visualization of this repo (that itself is a Polylith workspace) using the `poly info` command.
