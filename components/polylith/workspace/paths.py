@@ -20,9 +20,29 @@ def collect_paths(root: Path, ns: str, brick: str, packages: Set[str]) -> Set[Pa
     return {Path(root / p) for p in paths}
 
 
+def collect_test_paths(
+    root: Path, ns: str, brick: str, packages: Set[str]
+) -> Set[Path]:
+    structure = configuration.get_tests_structure_from_config(root)
+
+    paths = get_paths(structure, brick, ns, packages)
+
+    return {Path(root / p) for p in paths}
+
+
 def collect_bases_paths(root: Path, ns: str, bases: Set[str]) -> Set[Path]:
     return collect_paths(root, ns, repo.bases_dir, bases)
 
 
+def collect_bases_tests_paths(root: Path, ns: str, bases: Set[str]) -> Set[Path]:
+    return collect_test_paths(root, ns, repo.bases_dir, bases)
+
+
 def collect_components_paths(root: Path, ns: str, components: Set[str]) -> Set[Path]:
     return collect_paths(root, ns, repo.components_dir, components)
+
+
+def collect_components_tests_paths(
+    root: Path, ns: str, components: Set[str]
+) -> Set[Path]:
+    return collect_test_paths(root, ns, repo.components_dir, components)

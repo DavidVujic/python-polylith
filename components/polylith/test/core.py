@@ -2,11 +2,10 @@ from functools import reduce
 from pathlib import Path
 from typing import List, Set
 
-from polylith import check, diff, info
+from polylith import check, diff, info, workspace
 
 
-def get_brick_imports(root: Path, ns: str, tests: Set[str]) -> dict:
-    paths = {Path(t) for t in tests}
+def get_brick_imports(root: Path, ns: str, paths: Set[Path]) -> dict:
     folders = {p if p.is_dir() else p.parent for p in paths}
 
     brick_imports_in_tests = check.collect.extract_bricks(folders, ns)
@@ -25,26 +24,36 @@ def get_projects_affected_by_changes(
     )
 
 
-def _collect_bricks(acc: Set[str], project_data: dict) -> Set[str]:
-    bases = project_data.get("bases", [])
-    components = project_data.get("components", [])
+def append_bricks(acc: Set[str], brick_type: str, project_data: dict) -> Set[str]:
+    bricks = project_data.get(brick_type, [])
 
-    return acc.union(bases, components)
+    return acc.union(bricks)
 
 
-def get_bricks(projects_data: List[dict]) -> Set[str]:
-    bricks: Set[str] = reduce(_collect_bricks, projects_data, set())
+def collect_bases(acc: Set[str], project_data: dict) -> Set[str]:
+    return append_bricks(acc, "bases", project_data)
 
-    return bricks
+
+def collect_components(acc: Set[str], project_data: dict) -> Set[str]:
+    return append_bricks(acc, "components", project_data)
 
 
 if False:
-    tests = {"test/components/polylith/pdm"}
     root = Path.cwd()
     ns = "polylith"
-    brick_imports = get_brick_imports(root, ns, tests)
 
     projects_data = [p for p in info.get_projects_data(root, ns) if info.is_project(p)]
-    bricks = get_bricks(projects_data)
+
+    bases: Set[str] = reduce(collect_bases, projects_data, set())
+    components: Set[str] = reduce(collect_components, projects_data, set())
+
+    # TODO: this is very strict, assuming all tests are structured as the "default"
+    bases_tests = workspace.paths.collect_bases_tests_paths(root, ns, bases)
+    components_tests = workspace.paths.collect_components_tests_paths(root, ns, components)
+    tests = bases_tests.union(components_tests)
+
+    # TODO: compare tests with changed tests
+
+    brick_imports = get_brick_imports(root, ns, tests)
 
     get_projects_affected_by_changes(projects_data, brick_imports)
