@@ -1,3 +1,4 @@
+from functools import reduce
 from pathlib import Path
 from typing import List, Set
 
@@ -24,6 +25,19 @@ def get_projects_affected_by_changes(
     )
 
 
+def _collect_bricks(acc: Set[str], project_data: dict) -> Set[str]:
+    bases = project_data.get("bases", [])
+    components = project_data.get("components", [])
+
+    return acc.union(bases, components)
+
+
+def get_bricks(projects_data: List[dict]) -> Set[str]:
+    bricks: Set[str] = reduce(_collect_bricks, projects_data, set())
+
+    return bricks
+
+
 if False:
     tests = {"test/components/polylith/pdm"}
     root = Path.cwd()
@@ -31,5 +45,6 @@ if False:
     brick_imports = get_brick_imports(root, ns, tests)
 
     projects_data = [p for p in info.get_projects_data(root, ns) if info.is_project(p)]
+    bricks = get_bricks(projects_data)
 
     get_projects_affected_by_changes(projects_data, brick_imports)
