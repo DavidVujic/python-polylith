@@ -4,14 +4,6 @@ from typing import List, Set
 from polylith import check, configuration, diff, info
 
 
-def get_brick_imports(root: Path, ns: str, paths: Set[Path]) -> dict:
-    folders = {p if p.is_dir() else p.parent for p in paths}
-
-    brick_imports_in_tests = check.collect.extract_bricks(folders, ns)
-
-    return check.collect.with_unknown_components(root, ns, brick_imports_in_tests)
-
-
 def get_projects_affected_by_changes(
     projects_data: List[dict], brick_imports: dict
 ) -> Set[str]:
@@ -31,10 +23,9 @@ def is_test(root: Path, ns: str, filepath: Path, theme: str) -> bool:
     return f"/test/{ns}" in filepath.as_posix()
 
 
-if False:
+def comment():
     root = Path.cwd()
-    ns = "polylith"
-
+    ns = configuration.get_namespace_from_config(root)
     theme = configuration.get_theme_from_config(root)
 
     projects_data = [p for p in info.get_projects_data(root, ns) if info.is_project(p)]
@@ -44,6 +35,6 @@ if False:
 
     matched = {f for f in files if is_test(root, ns, f, theme)}
 
-    brick_imports = get_brick_imports(root, ns, matched)
+    brick_imports = check.collect.extract_bricks(matched, ns)
 
     get_projects_affected_by_changes(projects_data, brick_imports)
