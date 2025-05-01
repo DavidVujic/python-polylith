@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from polylith import commands, workspace
+from polylith import commands
 
 
 def test_calculate_dependent_bricks(monkeypatch):
