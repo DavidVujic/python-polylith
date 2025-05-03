@@ -15,7 +15,8 @@ def print_report_summary(
     number_of_components = len(components)
     number_of_bases = len(bases)
 
-    console.print(Padding(f"[data]Test diff: based on {tag}[/]", (1, 0, 1, 0)))
+    console.print(Padding("[data]Projects and bricks affected by changes in tests[/]", (1, 0, 0, 0)))
+    console.print(Padding(f"[data]Test diff based on {tag}[/]", (0, 0, 1, 0)))
 
     console.print(f"[proj]Affected projects[/]: [data]{number_of_projects}[/]")
     console.print(f"[comp]Affected components[/]: [data]{number_of_components}[/]")
