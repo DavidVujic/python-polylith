@@ -39,10 +39,9 @@ class TestDiffCommand(Command):
 
         tag = diff.collect.get_latest_tag(root, since) or since
 
-        if not tag:
+        if tag:
+            commands.test.run(root, ns, tag, options)
+        else:
             self.line("No matching tags or commits found in repository.")
-            return 0
-
-        commands.test.run(root, ns, tag, options)
 
         return 0
