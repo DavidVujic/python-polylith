@@ -46,4 +46,8 @@ def run(tag_name: Union[str, None], options: dict):
 
     projects_data = [p for p in info.get_projects_data(root, ns) if info.is_project(p)]
 
-    diff.collect.get_projects_affected_by_changes(projects_data, [], bases, components)
+    affected_projects = diff.collect.get_projects_affected_by_changes(projects_data, [], bases, components)
+
+    test.report.print_projects_affected_by_changes(affected_projects, False)
+    test.report.print_diff_summary(tag, bases, components)
+    test.report.print_detected_changes_affecting_bricks(bases, components, options)
