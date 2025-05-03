@@ -8,9 +8,9 @@ def get_imported_bricks_in_tests(
     root: Path, ns: str, tag_name: Union[str, None], theme: str
 ) -> Set[str]:
     files = test.get_changed_files(root, tag_name)
-    imports = test.get_brick_imports_in_tests(root, ns, theme, files)
+    brick_imports = test.get_brick_imports_in_tests(root, ns, theme, files)
 
-    return set().union(*imports.values())
+    return set().union(*brick_imports.values())
 
 
 def extract_brick_names(bricks_data: List[dict], imported_bricks: Set[str]) -> Set[str]:
