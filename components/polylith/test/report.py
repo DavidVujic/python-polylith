@@ -63,6 +63,9 @@ def print_test_report(
     b = sorted(list(bases))
     c = sorted(list(components))
 
+    if not b and not c:
+        return
+
     if short:
         info.print_compressed_view_for_bricks_in_projects(projects_data, b, c)
     else:
