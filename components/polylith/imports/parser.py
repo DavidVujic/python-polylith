@@ -44,8 +44,12 @@ def extract_imports(path: Path) -> List[str]:
     return [i for node in ast.walk(tree) for i in parse_imports(node) if i is not None]
 
 
+def is_python_file(path: Path) -> bool:
+    return path.is_file() and path.suffix == ".py"
+
+
 def list_imports(path: Path) -> Set[str]:
-    py_modules = path.rglob("*.py")
+    py_modules = [path] if is_python_file(path) else path.rglob("*.py")
 
     extracted = (extract_imports(m) for m in py_modules)
     flattened = (i for imports in extracted for i in imports)

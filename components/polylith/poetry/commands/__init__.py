@@ -8,6 +8,7 @@ from polylith.poetry.commands.diff import DiffCommand
 from polylith.poetry.commands.info import InfoCommand
 from polylith.poetry.commands.libs import LibsCommand
 from polylith.poetry.commands.sync import SyncCommand
+from polylith.poetry.commands.test import TestDiffCommand
 
 __all__ = [
     "CheckCommand",
@@ -20,4 +21,5 @@ __all__ = [
     "InfoCommand",
     "LibsCommand",
     "SyncCommand",
+    "TestDiffCommand",
 ]
