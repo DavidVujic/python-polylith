@@ -51,3 +51,17 @@ def run(tag_name: Union[str, None], options: dict):
     test.report.print_projects_affected_by_changes(affected_projects, False)
     test.report.print_diff_summary(tag, bases, components)
     test.report.print_detected_changes_affecting_bricks(bases, components, options)
+
+
+"""
+poly test report
+
+poly test report --bricks
+poly test report --projects
+
+
+poly test report --bricks --query
+poly test report --projects --query
+
+
+"""
