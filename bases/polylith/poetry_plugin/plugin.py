@@ -11,6 +11,7 @@ from polylith.poetry.commands import (
     InfoCommand,
     LibsCommand,
     SyncCommand,
+    TestDiffCommand,
 )
 
 commands = [
@@ -24,6 +25,7 @@ commands = [
     InfoCommand,
     LibsCommand,
     SyncCommand,
+    TestDiffCommand,
 ]
 
 
