@@ -7,11 +7,11 @@ from rich.padding import Padding
 
 
 def print_report_summary(
-    affected_projects: Set[str], bases: Set[str], components: Set[str], tag: str
+    projects_data: List[dict], bases: Set[str], components: Set[str], tag: str
 ) -> None:
     console = Console(theme=theme.poly_theme)
 
-    number_of_projects = len(affected_projects)
+    number_of_projects = len(projects_data)
     number_of_components = len(components)
     number_of_bases = len(bases)
 
@@ -24,7 +24,6 @@ def print_report_summary(
 
 def print_detected_changes(changes: List[str], options: dict):
     short = options.get("short", False)
-    query = options.get("query", False)
 
     if not changes:
         return
@@ -35,16 +34,14 @@ def print_detected_changes(changes: List[str], options: dict):
         console.out(",".join(changes))
         return
 
-    if query:
-        console.out(" or ".join(changes))
-        return
-
     for item in changes:
         console.print(f"[data]:gear: Changes affecting [/][data]{item}[/]")
 
 
-def print_projects_affected_by_changes(projects: Set[str], options: dict) -> None:
-    sorted_projects = sorted(list(projects))
+def print_projects_affected_by_changes(
+    projects_data: List[dict], options: dict
+) -> None:
+    sorted_projects = [p["path"].name for p in projects_data]
 
     print_detected_changes(sorted_projects, options)
 
