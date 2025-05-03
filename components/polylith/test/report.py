@@ -1,39 +1,28 @@
 from typing import List, Set
 
-from polylith import diff
+from polylith import info
 from polylith.reporting import theme
 from rich.console import Console
 from rich.padding import Padding
 
 
-def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
-    diff.report.print_projects_affected_by_changes(projects, short)
-
-
-def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:
+def print_report_summary(
+    affected_projects: Set[str], bases: Set[str], components: Set[str], tag: str
+) -> None:
     console = Console(theme=theme.poly_theme)
 
-    console.print(Padding(f"[data]Diff: based on {tag}[/]", (1, 0, 1, 0)))
+    number_of_projects = len(affected_projects)
+    number_of_components = len(components)
+    number_of_bases = len(bases)
 
-    if not bases and not components:
-        console.print("[data]No changes affecting bricks found.[/]")
-        return
+    console.print(Padding(f"[data]Test diff: based on {tag}[/]", (1, 0, 1, 0)))
 
-    if components:
-        console.print(
-            f"[comp]Components in changed tests[/]: [data]{len(components)}[/]"
-        )
-
-    if bases:
-        console.print(f"[base]Bases in changed tests[/]: [data]{len(bases)}[/]")
+    console.print(f"[proj]Affected projects[/]: [data]{number_of_projects}[/]")
+    console.print(f"[comp]Affected components[/]: [data]{number_of_components}[/]")
+    console.print(f"[base]Affected bases[/]: [data]{number_of_bases}[/]")
 
 
-def print_detected_changes_affecting_bricks(
-    bases: Set[str], components: Set[str], options: dict
-) -> None:
-    bricks = bases.union(components)
-    changes = sorted(list(bricks))
-
+def print_detected_changes(changes: List[str], options: dict):
     short = options.get("short", False)
     query = options.get("query", False)
 
@@ -50,5 +39,34 @@ def print_detected_changes_affecting_bricks(
         console.out(" or ".join(changes))
         return
 
-    for brick in changes:
-        console.print(f"[data]:gear: Changes in test using: [/][data]{brick}[/]")
+    for item in changes:
+        console.print(f"[data]:gear: Changes affecting [/][data]{item}[/]")
+
+
+def print_projects_affected_by_changes(projects: Set[str], options: dict) -> None:
+    sorted_projects = sorted(list(projects))
+
+    print_detected_changes(sorted_projects, options)
+
+
+def print_detected_changes_affecting_bricks(
+    bases: Set[str], components: Set[str], options: dict
+) -> None:
+    bricks = bases.union(components)
+    changes = sorted(list(bricks))
+
+    print_detected_changes(changes, options)
+
+
+def print_test_report(
+    projects_data: List[dict], bases: Set[str], components: Set[str], options: dict
+) -> None:
+    short = options.get("short", False)
+
+    b = sorted(list(bases))
+    c = sorted(list(components))
+
+    if short:
+        info.print_compressed_view_for_bricks_in_projects(projects_data, b, c)
+    else:
+        info.print_bricks_in_projects(projects_data, b, c)
