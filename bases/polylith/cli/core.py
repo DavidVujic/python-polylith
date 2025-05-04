@@ -6,7 +6,7 @@ from polylith.cli import build, create, options, test
 from typer import Exit, Option, Typer
 from typing_extensions import Annotated
 
-app = Typer()
+app = Typer(no_args_is_help=True)
 
 app.add_typer(
     create.app,
