@@ -12,6 +12,7 @@ app.add_typer(
     create.app,
     name="create",
     help="Commands for creating a workspace, bases, components and projects.",
+    no_args_is_help=True,
 )
 
 
@@ -19,12 +20,14 @@ app.add_typer(
     build.app,
     name="build",
     help="For Package & Dependency Management tools without support for plugins or build hooks.",
+    no_args_is_help=True,
 )
 
 app.add_typer(
     test.app,
     name="test",
     help="Commands for tests.",
+    no_args_is_help=True,
 )
 
 
