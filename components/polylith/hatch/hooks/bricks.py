@@ -1,6 +1,6 @@
 import shutil
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Set
 
 from hatchling.builders.hooks.plugin.interface import BuildHookInterface
 from polylith import parsing, repo, toml
@@ -43,6 +43,21 @@ def collect_configured_exclude_patterns(data: dict, target_name: str) -> set:
     return set(exclude)
 
 
+def copy_bricks(bricks: dict, work_dir: Path, exclude_patterns: Set[str]) -> List[Path]:
+    return [
+        parsing.copy_brick(source, brick, work_dir, exclude_patterns)
+        for source, brick in bricks.items()
+    ]
+
+
+def rewrite_modules(paths: List[Path], ns: str, top_ns: str) -> None:
+    for path in paths:
+        rewritten_bricks = parsing.rewrite_modules(path, ns, top_ns)
+
+        for item in rewritten_bricks:
+            print(f"Updated {item} with new top namespace for local imports.")
+
+
 class PolylithBricksHook(BuildHookInterface):
     PLUGIN_NAME = "polylith-bricks"
 
@@ -58,24 +73,24 @@ class PolylithBricksHook(BuildHookInterface):
         if not bricks or not found_bricks:
             return
 
+        ns = parsing.parse_brick_namespace_from_path(bricks)
         top_ns = core.get_top_namespace(data, self.config)
         work_dir = core.get_work_dir(self.config)
+        exclude_patterns = collect_configured_exclude_patterns(data, self.target_name)
 
-        if not top_ns:
+        if not top_ns and not exclude_patterns:
             build_data[include_key] = bricks
             return
 
-        ns = parsing.parse_brick_namespace_from_path(bricks)
-        exclude_patterns = collect_configured_exclude_patterns(data, self.target_name)
-
-        for source, brick in bricks.items():
-            path = parsing.copy_brick(source, brick, work_dir, exclude_patterns)
-            rewritten_bricks = parsing.rewrite_modules(path, ns, top_ns)
-
-            for item in rewritten_bricks:
-                print(f"Updated {item} with new top namespace for local imports.")
-
         key = work_dir.as_posix()
+        paths = copy_bricks(bricks, work_dir, exclude_patterns)
+
+        if not top_ns:
+            build_data[include_key] = {f"{key}/{ns}": ns}
+            return
+
+        rewrite_modules(paths, ns, top_ns)
+
         build_data[include_key][key] = top_ns
 
     def finalize(self, *args, **kwargs) -> None:

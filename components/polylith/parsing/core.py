@@ -1,6 +1,7 @@
+import fnmatch
 import shutil
 from pathlib import Path
-from typing import Union
+from typing import List, Set, Union
 
 default_patterns = {
     "*.pyc",
@@ -12,13 +13,47 @@ default_patterns = {
     ".pytest_cache",
     "node_modules",
     ".git",
+    ".pixi",
 }
 
 
-def copy_tree(source: str, destination: str, patterns: set) -> Path:
-    ignore = shutil.ignore_patterns(*patterns)
+def is_match(root: Path, pattern: str, name: str, current: Path) -> bool:
+    path_name = (current / name).relative_to(root).as_posix()
 
-    res = shutil.copytree(source, destination, ignore=ignore, dirs_exist_ok=True)
+    return any(fnmatch.fnmatch(n, pattern) for n in [path_name, name])
+
+
+def any_match(root: Path, patterns: set, name: str, current: Path) -> bool:
+    return any(is_match(root, pattern, name, current) for pattern in patterns)
+
+
+def ignore_paths(root: Path, patterns: Set[str]):
+    def fn(current_path: str, names: List[str]):
+        current = Path(current_path).resolve()
+
+        return {name for name in names if any_match(root, patterns, name, current)}
+
+    return fn
+
+
+def calculate_root(current_path: str) -> Path:
+    relative = Path(current_path)
+
+    parts = [p for p in relative.parts if p != ".."]
+    relative_path = "/".join(parts)
+
+    root = relative.resolve().as_posix().replace(relative_path, "")
+
+    return Path(root)
+
+
+def copy_tree(source: str, destination: str, patterns: Set[str]) -> Path:
+    root = calculate_root(source)
+
+    is_paths = any("/" in p for p in patterns)
+    fn = ignore_paths(root, patterns) if is_paths else shutil.ignore_patterns(*patterns)
+
+    res = shutil.copytree(source, destination, ignore=fn, dirs_exist_ok=True)
 
     return Path(res)
 
