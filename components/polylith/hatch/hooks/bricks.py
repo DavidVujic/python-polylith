@@ -58,24 +58,31 @@ class PolylithBricksHook(BuildHookInterface):
         if not bricks or not found_bricks:
             return
 
+        ns = parsing.parse_brick_namespace_from_path(bricks)
         top_ns = core.get_top_namespace(data, self.config)
         work_dir = core.get_work_dir(self.config)
+        exclude_patterns = collect_configured_exclude_patterns(data, self.target_name)
 
-        if not top_ns:
+        if not top_ns and not exclude_patterns:
             build_data[include_key] = bricks
             return
 
-        ns = parsing.parse_brick_namespace_from_path(bricks)
-        exclude_patterns = collect_configured_exclude_patterns(data, self.target_name)
+        key = work_dir.as_posix()
+        paths = [
+            parsing.copy_brick(source, brick, work_dir, exclude_patterns)
+            for source, brick in bricks.items()
+        ]
 
-        for source, brick in bricks.items():
-            path = parsing.copy_brick(source, brick, work_dir, exclude_patterns)
+        if not top_ns:
+            build_data[include_key] = {f"{key}/{ns}": ns}
+            return
+
+        for path in paths:
             rewritten_bricks = parsing.rewrite_modules(path, ns, top_ns)
 
             for item in rewritten_bricks:
                 print(f"Updated {item} with new top namespace for local imports.")
 
-        key = work_dir.as_posix()
         build_data[include_key][key] = top_ns
 
     def finalize(self, *args, **kwargs) -> None:
