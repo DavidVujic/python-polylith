@@ -3,6 +3,8 @@ import shutil
 from pathlib import Path
 from typing import List, Set, Union
 
+from polylith import repo
+
 default_patterns = {
     "*.pyc",
     "__pycache__",
@@ -27,7 +29,9 @@ def any_match(root: Path, patterns: set, name: str, current: Path) -> bool:
     return any(is_match(root, pattern, name, current) for pattern in patterns)
 
 
-def ignore_paths(root: Path, patterns: Set[str]):
+def ignore_paths(patterns: Set[str]):
+    root = repo.get_workspace_root(Path.cwd())
+
     def fn(current_path: str, names: List[str]):
         current = Path(current_path).resolve()
 
@@ -36,22 +40,9 @@ def ignore_paths(root: Path, patterns: Set[str]):
     return fn
 
 
-def calculate_root(current_path: str) -> Path:
-    relative = Path(current_path)
-
-    parts = [p for p in relative.parts if p != ".."]
-    relative_path = "/".join(parts)
-
-    root = relative.resolve().as_posix().replace(relative_path, "")
-
-    return Path(root)
-
-
 def copy_tree(source: str, destination: str, patterns: Set[str]) -> Path:
-    root = calculate_root(source)
-
     is_paths = any("/" in p for p in patterns)
-    fn = ignore_paths(root, patterns) if is_paths else shutil.ignore_patterns(*patterns)
+    fn = ignore_paths(patterns) if is_paths else shutil.ignore_patterns(*patterns)
 
     res = shutil.copytree(source, destination, ignore=fn, dirs_exist_ok=True)
 
