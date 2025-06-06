@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hatch-polylith-bricks"
-version = "1.4.0"
+version = "1.5.0"
 description = "Hatch build hook plugin for Polylith"
 authors = ['David Vujic']
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
