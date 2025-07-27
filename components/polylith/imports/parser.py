@@ -30,7 +30,6 @@ def parse_imports(node: ast.AST) -> List[str]:
     return []
 
 
-@lru_cache(maxsize=None)
 def parse_module(path: Path) -> ast.AST:
     with open(path.as_posix(), "r", encoding="utf-8", errors="ignore") as f:
         tree = ast.parse(f.read(), path.name)
@@ -48,6 +47,7 @@ def is_python_file(path: Path) -> bool:
     return path.is_file() and path.suffix == ".py"
 
 
+@lru_cache(maxsize=None)
 def list_imports(path: Path) -> Set[str]:
     py_modules = [path] if is_python_file(path) else path.rglob("*.py")
 
