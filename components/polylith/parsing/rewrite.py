@@ -13,6 +13,9 @@ def mutate_import(node: ast.Import, ns: str, top_ns: str) -> bool:
 
     for alias in node.names:
         if alias.name == ns:
+            if alias.asname is None:
+                alias.asname = alias.name
+
             alias.name = create_namespace_path(top_ns, alias.name)
             did_mutate = True
 
