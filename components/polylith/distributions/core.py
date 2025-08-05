@@ -25,9 +25,13 @@ def map_sub_packages(acc, dist) -> dict:
     return {**acc, **dist_subpackages(dist)}
 
 
-def parsed_namespaces_from_files(dist) -> List[str]:
-    name = dist.metadata["name"]
-    files = dist.files or []
+_cached_dist_files = {}
+
+
+def parsed_namespaces_from_files(dist, name: str) -> List[str]:
+    if name not in _cached_dist_files:
+        files = dist.files or []
+        _cached_dist_files[name] = [f for f in files if f.suffix == ".py"]
 
     normalized_name = str.replace(name, "-", "_")
     to_ignore = {
@@ -38,7 +42,7 @@ def parsed_namespaces_from_files(dist) -> List[str]:
         "..",
     }
 
-    filtered = [f for f in files if f.suffix == ".py"]
+    filtered = _cached_dist_files[name]
     top_folders = {f.parts[0] for f in filtered if len(f.parts) > 1}
     namespaces = {t for t in top_folders if t not in to_ignore}
 
@@ -49,17 +53,19 @@ def parsed_top_level_namespace(namespaces: List[str]) -> List[str]:
     return [str.replace(ns, "/", ".") for ns in namespaces]
 
 
-def top_level_packages(dist) -> List[str]:
+def top_level_packages(dist, name: str) -> List[str]:
     top_level = dist.read_text("top_level.txt")
 
     namespaces = str.split(top_level or "")
 
-    return parsed_top_level_namespace(namespaces) or parsed_namespaces_from_files(dist)
+    return parsed_top_level_namespace(namespaces) or parsed_namespaces_from_files(
+        dist, name
+    )
 
 
 def mapped_packages(dist) -> dict:
-    packages = top_level_packages(dist)
     name = dist.metadata["name"]
+    packages = top_level_packages(dist, name)
 
     return {name: packages} if packages else {}
 
