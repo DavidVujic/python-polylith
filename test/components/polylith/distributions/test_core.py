@@ -21,6 +21,12 @@ class FakeDist:
         return self.read_text_data
 
 
+@pytest.fixture
+def setup():
+    distributions.caching.clear()
+    distributions.core.package_distributions_from_importlib.cache_clear()
+
+
 def test_distribution_packages():
     dists = list(importlib.metadata.distributions())
 
@@ -61,7 +67,7 @@ def test_distribution_packages_for_missing_metadata_is_handled():
     assert res == {}
 
 
-def test_distribution_packages_with_top_level_ns_information_in_files():
+def test_distribution_packages_with_top_level_ns_information_in_files(setup):
     files = [
         importlib.metadata.PackagePath("some_module.py"),
         importlib.metadata.PackagePath("hello/world.py"),
@@ -104,7 +110,7 @@ def test_distribution_sub_packages():
 
 
 @pytest.mark.skipif(sys.version_info < (3, 10), reason="requires python3.10 or higher")
-def test_package_distributions_returning_top_namespace(monkeypatch):
+def test_package_distributions_returning_top_namespace(setup, monkeypatch):
     fake_dists = {
         "something": ["something-subnamespace"],
         "opentelemetry": ["opentelemetry-instrumentation-fastapi"],

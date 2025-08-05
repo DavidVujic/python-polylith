@@ -1,7 +1,10 @@
 import importlib.metadata
+import pathlib
 import re
 from functools import lru_cache, reduce
 from typing import Dict, List
+
+from polylith.distributions import caching
 
 SUB_DEP_SEPARATORS = r"[\s!=;><\^~]"
 
@@ -25,13 +28,11 @@ def map_sub_packages(acc, dist) -> dict:
     return {**acc, **dist_subpackages(dist)}
 
 
-_cached_dist_files = {}
-
-
 def parsed_namespaces_from_files(dist, name: str) -> List[str]:
-    if name not in _cached_dist_files:
+    if not caching.exists(name):
         files = dist.files or []
-        _cached_dist_files[name] = [f for f in files if f.suffix == ".py"]
+        python_files = [f for f in files if f.suffix == ".py"]
+        caching.add(name, python_files)
 
     normalized_name = str.replace(name, "-", "_")
     to_ignore = {
@@ -42,7 +43,7 @@ def parsed_namespaces_from_files(dist, name: str) -> List[str]:
         "..",
     }
 
-    filtered = _cached_dist_files[name]
+    filtered: List[pathlib.PurePosixPath] = caching.get(name)
     top_folders = {f.parts[0] for f in filtered if len(f.parts) > 1}
     namespaces = {t for t in top_folders if t not in to_ignore}
 
@@ -90,7 +91,7 @@ def get_distributions() -> list:
 
 
 @lru_cache
-def _get_package_dists() -> dict:
+def package_distributions_from_importlib() -> dict:
     # added in Python 3.10
     fn = getattr(importlib.metadata, "packages_distributions", None)
 
@@ -107,7 +108,7 @@ def get_packages_distributions(project_dependencies: set) -> set:
     Note: available for Python >= 3.10
     """
 
-    dists = _get_package_dists()
+    dists = package_distributions_from_importlib()
 
     common = {k for k, v in dists.items() if project_dependencies.intersection(set(v))}
 
