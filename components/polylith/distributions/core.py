@@ -1,7 +1,10 @@
 import importlib.metadata
+import pathlib
 import re
 from functools import lru_cache, reduce
 from typing import Dict, List
+
+from polylith.distributions import caching
 
 SUB_DEP_SEPARATORS = r"[\s!=;><\^~]"
 
@@ -25,9 +28,11 @@ def map_sub_packages(acc, dist) -> dict:
     return {**acc, **dist_subpackages(dist)}
 
 
-def parsed_namespaces_from_files(dist) -> List[str]:
-    name = dist.metadata["name"]
-    files = dist.files or []
+def parsed_namespaces_from_files(dist, name: str) -> List[str]:
+    if not caching.exists(name):
+        files = dist.files or []
+        python_files = [f for f in files if f.suffix == ".py"]
+        caching.add(name, python_files)
 
     normalized_name = str.replace(name, "-", "_")
     to_ignore = {
@@ -38,7 +43,7 @@ def parsed_namespaces_from_files(dist) -> List[str]:
         "..",
     }
 
-    filtered = [f for f in files if f.suffix == ".py"]
+    filtered: List[pathlib.PurePosixPath] = caching.get(name)
     top_folders = {f.parts[0] for f in filtered if len(f.parts) > 1}
     namespaces = {t for t in top_folders if t not in to_ignore}
 
@@ -49,17 +54,19 @@ def parsed_top_level_namespace(namespaces: List[str]) -> List[str]:
     return [str.replace(ns, "/", ".") for ns in namespaces]
 
 
-def top_level_packages(dist) -> List[str]:
+def top_level_packages(dist, name: str) -> List[str]:
     top_level = dist.read_text("top_level.txt")
 
     namespaces = str.split(top_level or "")
 
-    return parsed_top_level_namespace(namespaces) or parsed_namespaces_from_files(dist)
+    return parsed_top_level_namespace(namespaces) or parsed_namespaces_from_files(
+        dist, name
+    )
 
 
 def mapped_packages(dist) -> dict:
-    packages = top_level_packages(dist)
     name = dist.metadata["name"]
+    packages = top_level_packages(dist, name)
 
     return {name: packages} if packages else {}
 
@@ -83,6 +90,14 @@ def get_distributions() -> list:
     return list(importlib.metadata.distributions())
 
 
+@lru_cache
+def package_distributions_from_importlib() -> dict:
+    # added in Python 3.10
+    fn = getattr(importlib.metadata, "packages_distributions", None)
+
+    return fn() if fn else {}
+
+
 def get_packages_distributions(project_dependencies: set) -> set:
     """Return the mapped top namespace from an import
 
@@ -93,10 +108,7 @@ def get_packages_distributions(project_dependencies: set) -> set:
     Note: available for Python >= 3.10
     """
 
-    # added in Python 3.10
-    fn = getattr(importlib.metadata, "packages_distributions", None)
-
-    dists = fn() if fn else {}
+    dists = package_distributions_from_importlib()
 
     common = {k for k, v in dists.items() if project_dependencies.intersection(set(v))}
 
