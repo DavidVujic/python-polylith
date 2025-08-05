@@ -83,6 +83,14 @@ def get_distributions() -> list:
     return list(importlib.metadata.distributions())
 
 
+@lru_cache
+def _get_package_dists() -> dict:
+    # added in Python 3.10
+    fn = getattr(importlib.metadata, "packages_distributions", None)
+
+    return fn() if fn else {}
+
+
 def get_packages_distributions(project_dependencies: set) -> set:
     """Return the mapped top namespace from an import
 
@@ -93,10 +101,7 @@ def get_packages_distributions(project_dependencies: set) -> set:
     Note: available for Python >= 3.10
     """
 
-    # added in Python 3.10
-    fn = getattr(importlib.metadata, "packages_distributions", None)
-
-    dists = fn() if fn else {}
+    dists = _get_package_dists()
 
     common = {k for k, v in dists.items() if project_dependencies.intersection(set(v))}
 
