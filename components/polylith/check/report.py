@@ -42,7 +42,19 @@ def print_missing_deps(diff: Set[str], project_name: str) -> None:
 
     missing = ", ".join(sorted(diff))
 
-    console.print(f":thinking_face: Cannot locate {missing} in {project_name}")
+    console.print(f":thinking_face: Cannot locate [data]{missing}[/] in [proj]{project_name}[/]")
+
+
+def print_unused_bricks(bricks: Set[str], project_name: str) -> None:
+    if not bricks:
+        return
+
+    console = Console(theme=theme.poly_theme)
+
+    unused = ", ".join(sorted(bricks))
+    verb = "Are" if len(bricks) > 1 else "Is"
+
+    console.print(f":mag_right: {verb} [comp]{unused}[/] needed in [proj]{project_name}[/]?")
 
 
 def collect_all_imports(root: Path, ns: str, project_data: dict) -> dict:
@@ -85,7 +97,7 @@ def create_report(
         third_party_imports, third_party_libs, is_strict
     )
 
-    unused_bricks = collect.unused_bricks(brick_imports, bases, components)
+    unused_bricks = collect.find_unused_bricks(brick_imports, bases, components)
 
     return {
         "brick_imports": brick_imports,

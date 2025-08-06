@@ -60,7 +60,7 @@ def is_used(brick: str, imported_bricks: dict) -> bool:
     return any(k for k, v in imported_bricks.items() if k != brick and brick in v)
 
 
-def unused_bricks(
+def find_unused_bricks(
     brick_imports: dict, bases: Set[str], components: Set[str]
 ) -> Set[str]:
     all_brick_imports = {**brick_imports["bases"], **brick_imports["components"]}
