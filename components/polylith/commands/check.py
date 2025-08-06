@@ -105,6 +105,8 @@ def run_each(
     if not is_quiet:
         check.report.print_missing_deps(details["brick_diff"], name)
         check.report.print_missing_deps(details["libs_diff"], name)
+
+    if is_strict and not is_quiet:
         check.report.print_unused_bricks(details["unused_bricks"], name)
 
     return res, details
