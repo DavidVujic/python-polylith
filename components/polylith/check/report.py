@@ -85,9 +85,12 @@ def create_report(
         third_party_imports, third_party_libs, is_strict
     )
 
+    unused_bricks = collect.unused_bricks(brick_imports, bases, components)
+
     return {
         "brick_imports": brick_imports,
         "third_party_imports": third_party_imports,
         "brick_diff": brick_diff,
         "libs_diff": libs_diff,
+        "unused_bricks": unused_bricks,
     }
