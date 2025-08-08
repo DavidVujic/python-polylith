@@ -4,8 +4,7 @@ from typing import Set
 from polylith import check, deps, info
 
 
-def calculate_diff(root: Path, namespace: str, project_data: dict) -> dict:
-    bases = set(project_data["bases"])
+def _calculate(root: Path, namespace: str, project_data: dict, bases: Set[str]) -> dict:
     components = set(project_data["components"])
 
     all_bases = info.get_bases(root, namespace)
@@ -33,20 +32,19 @@ def calculate_diff(root: Path, namespace: str, project_data: dict) -> dict:
     }
 
 
-def calculate_needed_bricks(root: Path, namespace: str, base: str) -> dict:
+def calculate_diff(root: Path, namespace: str, project_data: dict) -> dict:
+    bases = set(project_data["bases"])
+
+    return _calculate(root, namespace, project_data, bases)
+
+
+def calculate_needed_bricks(
+    root: Path, namespace: str, project_data: dict, base: str
+) -> dict:
     bases = {base}
-    components: Set[str] = set()
 
-    all_bases = info.get_bases(root, namespace)
-    all_components = info.get_components(root, namespace)
+    res = _calculate(root, namespace, project_data, bases)
 
-    brick_imports = deps.get_brick_imports(root, namespace, bases, components)
-    brick_diff = check.collect.imports_diff(brick_imports, bases, components)
+    needed_bases = res["bases"].union(bases)
 
-    bases_diff = {b for b in brick_diff if b in all_bases}
-    components_diff = {b for b in brick_diff if b in all_components}
-
-    return {
-        "bases": bases_diff,
-        "components": components_diff,
-    }
+    return {**res, **{"bases": needed_bases}}

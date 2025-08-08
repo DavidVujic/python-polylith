@@ -1,4 +1,4 @@
-from polylith.project import templates
+from polylith.project import interactive, templates
 from polylith.project.create import create_project
 from polylith.project.get import (
     get_packages_for_projects,
@@ -14,6 +14,7 @@ __all__ = [
     "get_project_name",
     "get_project_template",
     "get_toml",
+    "interactive",
     "parse_package_paths",
     "templates",
 ]
