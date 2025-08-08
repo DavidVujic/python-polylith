@@ -1,19 +1,15 @@
 from pathlib import Path
+from typing import Set
 
 from polylith import check, deps, info
 
 
-def calculate_diff(
-    root: Path,
-    namespace: str,
-    project_data: dict,
-    workspace_data: dict,
-) -> dict:
+def calculate_diff(root: Path, namespace: str, project_data: dict) -> dict:
     bases = set(project_data["bases"])
     components = set(project_data["components"])
 
-    all_bases = workspace_data["bases"]
-    all_components = workspace_data["components"]
+    all_bases = info.get_bases(root, namespace)
+    all_components = info.get_components(root, namespace)
 
     brick_imports = deps.get_brick_imports(root, namespace, bases, components)
     is_project = info.is_project(project_data)
