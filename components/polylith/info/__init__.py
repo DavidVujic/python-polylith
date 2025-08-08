@@ -1,4 +1,5 @@
 from polylith.info.collect import (
+    find_unused_bases,
     get_bases,
     get_bricks_in_projects,
     get_components,
@@ -12,6 +13,7 @@ from polylith.info.report import (
 )
 
 __all__ = [
+    "find_unused_bases",
     "get_bases",
     "get_bricks_in_projects",
     "get_components",

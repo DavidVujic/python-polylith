@@ -1,5 +1,6 @@
+import difflib
 from pathlib import Path
-from typing import List
+from typing import List, Set
 
 from polylith.bricks import base, component
 from polylith.project import get_packages_for_projects, parse_package_paths
@@ -53,3 +54,20 @@ def get_projects_data(root: Path, ns: str) -> List[dict]:
     components = get_components(root, ns)
 
     return get_bricks_in_projects(root, components, bases, ns)
+
+
+def find_unused_bases(root: Path, ns: str) -> Set[str]:
+    projects_data = get_projects_data(root, ns)
+
+    bases = get_bases(root, ns)
+    bases_in_projects = set().union(*[p["bases"] for p in projects_data])
+
+    return set(bases).difference(bases_in_projects)
+
+
+def sort_bases_by_closest_match(bases: Set[str], name: str) -> List[str]:
+    closest = difflib.get_close_matches(name, bases, cutoff=0.3)
+
+    rest = sorted([b for b in bases if b not in closest])
+
+    return closest + rest
