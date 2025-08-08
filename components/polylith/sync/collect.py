@@ -31,3 +31,22 @@ def calculate_diff(root: Path, namespace: str, project_data: dict) -> dict:
         "components": components_diff,
         "brick_imports": brick_imports,
     }
+
+
+def calculate_needed_bricks(root: Path, namespace: str, base: str) -> dict:
+    bases = {base}
+    components: Set[str] = set()
+
+    all_bases = info.get_bases(root, namespace)
+    all_components = info.get_components(root, namespace)
+
+    brick_imports = deps.get_brick_imports(root, namespace, bases, components)
+    brick_diff = check.collect.imports_diff(brick_imports, bases, components)
+
+    bases_diff = {b for b in brick_diff if b in all_bases}
+    components_diff = {b for b in brick_diff if b in all_components}
+
+    return {
+        "bases": bases_diff,
+        "components": components_diff,
+    }
