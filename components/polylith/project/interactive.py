@@ -12,12 +12,12 @@ console = Console(theme=theme.poly_theme)
 
 def create_added_brick_message(bricks: Set[str], tag: str, project_name: str) -> str:
     number_of_bricks = len(bricks)
-    plural = number_of_bricks > 1
+    plural = "s" if number_of_bricks > 1 else ""
 
     if tag == "base":
-        grammar = "bases" if plural else "base"
+        grammar = f"base{plural}"
     else:
-        grammar = "components" if plural else "component"
+        grammar = f"component{plural}"
 
     return f"[data]Added {number_of_bricks} [{tag}]{grammar}[/] to the [proj]{project_name}[/] project.[/]"
 
