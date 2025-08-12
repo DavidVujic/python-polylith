@@ -56,6 +56,9 @@ def add_bricks_to_project(
     if not project_data:
         return
 
+    message = f"[data]Project [proj]{project_name}[/] created.[/]"
+    console.print(Padding(message, (0, 0, 1, 0)))
+
     first, *_ = possible_bases
 
     if not Confirm.ask(
@@ -96,8 +99,5 @@ def run(project_name: str) -> None:
 
     if not possible_bases:
         return
-
-    message = f"[data]Project [proj]{project_name}[/] created.[/]"
-    console.print(Padding(message, (0, 0, 1, 0)))
 
     add_bricks_to_project(root, ns, project_name, possible_bases)
