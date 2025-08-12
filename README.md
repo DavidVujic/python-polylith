@@ -11,8 +11,10 @@ The main use case is to support having one or more microservices (or apps) in a 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DavidVujic_python-polylith&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DavidVujic_python-polylith)
 
 
-- :chart_with_upwards_trend: Polith CLI downloads: 298K
-- :chart_with_upwards_trend: Poetry Plugin downloads: 820K
+:chart_with_upwards_trend: Polith CLI downloads: 298K
+
+:chart_with_upwards_trend: Poetry Plugin downloads: 820K
+
 (source: clickhouse and pepy.tech, from August 12th 2025)
 
 ## What's Polylith? :thinking:
