@@ -52,6 +52,8 @@ def project_command(
     """Creates a Polylith project."""
     create(name, description, _create_project)
 
+    project.interactive.run(name)
+
 
 @app.command("workspace")
 def workspace_command(

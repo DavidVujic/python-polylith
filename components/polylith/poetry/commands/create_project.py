@@ -37,4 +37,6 @@ class CreateProjectCommand(Command):
 
         create(name, description, create_project)
 
+        project.interactive.run(name)
+
         return 0
