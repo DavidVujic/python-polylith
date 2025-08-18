@@ -44,7 +44,7 @@ poetry-polylith-plugin = "polylith.poetry_plugin:PolylithPlugin"
 python = "^3.8"
 poetry = "*"
 tomlkit = "0.*"
-rich = "13.*"
+rich = ">=13,<15"
 cleo = "^2.1.0"
 pyyaml = "*"
 
