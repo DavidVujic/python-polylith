@@ -47,19 +47,11 @@ def confirmation(diff: dict, project_name: str) -> None:
 def add_bricks_to_project(
     root: Path,
     ns: str,
-    project_name: str,
+    project_data: dict,
     possible_bases: List[str],
 ) -> None:
-    projects_data = info.get_projects_data(root, ns)
-    project_data = next((p for p in projects_data if p["name"] == project_name), None)
-
-    if not project_data:
-        return
-
-    message = f"[data]Project [proj]{project_name}[/] created.[/]"
-    console.print(Padding(message, (0, 0, 1, 0)))
-
     first, *_ = possible_bases
+    project_name = project_data["name"]
 
     if not Confirm.ask(
         prompt=f"[data]Do you want to add bricks to the [proj]{project_name}[/] project?[/]",
@@ -100,4 +92,13 @@ def run(project_name: str) -> None:
     if not possible_bases:
         return
 
-    add_bricks_to_project(root, ns, project_name, possible_bases)
+    projects_data = info.get_projects_data(root, ns)
+    project_data = next((p for p in projects_data if p["name"] == project_name), None)
+
+    if not project_data:
+        return
+
+    message = f"[data]Project [proj]{project_name}[/] created.[/]"
+    console.print(Padding(message, (0, 0, 1, 0)))
+
+    add_bricks_to_project(root, ns, project_data, possible_bases)
