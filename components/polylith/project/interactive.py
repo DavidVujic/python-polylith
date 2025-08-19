@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Set
+from typing import List, Set, Union
 
 from polylith import configuration, info, repo, sync
 from polylith.reporting import theme
@@ -44,20 +44,19 @@ def confirmation(diff: dict, project_name: str) -> None:
     console.print(components_message)
 
 
-def add_bricks_to_project(
+def choose_base_for_project(
     root: Path,
     ns: str,
-    project_data: dict,
+    project_name: str,
     possible_bases: List[str],
-) -> None:
+) -> Union[str, None]:
     first, *_ = possible_bases
-    project_name = project_data["name"]
 
     if not Confirm.ask(
         prompt=f"[data]Do you want to add bricks to the [proj]{project_name}[/] project?[/]",
         console=console,
     ):
-        return
+        return None
 
     question = "[data]What's the name of the Polylith [base]base[/] to add?[/]"
 
@@ -70,7 +69,18 @@ def add_bricks_to_project(
     )
 
     all_bases = info.get_bases(root, ns)
-    found_base = next((b for b in all_bases if str.lower(b) == str.lower(base)), None)
+
+    return next((b for b in all_bases if str.lower(b) == str.lower(base)), None)
+
+
+def add_bricks_to_project(
+    root: Path,
+    ns: str,
+    project_data: dict,
+    possible_bases: List[str],
+) -> None:
+    project_name = project_data["name"]
+    found_base = choose_base_for_project(root, ns, project_name, possible_bases)
 
     if not found_base:
         confirmation({}, project_name)
