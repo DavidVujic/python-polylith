@@ -5,6 +5,9 @@ from polylith import info, project, sync
 
 
 def is_project_without_bricks(project_data: dict) -> bool:
+    if not info.is_project(project_data):
+        return False
+
     bases = project_data["bases"]
     components = project_data["components"]
 
