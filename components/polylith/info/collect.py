@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import List, Set
 
 from polylith.bricks import base, component
+from polylith.info.report import is_project
 from polylith.project import get_packages_for_projects, parse_package_paths
 
 
@@ -59,6 +60,8 @@ def find_unused_bases(root: Path, ns: str) -> Set[str]:
     projects_data = get_projects_data(root, ns)
 
     bases = get_bases(root, ns)
-    bases_in_projects = set().union(*[p["bases"] for p in projects_data])
+
+    bases_per_project = [p["bases"] for p in projects_data if is_project(p)]
+    bases_in_projects = set().union(*bases_per_project)
 
     return set(bases).difference(bases_in_projects)
