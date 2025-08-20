@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Union
 
 from polylith import info, project, sync
 
@@ -10,18 +11,23 @@ def is_project_without_bricks(project_data: dict) -> bool:
     return not bases and not components
 
 
+def choose_base(root: Path, ns: str, project_data: dict) -> Union[str, None]:
+    possible_bases = info.find_unused_bases(root, ns)
+
+    if not possible_bases:
+        return None
+
+    return project.interactive.choose_base_for_project(
+        root, ns, project_data["name"], possible_bases
+    )
+
+
 def calculate_brick_diff(root: Path, ns: str, project_data: dict) -> dict:
     if is_project_without_bricks(project_data):
-        possible_bases = info.find_unused_bases(root, ns)
-        project_name = project_data["name"]
+        use_base = choose_base(root, ns, project_data)
 
-        if possible_bases:
-            found_base = project.interactive.choose_base_for_project(
-                root, ns, project_name, possible_bases
-            )
-
-            if found_base:
-                return sync.calculate_needed_bricks(root, ns, project_data, found_base)
+        if use_base:
+            return sync.calculate_needed_bricks(root, ns, project_data, use_base)
 
     return sync.calculate_diff(root, ns, project_data)
 
