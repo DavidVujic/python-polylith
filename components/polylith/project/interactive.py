@@ -1,3 +1,4 @@
+import difflib
 from pathlib import Path
 from typing import List, Set, Union
 
@@ -44,13 +45,21 @@ def confirmation(diff: dict, project_name: str) -> None:
     console.print(components_message)
 
 
+def sort_bases_by_closest_match(bases: Set[str], name: str) -> List[str]:
+    closest = difflib.get_close_matches(name, bases, cutoff=0.3)
+
+    rest = sorted([b for b in bases if b not in closest])
+
+    return closest + rest
+
+
 def choose_base_for_project(
     root: Path,
     ns: str,
     project_name: str,
-    possible_bases: List[str],
+    possible_bases: Set[str],
 ) -> Union[str, None]:
-    first, *_ = possible_bases
+    first, *_ = sort_bases_by_closest_match(possible_bases, project_name)
 
     if not Confirm.ask(
         prompt=f"[data]Do you want to add bricks to the [proj]{project_name}[/] project?[/]",
@@ -77,7 +86,7 @@ def add_bricks_to_project(
     root: Path,
     ns: str,
     project_data: dict,
-    possible_bases: List[str],
+    possible_bases: Set[str],
 ) -> None:
     project_name = project_data["name"]
     found_base = choose_base_for_project(root, ns, project_name, possible_bases)
@@ -97,7 +106,7 @@ def run(project_name: str) -> None:
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
-    possible_bases = sorted(info.find_unused_bases(root, ns))
+    possible_bases = info.find_unused_bases(root, ns)
 
     if not possible_bases:
         return
