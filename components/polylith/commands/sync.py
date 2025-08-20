@@ -5,9 +5,6 @@ from polylith import info, project, sync
 
 
 def is_project_without_bricks(project_data: dict) -> bool:
-    if not info.is_project(project_data):
-        return False
-
     bases = project_data["bases"]
     components = project_data["components"]
 
@@ -26,11 +23,11 @@ def choose_base(root: Path, ns: str, project_data: dict) -> Union[str, None]:
 
 
 def calculate_brick_diff(root: Path, ns: str, project_data: dict) -> dict:
-    if is_project_without_bricks(project_data):
-        use_base = choose_base(root, ns, project_data)
+    if info.is_project(project_data) and is_project_without_bricks(project_data):
+        base = choose_base(root, ns, project_data)
 
-        if use_base:
-            return sync.calculate_needed_bricks(root, ns, project_data, use_base)
+        if base:
+            return sync.calculate_needed_bricks(root, ns, project_data, base)
 
     return sync.calculate_diff(root, ns, project_data)
 
