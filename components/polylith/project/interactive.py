@@ -1,5 +1,6 @@
+import difflib
 from pathlib import Path
-from typing import List, Set
+from typing import List, Set, Union
 
 from polylith import configuration, info, repo, sync
 from polylith.reporting import theme
@@ -44,28 +45,27 @@ def confirmation(diff: dict, project_name: str) -> None:
     console.print(components_message)
 
 
-def add_bricks_to_project(
+def sort_bases_by_closest_match(bases: Set[str], name: str) -> List[str]:
+    closest = difflib.get_close_matches(name, bases, cutoff=0.3)
+
+    rest = sorted([b for b in bases if b not in closest])
+
+    return closest + rest
+
+
+def choose_base_for_project(
     root: Path,
     ns: str,
     project_name: str,
-    possible_bases: List[str],
-) -> None:
-    projects_data = info.get_projects_data(root, ns)
-    project_data = next((p for p in projects_data if p["name"] == project_name), None)
-
-    if not project_data:
-        return
-
-    message = f"[data]Project [proj]{project_name}[/] created.[/]"
-    console.print(Padding(message, (0, 0, 1, 0)))
-
-    first, *_ = possible_bases
+    possible_bases: Set[str],
+) -> Union[str, None]:
+    first, *_ = sort_bases_by_closest_match(possible_bases, project_name)
 
     if not Confirm.ask(
         prompt=f"[data]Do you want to add bricks to the [proj]{project_name}[/] project?[/]",
         console=console,
     ):
-        return
+        return None
 
     question = "[data]What's the name of the Polylith [base]base[/] to add?[/]"
 
@@ -78,7 +78,18 @@ def add_bricks_to_project(
     )
 
     all_bases = info.get_bases(root, ns)
-    found_base = next((b for b in all_bases if str.lower(b) == str.lower(base)), None)
+
+    return next((b for b in all_bases if str.lower(b) == str.lower(base)), None)
+
+
+def add_bricks_to_project(
+    root: Path,
+    ns: str,
+    project_data: dict,
+    possible_bases: Set[str],
+) -> None:
+    project_name = project_data["name"]
+    found_base = choose_base_for_project(root, ns, project_name, possible_bases)
 
     if not found_base:
         confirmation({}, project_name)
@@ -95,9 +106,18 @@ def run(project_name: str) -> None:
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
-    possible_bases = sorted(info.find_unused_bases(root, ns))
+    possible_bases = info.find_unused_bases(root, ns)
 
     if not possible_bases:
         return
 
-    add_bricks_to_project(root, ns, project_name, possible_bases)
+    projects_data = info.get_projects_data(root, ns)
+    project_data = next((p for p in projects_data if p["name"] == project_name), None)
+
+    if not project_data:
+        return
+
+    message = f"[data]Project [proj]{project_name}[/] created.[/]"
+    console.print(Padding(message, (0, 0, 1, 0)))
+
+    add_bricks_to_project(root, ns, project_data, possible_bases)
