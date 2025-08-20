@@ -12,7 +12,7 @@ def is_project_without_bricks(project_data: dict) -> bool:
 
 def calculate_brick_diff(root: Path, ns: str, project_data: dict) -> dict:
     if is_project_without_bricks(project_data):
-        possible_bases = sorted(info.find_unused_bases(root, ns))
+        possible_bases = info.find_unused_bases(root, ns)
         project_name = project_data["name"]
 
         if possible_bases:
