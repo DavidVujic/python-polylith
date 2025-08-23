@@ -10,9 +10,10 @@ The main use case is to support having one or more microservices (or apps) in a 
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DavidVujic_python-polylith&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DavidVujic_python-polylith)
 
-:chart_with_upwards_trend: Downloads: Polylith CLI 298K, Poetry Plugin 820K
+[![Download Stats](https://img.shields.io/pypi/dm/poetry-polylith-plugin?label=Poetry%20plugin%20Downloads)](https://pypistats.org/packages/poetry-polylith-plugin)
 
-(downloads source: clickhouse and pepy.tech, from August 12th 2025)
+[![Download Stats](https://img.shields.io/pypi/dm/polylith-cli?label=CLI%20Downloads)](https://pypistats.org/packages/polylith-cli)
+
 
 ## What's Polylith? :thinking:
 >... Polylith is a software architecture that applies functional thinking at the system scale. It helps us build simple, maintainable, testable, and scalable backend systems. ...
