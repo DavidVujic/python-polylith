@@ -1,6 +1,6 @@
 from pathlib import Path
-from cleo.helpers import option
 
+from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands, configuration, repo
 
