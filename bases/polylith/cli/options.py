@@ -18,3 +18,5 @@ verbose = Option(help="More verbose output.")
 quiet = Option(help="Do not output any messages.")
 
 brick = Option(help="Shows dependencies for selected brick.")
+
+save = Option(help="Store the contents of this command to file.")

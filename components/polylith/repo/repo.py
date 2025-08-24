@@ -13,6 +13,7 @@ bases_dir = "bases"
 components_dir = "components"
 projects_dir = "projects"
 development_dir = "development"
+report_dir = f"{development_dir}/poly"
 
 
 def load_content(fullpath: Path) -> tomlkit.TOMLDocument:

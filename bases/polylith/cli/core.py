@@ -172,6 +172,7 @@ def sync_command(
 def deps_command(
     directory: Annotated[str, options.directory] = "",
     brick: Annotated[str, options.brick] = "",
+    save: Annotated[bool, options.save] = False,
 ):
     """Visualize the dependencies between bricks."""
     root = repo.get_workspace_root(Path.cwd())
@@ -179,7 +180,9 @@ def deps_command(
 
     dir_path = Path(directory).as_posix() if directory else None
 
-    commands.deps.run(root, ns, dir_path, brick or None)
+    cli_options = {"directory": dir_path, "brick": brick or None, "save": save}
+
+    commands.deps.run(root, ns, cli_options)
 
 
 if __name__ == "__main__":
