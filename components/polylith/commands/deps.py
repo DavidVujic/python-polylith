@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Set, Union
+from typing import List, Set
 
 from polylith import bricks, deps, info
 
@@ -28,7 +28,10 @@ def get_components(root: Path, ns: str, project_data: dict) -> Set[str]:
     return pick_name(bricks.get_components_data(root, ns))
 
 
-def run(root: Path, ns: str, directory: Union[str, None], brick: Union[str, None]):
+def run(root: Path, ns: str, options: dict):
+    directory = options.get("directory")
+    brick = options.get("brick")
+
     projects_data = info.get_projects_data(root, ns) if directory else []
     project = next((p for p in projects_data if directory in p["path"].as_posix()), {})
 
@@ -41,4 +44,4 @@ def run(root: Path, ns: str, directory: Union[str, None], brick: Union[str, None
         deps.print_brick_deps(brick, bases, components, imports)
         return
 
-    deps.print_deps(bases, components, imports)
+    deps.print_deps(bases, components, imports, options)

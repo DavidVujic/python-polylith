@@ -1,5 +1,6 @@
 from functools import reduce
 from itertools import zip_longest
+from pathlib import Path
 from typing import List, Set, Tuple
 
 from polylith.reporting import theme
@@ -57,7 +58,17 @@ def create_rows(
     return comp_rows + base_rows
 
 
-def print_deps(bases: Set[str], components: Set[str], import_data: dict):
+def save_deps_output(console: Console, options: dict) -> None:
+    exported = console.export_text()
+    adjusted = exported.replace("\u2714", "X")
+
+    output = options["output"]
+    fullpath = f"{output}/deps.txt"
+
+    Path(fullpath).write_text(adjusted)
+
+
+def print_deps(bases: Set[str], components: Set[str], import_data: dict, options: dict):
     flattened = flatten_imports(import_data)
 
     imported_bases = sorted({b for b in flattened if b in bases})
@@ -76,8 +87,13 @@ def print_deps(bases: Set[str], components: Set[str], import_data: dict):
     for row in rows:
         table.add_row(*row)
 
-    console = Console(theme=theme.poly_theme)
+    save = options.get("save", False)
+
+    console = Console(theme=theme.poly_theme, record=save)
     console.print(table, overflow="ellipsis")
+
+    if save:
+        save_deps_output(console, options)
 
 
 def without(key: str, bricks: Set[str]) -> Set[str]:
