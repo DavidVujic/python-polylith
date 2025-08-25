@@ -12,7 +12,6 @@ from polylith.repo.repo import (
     load_workspace_config,
     projects_dir,
     readme_file,
-    report_dir,
     workspace_file,
 )
 
@@ -31,6 +30,5 @@ __all__ = [
     "load_workspace_config",
     "projects_dir",
     "readme_file",
-    "report_dir",
     "workspace_file",
 ]

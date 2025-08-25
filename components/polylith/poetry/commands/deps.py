@@ -31,8 +31,14 @@ class DepsCommand(Command):
         ns = configuration.get_namespace_from_config(root)
 
         dir_path = Path(directory).as_posix() if directory else None
+        output = configuration.get_output_dir(root, "deps") if save else None
 
-        options = {"directory": dir_path, "brick": brick, "save": save}
+        options = {
+            "directory": dir_path,
+            "brick": brick,
+            "save": save,
+            "output": output,
+        }
         commands.deps.run(root, ns, options)
 
         return 0

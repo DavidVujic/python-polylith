@@ -3,7 +3,6 @@ from itertools import zip_longest
 from pathlib import Path
 from typing import List, Set, Tuple
 
-from polylith import repo
 from polylith.reporting import theme
 from rich import box
 from rich.console import Console
@@ -59,14 +58,14 @@ def create_rows(
     return comp_rows + base_rows
 
 
-def save_deps_output(console: Console) -> None:
+def save_deps_output(console: Console, options: dict) -> None:
     exported = console.export_text()
+    adjusted = exported.replace("\u2714", "X")
 
-    adjusted_output = exported.replace("\u2714", "X")
+    output = options["output"]
+    fullpath = f"{output}/deps.txt"
 
-    fullpath = f"{repo.report_dir}/deps.txt"
-
-    Path(fullpath).write_text(adjusted_output)
+    Path(fullpath).write_text(adjusted)
 
 
 def print_deps(bases: Set[str], components: Set[str], import_data: dict, options: dict):
@@ -94,7 +93,7 @@ def print_deps(bases: Set[str], components: Set[str], import_data: dict, options
     console.print(table, overflow="ellipsis")
 
     if save:
-        save_deps_output(console)
+        save_deps_output(console, options)
 
 
 def without(key: str, bricks: Set[str]) -> Set[str]:

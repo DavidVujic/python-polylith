@@ -1,6 +1,7 @@
 from polylith.configuration.core import (
     get_brick_structure_from_config,
     get_namespace_from_config,
+    get_output_dir,
     get_resources_structure_from_config,
     get_tag_pattern_from_config,
     get_tag_sort_options_from_config,
@@ -13,6 +14,7 @@ from polylith.configuration.core import (
 __all__ = [
     "get_brick_structure_from_config",
     "get_namespace_from_config",
+    "get_output_dir",
     "get_resources_structure_from_config",
     "get_tag_pattern_from_config",
     "get_tag_sort_options_from_config",
