@@ -58,17 +58,22 @@ def create_rows(
     return comp_rows + base_rows
 
 
-def save_deps_output(console: Console, options: dict) -> None:
+def save_output(console: Console, options: dict, command: str) -> None:
     exported = console.export_text()
-    adjusted = exported.replace("\u2714", "X")
+    replacements = {"\u2714": "X", "\U0001F448": "<-", "\U0001F449": "->"}
+
+    adjusted = reduce(lambda acc, kv: str.replace(acc, *kv), replacements.items(), exported)
 
     output = options["output"]
-    fullpath = f"{output}/deps.txt"
+    fullpath = f"{output}/{command}.txt"
 
+    Path(output).mkdir(parents=True, exist_ok=True)
     Path(fullpath).write_text(adjusted)
 
 
-def print_deps(bases: Set[str], components: Set[str], import_data: dict, options: dict):
+def print_deps(bricks: dict, import_data: dict, options: dict):
+    bases = bricks["bases"]
+    components = bricks["components"]
     flattened = flatten_imports(import_data)
 
     imported_bases = sorted({b for b in flattened if b in bases})
@@ -93,7 +98,7 @@ def print_deps(bases: Set[str], components: Set[str], import_data: dict, options
     console.print(table, overflow="ellipsis")
 
     if save:
-        save_deps_output(console, options)
+        save_output(console, options, "deps")
 
 
 def without(key: str, bricks: Set[str]) -> Set[str]:
@@ -127,15 +132,18 @@ def calculate_tag(brick: str, bases: Set[str]) -> str:
     return "base" if brick in bases else "comp"
 
 
-def print_brick_deps(
-    brick: str, bases: Set[str], components: Set[str], import_data: dict
-):
+def print_brick_deps(brick: str, bricks: dict, import_data: dict, options: dict):
+    bases = bricks["bases"]
+    components = bricks["components"]
+
+    save = options.get("save", False)
+
     brick_used_by = sorted_used_by(brick, bases, components, import_data)
     brick_uses = sorted_uses(brick, bases, components, import_data)
 
     tag = calculate_tag(brick, bases)
 
-    console = Console(theme=theme.poly_theme)
+    console = Console(theme=theme.poly_theme, record=save)
 
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]used by[/]")
@@ -158,3 +166,6 @@ def print_brick_deps(
         table.add_row(*row)
 
     console.print(table, overflow="ellipsis")
+
+    if save:
+        save_output(console, options, f"deps_{brick}")
