@@ -9,7 +9,7 @@ def run(root: Path, options: dict):
     components = info.get_components(root, ns)
     projects_data = info.get_bricks_in_projects(root, components, bases, ns)
 
-    info.print_workspace_summary(projects_data, bases, components)
+    info.print_workspace_summary(projects_data, bases, components, options)
 
     if not components and not bases:
         return

@@ -86,9 +86,13 @@ def print_bricks_in_projects(
 
 
 def print_workspace_summary(
-    projects_data: List[dict], bases: List[str], components: List[str]
+    projects_data: List[dict],
+    bases: List[str],
+    components: List[str],
+    options: dict,
 ) -> None:
-    console = Console(theme=theme.poly_theme)
+    save = options.get("save", False)
+    console = Console(theme=theme.poly_theme, record=save)
 
     console.print(Padding("[data]Workspace summary[/]", (1, 0, 1, 0)))
 
@@ -101,3 +105,6 @@ def print_workspace_summary(
     console.print(f"[comp]components[/]: [data]{number_of_components}[/]")
     console.print(f"[base]bases[/]: [data]{number_of_bases}[/]")
     console.print(f"[data]development[/]: [data]{number_of_dev}[/]")
+
+    if save:
+        output.save(console, options, "workspace_summary")
