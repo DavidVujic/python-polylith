@@ -60,7 +60,7 @@ def create_rows(
 
 def save_output(console: Console, options: dict, command: str) -> None:
     exported = console.export_text()
-    replacements = {"\u2714": "X", "\U0001F448": "<-", "\U0001F449": "->"}
+    replacements = {"\u2714": "X", "\U0001F448": "<", "\U0001F449": ">"}
 
     adjusted = reduce(lambda acc, kv: str.replace(acc, *kv), replacements.items(), exported)
 
