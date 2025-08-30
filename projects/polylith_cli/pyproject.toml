@@ -26,6 +26,7 @@ packages = [
     { include = "polylith/info", from = "../../components" },
     { include = "polylith/interface", from = "../../components" },
     { include = "polylith/libs", from = "../../components" },
+    { include = "polylith/output", from = "../../components" },
     { include = "polylith/parsing", from = "../../components" },
     { include = "polylith/project", from = "../../components" },
     { include = "polylith/readme", from = "../../components" },

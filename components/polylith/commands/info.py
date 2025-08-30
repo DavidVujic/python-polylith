@@ -1,11 +1,9 @@
 from pathlib import Path
 
-from polylith import configuration, info, repo
+from polylith import configuration, info
 
 
-def run(short: bool):
-    root = repo.get_workspace_root(Path.cwd())
-
+def run(root: Path, options: dict):
     ns = configuration.get_namespace_from_config(root)
     bases = info.get_bases(root, ns)
     components = info.get_components(root, ns)
@@ -16,9 +14,4 @@ def run(short: bool):
     if not components and not bases:
         return
 
-    if short:
-        info.print_compressed_view_for_bricks_in_projects(
-            projects_data, bases, components
-        )
-    else:
-        info.print_bricks_in_projects(projects_data, bases, components)
+    info.print_bricks_in_projects(projects_data, bases, components, options)

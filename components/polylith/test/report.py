@@ -15,7 +15,11 @@ def print_report_summary(
     number_of_components = len(components)
     number_of_bases = len(bases)
 
-    console.print(Padding("[data]Projects and bricks affected by changes in tests[/]", (1, 0, 0, 0)))
+    console.print(
+        Padding(
+            "[data]Projects and bricks affected by changes in tests[/]", (1, 0, 0, 0)
+        )
+    )
     console.print(Padding(f"[data]Test diff based on {tag}[/]", (0, 0, 1, 0)))
 
     console.print(f"[proj]Affected projects[/]: [data]{number_of_projects}[/]")
@@ -59,15 +63,10 @@ def print_detected_changes_affecting_bricks(
 def print_test_report(
     projects_data: List[dict], bases: Set[str], components: Set[str], options: dict
 ) -> None:
-    short = options.get("short", False)
-
     b = sorted(list(bases))
     c = sorted(list(components))
 
     if not b and not c:
         return
 
-    if short:
-        info.print_compressed_view_for_bricks_in_projects(projects_data, b, c)
-    else:
-        info.print_bricks_in_projects(projects_data, b, c)
+    info.print_bricks_in_projects(projects_data, b, c, options)

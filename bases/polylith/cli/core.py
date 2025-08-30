@@ -59,9 +59,20 @@ def enriched_with_lock_files_data(
 
 
 @app.command("info")
-def info_command(short: Annotated[bool, options.short_workspace] = False):
+def info_command(
+    short: Annotated[bool, options.short_workspace] = False,
+    save: Annotated[bool, options.save] = False,
+):
     """Info about the Polylith workspace."""
-    commands.info.run(short)
+    root = repo.get_workspace_root(Path.cwd())
+    output = configuration.get_output_dir(root, "info") if save else None
+
+    cli_options = {
+        "short": short,
+        "save": save,
+        "output": output,
+    }
+    commands.info.run(root, cli_options)
 
 
 @app.command("check")

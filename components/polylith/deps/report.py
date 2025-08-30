@@ -1,8 +1,8 @@
 from functools import reduce
 from itertools import zip_longest
-from pathlib import Path
 from typing import List, Set, Tuple
 
+from polylith import output
 from polylith.reporting import theme
 from rich import box
 from rich.console import Console
@@ -58,19 +58,6 @@ def create_rows(
     return comp_rows + base_rows
 
 
-def save_output(console: Console, options: dict, command: str) -> None:
-    exported = console.export_text()
-    replacements = {"\u2714": "X", "\U0001F448": "<", "\U0001F449": ">"}
-
-    adjusted = reduce(lambda acc, kv: str.replace(acc, *kv), replacements.items(), exported)
-
-    output = options["output"]
-    fullpath = f"{output}/{command}.txt"
-
-    Path(output).mkdir(parents=True, exist_ok=True)
-    Path(fullpath).write_text(adjusted)
-
-
 def print_deps(bricks: dict, import_data: dict, options: dict):
     bases = bricks["bases"]
     components = bricks["components"]
@@ -98,7 +85,7 @@ def print_deps(bricks: dict, import_data: dict, options: dict):
     console.print(table, overflow="ellipsis")
 
     if save:
-        save_output(console, options, "deps")
+        output.save(console, options, "deps")
 
 
 def without(key: str, bricks: Set[str]) -> Set[str]:
@@ -168,4 +155,4 @@ def print_brick_deps(brick: str, bricks: dict, import_data: dict, options: dict)
     console.print(table, overflow="ellipsis")
 
     if save:
-        save_output(console, options, f"deps_{brick}")
+        output.save(console, options, f"deps_{brick}")
