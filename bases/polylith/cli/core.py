@@ -160,7 +160,6 @@ def libs_command(
 
 @app.command("sync")
 def sync_command(
-    strict: Annotated[bool, options.strict] = False,
     quiet: Annotated[bool, options.quiet] = False,
     directory: Annotated[str, options.directory] = "",
     verbose: Annotated[bool, options.verbose] = False,
@@ -172,7 +171,6 @@ def sync_command(
     all_projects_data = info.get_projects_data(root, ns)
 
     cli_options = {
-        "strict": strict,
         "quiet": quiet,
         "verbose": verbose,
     }
