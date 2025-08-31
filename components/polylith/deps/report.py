@@ -1,6 +1,6 @@
 from functools import reduce
 from itertools import zip_longest
-from typing import List, Set, Tuple
+from typing import List, Set, Tuple, Union
 
 from polylith import output
 from polylith.reporting import theme
@@ -58,6 +58,20 @@ def create_rows(
     return comp_rows + base_rows
 
 
+def find_longest_brick_name(bases: Set[str], components: Set[str]) -> str:
+    bricks = set().union(bases, components)
+
+    return max(bricks, key=len)
+
+
+def calculate_brick_column_width(
+    bases: Set[str], components: Set[str]
+) -> Union[int, None]:
+    longest = find_longest_brick_name(bases, components)
+
+    return len(longest)
+
+
 def print_deps(bricks: dict, import_data: dict, options: dict):
     bases = bricks["bases"]
     components = bricks["components"]
@@ -66,9 +80,11 @@ def print_deps(bricks: dict, import_data: dict, options: dict):
     imported_bases = sorted({b for b in flattened if b in bases})
     imported_components = sorted({c for c in flattened if c in components})
     imported_bricks = imported_components + imported_bases
+    save = options.get("save", False)
 
     table = Table(box=box.SIMPLE_HEAD)
-    table.add_column("[data]brick[/]")
+    brick_width = calculate_brick_column_width(bases, components)
+    table.add_column("[data]brick[/]", width=brick_width)
 
     cols = create_columns(imported_bases, imported_components)
     rows = create_rows(bases, components, import_data, imported_bricks)
@@ -79,13 +95,11 @@ def print_deps(bricks: dict, import_data: dict, options: dict):
     for row in rows:
         table.add_row(*row)
 
-    save = options.get("save", False)
-
-    console = Console(theme=theme.poly_theme, record=save)
+    console = Console(theme=theme.poly_theme)
     console.print(table, overflow="ellipsis")
 
     if save:
-        output.save(console, options, "deps")
+        output.save(table, options, "deps")
 
 
 def without(key: str, bricks: Set[str]) -> Set[str]:
@@ -130,7 +144,7 @@ def print_brick_deps(brick: str, bricks: dict, import_data: dict, options: dict)
 
     tag = calculate_tag(brick, bases)
 
-    console = Console(theme=theme.poly_theme, record=save)
+    console = Console(theme=theme.poly_theme)
 
     table = Table(box=box.SIMPLE_HEAD)
     table.add_column("[data]used by[/]")
@@ -155,4 +169,4 @@ def print_brick_deps(brick: str, bricks: dict, import_data: dict, options: dict)
     console.print(table, overflow="ellipsis")
 
     if save:
-        output.save(console, options, f"deps_{brick}")
+        output.save(table, options, f"deps_{brick}")

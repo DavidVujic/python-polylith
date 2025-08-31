@@ -77,12 +77,12 @@ def print_bricks_in_projects(
     table = build_bricks_in_projects_table(projects_data, bases, components, options)
 
     save = options.get("save", False)
-    console = Console(theme=theme.poly_theme, record=save)
+    console = Console(theme=theme.poly_theme)
 
     console.print(table, overflow="ellipsis")
 
     if save:
-        output.save(console, options, "info")
+        output.save(table, options, "info")
 
 
 def print_workspace_summary(
@@ -107,4 +107,4 @@ def print_workspace_summary(
     console.print(f"[data]development[/]: [data]{number_of_dev}[/]")
 
     if save:
-        output.save(console, options, "workspace_summary")
+        output.save_recorded(console, options, "workspace_summary")

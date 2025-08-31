@@ -1,3 +1,3 @@
-from polylith.output.core import save
+from polylith.output.core import save, save_recorded
 
-__all__ = ["save"]
+__all__ = ["save", "save_recorded"]
