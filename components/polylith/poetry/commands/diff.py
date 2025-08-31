@@ -1,27 +1,16 @@
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands
-
-command_options = [
-    option(
-        long_name="short",
-        short_name="s",
-        description="Print short view",
-        flag=True,
-    ),
-    option(
-        long_name="since",
-        description="Changed since a specific tag",
-        flag=False,
-    ),
-]
+from polylith.poetry.commands import command_options
 
 
 class DiffCommand(Command):
     name = "poly diff"
     description = "Shows changed bricks compared to the latest git tag."
 
-    options = command_options + [
+    options = [
+        command_options.short,
+        command_options.since,
         option(
             long_name="bricks",
             description="Print changed bricks",

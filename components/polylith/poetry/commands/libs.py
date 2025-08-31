@@ -1,10 +1,9 @@
 from functools import partial
 from pathlib import Path
 
-from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands, configuration, info, repo
-from polylith.poetry.commands.check import command_options
+from polylith.poetry.commands import command_options
 from polylith.poetry.internals import (
     distributions,
     filter_projects_data,
@@ -16,13 +15,11 @@ class LibsCommand(Command):
     name = "poly libs"
     description = "Show third-party libraries used in the workspace."
 
-    options = command_options + [
-        option(
-            long_name="short",
-            short_name="s",
-            description="Print short view",
-            flag=True,
-        ),
+    options = [
+        command_options.alias,
+        command_options.save,
+        command_options.short,
+        command_options.strict,
     ]
 
     def merged_project_data(self, project_data: dict) -> dict:

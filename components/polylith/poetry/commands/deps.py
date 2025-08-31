@@ -3,6 +3,7 @@ from pathlib import Path
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands, configuration, repo
+from polylith.poetry.commands import command_options
 
 
 class DepsCommand(Command):
@@ -15,11 +16,7 @@ class DepsCommand(Command):
             description="Shows dependencies for selected brick",
             flag=False,
         ),
-        option(
-            long_name="save",
-            description="Store the contents of this command to file",
-            flag=True,
-        ),
+        command_options.save,
     ]
 
     def handle(self) -> int:

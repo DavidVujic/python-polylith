@@ -1,27 +1,15 @@
 from pathlib import Path
 
-from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands, configuration, repo
+from polylith.poetry.commands import command_options
 
 
 class InfoCommand(Command):
     name = "poly info"
     description = "Info about the <comment>Polylith</> workspace."
 
-    options = [
-        option(
-            long_name="short",
-            short_name="s",
-            description="Display Workspace Info adjusted for many projects",
-            flag=True,
-        ),
-        option(
-            long_name="save",
-            description="Store the contents of this command to file",
-            flag=True,
-        ),
-    ]
+    options = [command_options.save, command_options.short]
 
     def handle(self) -> int:
         short = True if self.option("short") else False
