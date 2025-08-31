@@ -39,6 +39,7 @@ class LibsCommand(Command):
             "strict": self.option("strict"),
             "alias": self.option("alias"),
             "short": self.option("short"),
+            "save": self.option("save"),
             "dists_fn": dists_fn,
         }
 
