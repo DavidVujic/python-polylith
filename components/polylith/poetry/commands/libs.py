@@ -34,12 +34,16 @@ class LibsCommand(Command):
     def handle(self) -> int:
         root = repo.get_workspace_root(Path.cwd())
         dists_fn = partial(distributions, root)
+        save = self.option("save")
+
+        output = configuration.get_output_dir(root, "libs") if save else None
 
         options = {
             "strict": self.option("strict"),
             "alias": self.option("alias"),
             "short": self.option("short"),
-            "save": self.option("save"),
+            "save": save,
+            "output": output,
             "dists_fn": dists_fn,
         }
 

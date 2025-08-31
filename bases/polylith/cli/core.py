@@ -138,7 +138,7 @@ def libs_command(
     ns = configuration.get_namespace_from_config(root)
 
     all_projects_data = info.get_projects_data(root, ns)
-    output = configuration.get_output_dir(root, "deps") if save else None
+    output = configuration.get_output_dir(root, "libs") if save else None
 
     cli_options = {
         "strict": strict,

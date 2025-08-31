@@ -61,6 +61,6 @@ def run(
     flattened: dict = reduce(flatten_imports, imports.values(), {})
 
     report.print_libs_summary()
-    report.print_libs_in_bricks(flattened)
+    report.print_libs_in_bricks(flattened, options)
 
     return {missing_libs(p, imports, options) for p in projects_data}
