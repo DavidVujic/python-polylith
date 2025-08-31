@@ -3,7 +3,7 @@ from pathlib import Path
 from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands, configuration, diff, repo
-from polylith.poetry.commands.diff import command_options
+from polylith.poetry.commands import command_options
 
 
 class TestDiffCommand(Command):
@@ -12,7 +12,9 @@ class TestDiffCommand(Command):
         "Shows the Polylith projects and bricks that are affected by changes in tests."
     )
 
-    options = command_options + [
+    options = [
+        command_options.short,
+        command_options.since,
         option(
             long_name="bricks",
             description="Bricks affected by changes in tests",

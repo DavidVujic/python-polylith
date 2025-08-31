@@ -1,31 +1,17 @@
 from functools import partial
 from pathlib import Path
 
-from cleo.helpers import option
 from poetry.console.commands.command import Command
 from polylith import commands, configuration, info, repo
 from polylith.poetry import internals
-
-command_options = [
-    option(
-        long_name="strict",
-        description="More strict checks when matching name and version of third-party libraries and imports.",
-        flag=True,
-    ),
-    option(
-        long_name="alias",
-        description="alias for a third-party library, useful when an import differ from the library name",
-        flag=False,
-        multiple=True,
-    ),
-]
+from polylith.poetry.commands import command_options
 
 
 class CheckCommand(Command):
     name = "poly check"
     description = "Validates the <comment>Polylith</> workspace."
 
-    options = command_options
+    options = [command_options.alias, command_options.strict]
 
     def merged_project_data(self, project_data: dict) -> dict:
         name = project_data["name"]

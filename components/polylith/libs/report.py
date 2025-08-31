@@ -3,7 +3,7 @@ from operator import itemgetter
 from pathlib import Path
 from typing import List, Set, Union
 
-from polylith import workspace
+from polylith import output, workspace
 from polylith.libs import grouping
 from polylith.reporting import theme
 from rich import box, markup
@@ -69,7 +69,7 @@ def print_libs_summary() -> None:
     console.print(Padding("[data]Libraries in bricks[/]", (1, 0, 0, 0)))
 
 
-def print_libs_in_bricks(brick_imports: dict) -> None:
+def print_libs_in_bricks(brick_imports: dict, options: dict) -> None:
     bases_imports = flatten_imports(brick_imports, "bases")
     components_imports = flatten_imports(brick_imports, "components")
 
@@ -92,6 +92,11 @@ def print_libs_in_bricks(brick_imports: dict) -> None:
         table.add_row(f"[base]{brick}[/]", ", ".join(sorted(imports)))
 
     console.print(table, overflow="ellipsis")
+
+    save = options.get("save", False)
+
+    if save:
+        output.save(table, options, "libs")
 
 
 def print_missing_installed_libs(
@@ -191,12 +196,17 @@ def print_libs_in_projects(
     if not flattened:
         return
 
+    save = options.get("save", False)
+
     table = libs_in_projects_table(development_data, projects_data, flattened, options)
 
     console = Console(theme=theme.poly_theme)
 
     console.print(Padding("[data]Library versions in projects[/]", (1, 0, 0, 0)))
     console.print(table, overflow="ellipsis")
+
+    if save:
+        output.save(table, options, "libs_in_projects")
 
 
 def has_different_version(

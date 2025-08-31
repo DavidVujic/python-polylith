@@ -81,3 +81,18 @@ def get_resources_structure_from_config(path: Path) -> str:
         return "{brick}/{namespace}/{package}"
 
     return "{brick}/{package}"
+
+
+def get_output_dir(path: Path, command_name: str) -> str:
+    toml: dict = repo.load_workspace_config(path)
+
+    key = "output"
+
+    tool = toml["tool"]["polylith"]
+    commands = tool.get("commands", {})
+    command = commands.get(command_name, {})
+
+    output = command.get(key) or commands.get(key)
+    fallback = f"{repo.development_dir}/poly"
+
+    return output or fallback

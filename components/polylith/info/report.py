@@ -1,5 +1,6 @@
 from typing import List
 
+from polylith import output
 from polylith.reporting import theme
 from rich import box
 from rich.console import Console
@@ -67,34 +68,31 @@ def build_bricks_in_projects_table(
     return table
 
 
-def print_table(table: Table) -> None:
+def print_bricks_in_projects(
+    projects_data: List[dict],
+    bases: List[str],
+    components: List[str],
+    options: dict,
+) -> None:
+    table = build_bricks_in_projects_table(projects_data, bases, components, options)
+
+    save = options.get("save", False)
     console = Console(theme=theme.poly_theme)
 
     console.print(table, overflow="ellipsis")
 
-
-def print_compressed_view_for_bricks_in_projects(
-    projects_data: List[dict], bases: List[str], components: List[str]
-) -> None:
-    options = {"short": True}
-    table = build_bricks_in_projects_table(projects_data, bases, components, options)
-
-    print_table(table)
-
-
-def print_bricks_in_projects(
-    projects_data: List[dict], bases: List[str], components: List[str]
-) -> None:
-    options = {"short": False}
-    table = build_bricks_in_projects_table(projects_data, bases, components, options)
-
-    print_table(table)
+    if save:
+        output.save(table, options, "info")
 
 
 def print_workspace_summary(
-    projects_data: List[dict], bases: List[str], components: List[str]
+    projects_data: List[dict],
+    bases: List[str],
+    components: List[str],
+    options: dict,
 ) -> None:
-    console = Console(theme=theme.poly_theme)
+    save = options.get("save", False)
+    console = Console(theme=theme.poly_theme, record=save)
 
     console.print(Padding("[data]Workspace summary[/]", (1, 0, 1, 0)))
 
@@ -107,3 +105,6 @@ def print_workspace_summary(
     console.print(f"[comp]components[/]: [data]{number_of_components}[/]")
     console.print(f"[base]bases[/]: [data]{number_of_bases}[/]")
     console.print(f"[data]development[/]: [data]{number_of_dev}[/]")
+
+    if save:
+        output.save_recorded(console, options, "workspace_summary")

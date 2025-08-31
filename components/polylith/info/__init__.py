@@ -8,7 +8,6 @@ from polylith.info.collect import (
 from polylith.info.report import (
     is_project,
     print_bricks_in_projects,
-    print_compressed_view_for_bricks_in_projects,
     print_workspace_summary,
 )
 
@@ -20,6 +19,5 @@ __all__ = [
     "get_projects_data",
     "is_project",
     "print_bricks_in_projects",
-    "print_compressed_view_for_bricks_in_projects",
     "print_workspace_summary",
 ]

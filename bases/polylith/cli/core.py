@@ -59,9 +59,20 @@ def enriched_with_lock_files_data(
 
 
 @app.command("info")
-def info_command(short: Annotated[bool, options.short_workspace] = False):
+def info_command(
+    short: Annotated[bool, options.short_workspace] = False,
+    save: Annotated[bool, options.save] = False,
+):
     """Info about the Polylith workspace."""
-    commands.info.run(short)
+    root = repo.get_workspace_root(Path.cwd())
+    output = configuration.get_output_dir(root, "info") if save else None
+
+    cli_options = {
+        "short": short,
+        "save": save,
+        "output": output,
+    }
+    commands.info.run(root, cli_options)
 
 
 @app.command("check")
@@ -120,17 +131,21 @@ def libs_command(
     directory: Annotated[str, options.directory] = "",
     alias: Annotated[str, options.alias] = "",
     short: Annotated[bool, options.short] = False,
+    save: Annotated[bool, options.save] = False,
 ):
     """Show third-party libraries used in the workspace."""
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
     all_projects_data = info.get_projects_data(root, ns)
+    output = configuration.get_output_dir(root, "libs") if save else None
 
     cli_options = {
         "strict": strict,
         "alias": str.split(alias, ",") if alias else [],
         "short": short,
+        "save": save,
+        "output": output,
     }
 
     projects_data = filtered_projects_data(all_projects_data, directory)
@@ -145,7 +160,6 @@ def libs_command(
 
 @app.command("sync")
 def sync_command(
-    strict: Annotated[bool, options.strict] = False,
     quiet: Annotated[bool, options.quiet] = False,
     directory: Annotated[str, options.directory] = "",
     verbose: Annotated[bool, options.verbose] = False,
@@ -157,7 +171,6 @@ def sync_command(
     all_projects_data = info.get_projects_data(root, ns)
 
     cli_options = {
-        "strict": strict,
         "quiet": quiet,
         "verbose": verbose,
     }
@@ -172,14 +185,23 @@ def sync_command(
 def deps_command(
     directory: Annotated[str, options.directory] = "",
     brick: Annotated[str, options.brick] = "",
+    save: Annotated[bool, options.save] = False,
 ):
     """Visualize the dependencies between bricks."""
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
     dir_path = Path(directory).as_posix() if directory else None
+    output = configuration.get_output_dir(root, "deps") if save else None
 
-    commands.deps.run(root, ns, dir_path, brick or None)
+    cli_options = {
+        "directory": dir_path,
+        "brick": brick or None,
+        "save": save,
+        "output": output,
+    }
+
+    commands.deps.run(root, ns, cli_options)
 
 
 if __name__ == "__main__":
