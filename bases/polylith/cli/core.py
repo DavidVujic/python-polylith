@@ -131,17 +131,21 @@ def libs_command(
     directory: Annotated[str, options.directory] = "",
     alias: Annotated[str, options.alias] = "",
     short: Annotated[bool, options.short] = False,
+    save: Annotated[bool, options.save] = False,
 ):
     """Show third-party libraries used in the workspace."""
     root = repo.get_workspace_root(Path.cwd())
     ns = configuration.get_namespace_from_config(root)
 
     all_projects_data = info.get_projects_data(root, ns)
+    output = configuration.get_output_dir(root, "deps") if save else None
 
     cli_options = {
         "strict": strict,
         "alias": str.split(alias, ",") if alias else [],
         "short": short,
+        "save": save,
+        "output": output,
     }
 
     projects_data = filtered_projects_data(all_projects_data, directory)
