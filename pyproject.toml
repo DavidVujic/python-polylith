@@ -65,6 +65,7 @@ types-pyyaml = "^6.0.12.20241230"
 
 [tool.poetry.scripts]
 poly = "polylith.cli.core:app"
+polylith-cli = "polylith.cli.core:app"
 
 [tool.isort]
 profile = "black"
