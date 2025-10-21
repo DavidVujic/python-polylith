@@ -1,6 +1,10 @@
 import pytest
 import tomlkit
-from polylith.project import templates
+from polylith.project.get import (
+    hatch_pyproject_template,
+    pdm_pyproject_template,
+    poetry_pyproject_template,
+)
 
 template_data = {
     "name": "a project",
@@ -36,7 +40,7 @@ def to_toml(template: str, data: dict):
 
 
 def test_poetry_template():
-    data = to_toml(templates.poetry_pyproject, template_data)
+    data = to_toml(poetry_pyproject_template, template_data)
 
     assert data["tool"]["poetry"] is not None
     assert data["tool"]["poetry"].get("authors") is None
@@ -48,7 +52,7 @@ def test_poetry_template_with_optionals():
     expected_author = "Unit test"
 
     data = to_toml(
-        templates.poetry_pyproject,
+        poetry_pyproject_template,
         with_poetry_optionals(expected_description, expected_author),
     )
 
@@ -57,7 +61,7 @@ def test_poetry_template_with_optionals():
 
 
 def test_hatch_template():
-    data = to_toml(templates.hatch_pyproject, template_data)
+    data = to_toml(hatch_pyproject_template, template_data)
 
     assert "hatch-polylith-bricks" in data["build-system"]["requires"]
     assert data["tool"]["hatch"]["build"]["hooks"]["polylith-bricks"] == {}
@@ -68,7 +72,7 @@ def test_hatch_template():
 
 
 def test_pdm_template():
-    data = to_toml(templates.pdm_pyproject, template_data)
+    data = to_toml(pdm_pyproject_template, template_data)
 
     assert "pdm-polylith-bricks" in data["build-system"]["requires"]
     assert data["tool"]["polylith"]["bricks"] == {}
@@ -82,7 +86,7 @@ def test_pep621_template_with_optionals(name):
     expected_description = "Hello world"
     expected_author = "Unit Test"
 
-    template = {"hatch": templates.hatch_pyproject, "pdm": templates.pdm_pyproject}
+    template = {"hatch": hatch_pyproject_template, "pdm": pdm_pyproject_template}
 
     data = to_toml(
         template[name],
