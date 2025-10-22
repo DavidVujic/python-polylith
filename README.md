@@ -41,7 +41,7 @@ Have a look at the [Python-specific documentation](https://davidvujic.github.io/
 You will find installation, setup, usage guides, examples and more.
 
 ## Python Monorepos with Polylith :snake:
-You can use Polylith with Poetry, Hatch, PDM, Rye, uv and Pantsbuild.
+You can use Polylith with Poetry, Hatch, PDM, Rye, Maturin, Pixi, uv and Pantsbuild.
 This repo contains a Poetry plugin, a standalone CLI and build hooks.
 
 * [a Poetry Plugin](https://pypi.org/project/poetry-polylith-plugin)
@@ -51,7 +51,7 @@ This repo contains a Poetry plugin, a standalone CLI and build hooks.
 * [a PDM Build Hook for the workspace](https://pypi.org/project/pdm-polylith-workspace/)
 
 The Poetry plugin adds tooling support to Poetry.
-The CLI adds tooling support for several Package & Dependency Managers (such as Hatch, PDM, Rye, Pixi and uv).
+The CLI adds tooling support for several Package & Dependency Managers (such as Hatch, PDM, Rye, Maturin, Pixi and uv).
 
 The Hatch Build Hook adds build-specific support (also for uv, Rye, Pixi and Pantsbuild, using hatchling as the build backend).
 The PDM Build Hook for _projects_ adds build-specific support for PDM.
@@ -70,7 +70,7 @@ The repositories are example __Python__ setups of the Polylith Architecture.
 You will find examples of sharing code between different kind of projects,
 and developer tooling setup such as `mypy` and the `venv`.
 
-There's more examples and production systems in the [documentation](https://davidvujic.github.io/python-polylith-docs/examples/).
+There's __more examples__ and production systems in the [documentation](https://davidvujic.github.io/python-polylith-docs/examples/).
 
 ## Videos
 
