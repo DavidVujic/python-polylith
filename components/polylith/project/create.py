@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import tomlkit
-from polylith import repo
+from polylith import configuration, repo
 from polylith.dirs import create_dir
 from polylith.repo import projects_dir
 
@@ -21,6 +21,8 @@ def create_project(path: Path, template: str, name: str, description: str) -> No
     description_field = f'description = "{description}"' if description else ""
     authors_field = f"authors = {authors}" if authors else ""
 
+    namespace = configuration.get_namespace_from_config(path)
+
     project_toml = create_project_toml(
         template,
         {
@@ -28,6 +30,7 @@ def create_project(path: Path, template: str, name: str, description: str) -> No
             "description": description_field,
             "authors": authors_field,
             "python_version": python_version,
+            "namespace": namespace,
         },
     )
 

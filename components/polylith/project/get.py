@@ -57,6 +57,9 @@ requires-python = "{python_version}"
 
 dependencies = []
 
+[tool.hatch.build.targets.wheel]
+packages = ["{namespace}"]
+
 [tool.hatch.build.hooks.polylith-bricks]
 
 [tool.polylith.bricks]
