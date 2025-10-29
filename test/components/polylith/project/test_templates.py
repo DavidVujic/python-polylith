@@ -11,6 +11,7 @@ template_data = {
     "description": "",
     "authors": "",
     "python_version": "3.12",
+    "namespace": "unit_test",
 }
 
 
