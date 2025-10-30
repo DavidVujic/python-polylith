@@ -58,6 +58,35 @@ def collect_configured_hatch_exclude_patterns(data: dict, target_name: str) -> s
     return set(exclude)
 
 
+def collect_configured_pdm_exclude_patterns(data: dict) -> set:
+    entry = data.get("tool", {}).get("pdm", {}).get("build", {})
+    exclude = entry.get("excludes", [])
+
+    return set(exclude)
+
+
+def collect_configured_poetry_exclude_patterns(data: dict) -> set:
+    exclude = data["tool"]["poetry"].get("exclude", [])
+
+    return set(exclude)
+
+
+def collect_configured_exclude_patterns(data: dict) -> set:
+    if repo.is_hatch(data):
+        wheel = collect_configured_hatch_exclude_patterns(data, "wheel")
+        sdist = collect_configured_hatch_exclude_patterns(data, "sdist")
+
+        return set().union(wheel, sdist)
+
+    if repo.is_pdm(data):
+        return collect_configured_pdm_exclude_patterns(data)
+
+    if repo.is_poetry(data):
+        return collect_configured_poetry_exclude_patterns(data)
+
+    return set()
+
+
 def get_project_package_includes(namespace: str, data) -> List[dict]:
     if repo.is_poetry(data):
         return data["tool"]["poetry"].get("packages", [])
