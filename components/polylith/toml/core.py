@@ -49,6 +49,15 @@ def get_hatch_project_packages(data) -> dict:
     return build_data.get("force-include", {})
 
 
+def collect_configured_hatch_exclude_patterns(data: dict, target_name: str) -> set:
+    entry = data.get("tool", {}).get("hatch", {}).get("build", {})
+    target = entry.get("targets", {}).get(target_name, {})
+
+    exclude = target.get("exclude", [])
+
+    return set(exclude)
+
+
 def get_project_package_includes(namespace: str, data) -> List[dict]:
     if repo.is_poetry(data):
         return data["tool"]["poetry"].get("packages", [])
