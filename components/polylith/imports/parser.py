@@ -1,7 +1,7 @@
 import ast
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Set
+from typing import List, Set, Union
 
 
 def parse_import(node: ast.Import) -> List[str]:
@@ -47,18 +47,27 @@ def is_python_file(path: Path) -> bool:
     return path.is_file() and path.suffix == ".py"
 
 
+def should_exclude(path: Path, excludes: Union[set, None]):
+    if excludes is None:
+        return False
+
+    return any(path.match(pattern) for pattern in excludes)
+
+
 @lru_cache(maxsize=None)
-def list_imports(path: Path) -> Set[str]:
+def list_imports(path: Path, exclude: Union[set, None]) -> Set[str]:
     py_modules = [path] if is_python_file(path) else path.rglob("*.py")
 
-    extracted = (extract_imports(m) for m in py_modules)
+    filtered = [p for p in py_modules if not should_exclude(p, exclude)]
+
+    extracted = (extract_imports(m) for m in filtered)
     flattened = (i for imports in extracted for i in imports)
 
     return set(flattened)
 
 
 def fetch_all_imports(paths: Set[Path]) -> dict:
-    rows = [{p.name: list_imports(p)} for p in paths]
+    rows = [{p.name: list_imports(p, None)} for p in paths]
 
     return {k: v for row in rows for k, v in row.items()}
 

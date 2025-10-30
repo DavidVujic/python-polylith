@@ -139,6 +139,7 @@ def get_packages_for_projects(root: Path) -> List[dict]:
             "path": d["path"],
             "type": d["type"],
             "deps": toml.get_project_dependencies(d["toml"]),
+            "exclude": toml.collect_configured_exclude_patterns(d["toml"]),
         }
         for d in toml_files
     ]

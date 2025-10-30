@@ -52,10 +52,19 @@ def get_hatch_project_packages(data) -> dict:
 def collect_configured_hatch_exclude_patterns(
     data: dict, target_name: Union[str, None]
 ) -> set:
-    entry = data.get("tool", {}).get("hatch", {}).get("build", {})
+    key = "exclude"
 
-    target = entry.get("targets", {}).get(target_name, {}) if target_name else entry
-    exclude = target.get("exclude", [])
+    entry = data.get("tool", {}).get("hatch", {}).get("build", {})
+    targets = entry.get("targets", {})
+
+    if target_name:
+        exclude = targets.get(target_name, {}).get(key, [])
+    else:
+        wheel = targets.get("wheel", {}).get(key, [])
+        sdist = targets.get("sdist", {}).get(key, [])
+        both = entry.get(key, [])
+
+        exclude = wheel + sdist + both
 
     return set(exclude)
 
