@@ -49,10 +49,12 @@ def get_hatch_project_packages(data) -> dict:
     return build_data.get("force-include", {})
 
 
-def collect_configured_hatch_exclude_patterns(data: dict, target_name: str) -> set:
+def collect_configured_hatch_exclude_patterns(
+    data: dict, target_name: Union[str, None]
+) -> set:
     entry = data.get("tool", {}).get("hatch", {}).get("build", {})
-    target = entry.get("targets", {}).get(target_name, {})
 
+    target = entry.get("targets", {}).get(target_name, {}) if target_name else entry
     exclude = target.get("exclude", [])
 
     return set(exclude)
@@ -71,12 +73,11 @@ def collect_configured_poetry_exclude_patterns(data: dict) -> set:
     return set(exclude)
 
 
-def collect_configured_exclude_patterns(data: dict) -> set:
+def collect_configured_exclude_patterns(
+    data: dict, target_name: Union[str, None] = None
+) -> set:
     if repo.is_hatch(data):
-        wheel = collect_configured_hatch_exclude_patterns(data, "wheel")
-        sdist = collect_configured_hatch_exclude_patterns(data, "sdist")
-
-        return set().union(wheel, sdist)
+        return collect_configured_hatch_exclude_patterns(data, target_name)
 
     if repo.is_pdm(data):
         return collect_configured_pdm_exclude_patterns(data)

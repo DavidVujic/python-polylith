@@ -1,5 +1,5 @@
 from polylith.toml.core import (
-    collect_configured_hatch_exclude_patterns,
+    collect_configured_exclude_patterns,
     get_custom_top_namespace_from_polylith_section,
     get_project_dependencies,
     get_project_package_includes,
@@ -10,7 +10,7 @@ from polylith.toml.core import (
 )
 
 __all__ = [
-    "collect_configured_hatch_exclude_patterns",
+    "collect_configured_exclude_patterns",
     "get_custom_top_namespace_from_polylith_section",
     "get_project_dependencies",
     "get_project_package_includes",

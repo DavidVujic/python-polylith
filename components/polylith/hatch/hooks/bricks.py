@@ -67,7 +67,7 @@ class PolylithBricksHook(BuildHookInterface):
         ns = parsing.parse_brick_namespace_from_path(bricks)
         top_ns = core.get_top_namespace(data, self.config)
         work_dir = core.get_work_dir(self.config)
-        exclude_patterns = toml.collect_configured_hatch_exclude_patterns(data, self.target_name)
+        exclude_patterns = toml.collect_configured_exclude_patterns(data, self.target_name)
 
         if not top_ns and not exclude_patterns:
             build_data[include_key] = bricks
