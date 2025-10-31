@@ -66,10 +66,13 @@ def list_imports(path: Path) -> Set[str]:
     return extract_and_flatten(py_modules)
 
 
-def should_exclude(path: Path, excludes: Set[str]):
-    if excludes is None:
-        return False
+def fetch_all_imports(paths: Set[Path]) -> dict:
+    rows = [{p.name: list_imports(p)} for p in paths]
 
+    return {k: v for row in rows for k, v in row.items()}
+
+
+def should_exclude(path: Path, excludes: Set[str]):
     return any(path.match(pattern) for pattern in excludes)
 
 
@@ -79,12 +82,6 @@ def list_excluded_imports(path: Path, excludes: Set[str]) -> Set[str]:
     filtered = [p for p in py_modules if should_exclude(p, excludes)]
 
     return extract_and_flatten(filtered)
-
-
-def fetch_all_imports(paths: Set[Path]) -> dict:
-    rows = [{p.name: list_imports(p)} for p in paths]
-
-    return {k: v for row in rows for k, v in row.items()}
 
 
 def fetch_excluded_imports(paths: Set[Path], excludes: Set[str]) -> dict:
