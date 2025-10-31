@@ -44,7 +44,7 @@ def extract_imports(path: Path) -> List[str]:
     return [i for node in ast.walk(tree) for i in parse_imports(node) if i is not None]
 
 
-def extract_and_flatten(py_modules: Iterable[Path]) -> Set[str]:
+def extract_and_flatten(py_modules: Iterable) -> Set[str]:
     extracted = (extract_imports(m) for m in py_modules)
     flattened = (i for imports in extracted for i in imports)
 
@@ -55,7 +55,7 @@ def is_python_file(path: Path) -> bool:
     return path.is_file() and path.suffix == ".py"
 
 
-def find_files(path: Path) -> Iterable[Path]:
+def find_files(path: Path) -> Iterable:
     return [path] if is_python_file(path) else path.rglob("*.py")
 
 
