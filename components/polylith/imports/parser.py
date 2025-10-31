@@ -1,7 +1,8 @@
 import ast
+from collections.abc import Iterable
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Set, Union
+from typing import List, Set
 
 
 def parse_import(node: ast.Import) -> List[str]:
@@ -43,31 +44,51 @@ def extract_imports(path: Path) -> List[str]:
     return [i for node in ast.walk(tree) for i in parse_imports(node) if i is not None]
 
 
+def extract_and_flatten(py_modules: Iterable[Path]) -> Set[str]:
+    extracted = (extract_imports(m) for m in py_modules)
+    flattened = (i for imports in extracted for i in imports)
+
+    return set(flattened)
+
+
 def is_python_file(path: Path) -> bool:
     return path.is_file() and path.suffix == ".py"
 
 
-def should_exclude(path: Path, excludes: Union[set, None]):
+def find_files(path: Path) -> Iterable[Path]:
+    return [path] if is_python_file(path) else path.rglob("*.py")
+
+
+@lru_cache(maxsize=None)
+def list_imports(path: Path) -> Set[str]:
+    py_modules = find_files(path)
+
+    return extract_and_flatten(py_modules)
+
+
+def should_exclude(path: Path, excludes: Set[str]):
     if excludes is None:
         return False
 
     return any(path.match(pattern) for pattern in excludes)
 
 
-@lru_cache(maxsize=None)
-def list_imports(path: Path, exclude: Union[set, None]) -> Set[str]:
-    py_modules = [path] if is_python_file(path) else path.rglob("*.py")
+def list_excluded_imports(path: Path, excludes: Set[str]) -> Set[str]:
+    py_modules = find_files(path)
 
-    filtered = [p for p in py_modules if not should_exclude(p, exclude)]
+    filtered = [p for p in py_modules if should_exclude(p, excludes)]
 
-    extracted = (extract_imports(m) for m in filtered)
-    flattened = (i for imports in extracted for i in imports)
-
-    return set(flattened)
+    return extract_and_flatten(filtered)
 
 
 def fetch_all_imports(paths: Set[Path]) -> dict:
-    rows = [{p.name: list_imports(p, None)} for p in paths]
+    rows = [{p.name: list_imports(p)} for p in paths]
+
+    return {k: v for row in rows for k, v in row.items()}
+
+
+def fetch_excluded_imports(paths: Set[Path], excludes: Set[str]) -> dict:
+    rows = [{p.name: list_excluded_imports(p, excludes)} for p in paths]
 
     return {k: v for row in rows for k, v in row.items()}
 
