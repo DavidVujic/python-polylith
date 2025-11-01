@@ -22,8 +22,19 @@ def choose_base(root: Path, ns: str, project_data: dict) -> Union[str, None]:
     )
 
 
-def calculate_brick_diff(root: Path, ns: str, project_data: dict) -> dict:
-    if info.is_project(project_data) and is_project_without_bricks(project_data):
+def can_run_interactive_mode(project_data: dict, options: dict) -> bool:
+    is_quiet = options["quiet"]
+
+    if is_quiet:
+        return False
+
+    return info.is_project(project_data) and is_project_without_bricks(project_data)
+
+
+def calculate_brick_diff(
+    root: Path, ns: str, project_data: dict, options: dict
+) -> dict:
+    if can_run_interactive_mode(project_data, options):
         base = choose_base(root, ns, project_data)
 
         if base:
@@ -36,7 +47,7 @@ def run(root: Path, ns: str, project_data: dict, options: dict):
     is_quiet = options["quiet"]
     is_verbose = options["verbose"]
 
-    diff = calculate_brick_diff(root, ns, project_data)
+    diff = calculate_brick_diff(root, ns, project_data, options)
 
     sync.update_project(root, ns, diff)
 
