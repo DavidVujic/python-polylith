@@ -110,6 +110,18 @@ def collect_imports_to_exclude(root: Path, ns: str, project_data: dict) -> dict:
     return extract_collected_imports(ns, excludes_in_bases, excludes_in_components)
 
 
+def create_exclude_report(collected_excludes: dict) -> dict:
+    fallback: dict = {"bases": {}, "components": {}}
+
+    collected_bricks = collected_excludes.get("brick_imports", fallback)
+    collected_third_party = collected_excludes.get("third_party_imports", fallback)
+
+    bricks = collect.to_flattened_imports(collected_bricks)
+    third_party = collect.to_flattened_imports(collected_third_party)
+
+    return {"brick_exclude": bricks, "libs_exclude": third_party}
+
+
 def create_report(
     project_data: dict,
     collected_imports: dict,
