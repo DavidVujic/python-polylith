@@ -86,6 +86,7 @@ def run_each(
     from_lock_file = libs.is_from_lock_file(deps)
 
     collected_imports = check.report.collect_all_imports(root, ns, project_data)
+    collected_excludes = check.report.collect_imports_to_exclude(root, ns, project_data)
     collected_libs = distributions.known_aliases_and_sub_dependencies(
         deps,
         alias,
@@ -100,7 +101,12 @@ def run_each(
         is_strict or from_lock_file,
     )
 
-    res = all([not details["brick_diff"], not details["libs_diff"]])
+    exclude_details = check.report.create_exclude_report(collected_excludes)
+
+    brick_diff = details["brick_diff"].difference(exclude_details["brick_exclude"])
+    libs_diff = details["libs_diff"].difference(exclude_details["libs_exclude"])
+
+    res = all([not brick_diff, not libs_diff])
 
     if not is_quiet:
         check.report.print_missing_deps(details["brick_diff"], name)
