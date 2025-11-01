@@ -42,7 +42,9 @@ def print_missing_deps(diff: Set[str], project_name: str) -> None:
 
     missing = ", ".join(sorted(diff))
 
-    console.print(f":thinking_face: Cannot locate [data]{missing}[/] in [proj]{project_name}[/]")
+    console.print(
+        f":thinking_face: Cannot locate [data]{missing}[/] in [proj]{project_name}[/]"
+    )
 
 
 def print_unused_bricks(bricks: Set[str], project_name: str) -> None:
@@ -54,7 +56,25 @@ def print_unused_bricks(bricks: Set[str], project_name: str) -> None:
     unused = ", ".join(sorted(bricks))
     verb = "Are" if len(bricks) > 1 else "Is"
 
-    console.print(f":mag_right: {verb} [comp]{unused}[/] needed in [proj]{project_name}[/]?")
+    console.print(
+        f":mag_right: {verb} [comp]{unused}[/] needed in [proj]{project_name}[/]?"
+    )
+
+
+def extract_collected_imports(
+    ns: str, imports_in_bases: dict, imports_in_components: dict
+) -> dict:
+    brick_imports = {
+        "bases": grouping.extract_brick_imports(imports_in_bases, ns),
+        "components": grouping.extract_brick_imports(imports_in_components, ns),
+    }
+
+    third_party_imports = {
+        "bases": libs.extract_third_party_imports(imports_in_bases, ns),
+        "components": libs.extract_third_party_imports(imports_in_components, ns),
+    }
+
+    return {"brick_imports": brick_imports, "third_party_imports": third_party_imports}
 
 
 def collect_all_imports(root: Path, ns: str, project_data: dict) -> dict:
@@ -67,17 +87,27 @@ def collect_all_imports(root: Path, ns: str, project_data: dict) -> dict:
     all_imports_in_bases = imports.fetch_all_imports(bases_paths)
     all_imports_in_components = imports.fetch_all_imports(components_paths)
 
-    brick_imports = {
-        "bases": grouping.extract_brick_imports(all_imports_in_bases, ns),
-        "components": grouping.extract_brick_imports(all_imports_in_components, ns),
-    }
+    return extract_collected_imports(
+        ns, all_imports_in_bases, all_imports_in_components
+    )
 
-    third_party_imports = {
-        "bases": libs.extract_third_party_imports(all_imports_in_bases, ns),
-        "components": libs.extract_third_party_imports(all_imports_in_components, ns),
-    }
 
-    return {"brick_imports": brick_imports, "third_party_imports": third_party_imports}
+def collect_imports_to_exclude(root: Path, ns: str, project_data: dict) -> dict:
+    exclude = project_data["exclude"]
+
+    if not exclude:
+        return {}
+
+    bases = {b for b in project_data.get("bases", [])}
+    components = {c for c in project_data.get("components", [])}
+
+    bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
+    components_paths = workspace.paths.collect_components_paths(root, ns, components)
+
+    excludes_in_bases = imports.fetch_excluded_imports(bases_paths, exclude)
+    excludes_in_components = imports.fetch_excluded_imports(components_paths, exclude)
+
+    return extract_collected_imports(ns, excludes_in_bases, excludes_in_components)
 
 
 def create_report(
