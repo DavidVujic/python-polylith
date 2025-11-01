@@ -98,8 +98,8 @@ def collect_imports_to_exclude(root: Path, ns: str, project_data: dict) -> dict:
     if not exclude:
         return {}
 
-    bases = {b for b in project_data.get("bases", [])}
-    components = {c for c in project_data.get("components", [])}
+    bases = set(project_data.get("bases", []))
+    components = set(project_data.get("components", []))
 
     bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
     components_paths = workspace.paths.collect_components_paths(root, ns, components)
