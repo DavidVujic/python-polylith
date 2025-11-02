@@ -59,3 +59,9 @@ def test_create_exclude_report() -> None:
     }
 
     assert report.create_exclude_report(collected_excludes) == expected
+
+
+def test_create_exclude_report_for_no_excluded_patterns() -> None:
+    expected: dict = {"brick_exclude": set(), "libs_exclude": set()}
+
+    assert report.create_exclude_report({}) == expected
