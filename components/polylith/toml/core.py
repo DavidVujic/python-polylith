@@ -82,6 +82,17 @@ def collect_configured_poetry_exclude_patterns(data: dict) -> set:
     return set(exclude)
 
 
+def collect_configured_uv_exclude_patterns(data: dict) -> set:
+    entry = data.get("tool", {}).get("uv", {}).get("build-backend", {})
+
+    wheel = entry.get("wheel-exclude", [])
+    sdist = entry.get("source-exclude", [])
+
+    exclude = wheel + sdist
+
+    return set(exclude)
+
+
 def collect_configured_exclude_patterns(
     data: dict, target_name: Union[str, None] = None
 ) -> set:
@@ -93,6 +104,9 @@ def collect_configured_exclude_patterns(
 
     if repo.is_poetry(data):
         return collect_configured_poetry_exclude_patterns(data)
+
+    if repo.is_uv(data):
+        return collect_configured_uv_exclude_patterns(data)
 
     return set()
 
