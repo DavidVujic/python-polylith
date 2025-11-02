@@ -152,7 +152,7 @@ def test_parse_pep_621_project_dependencies():
 
 
 def test_parse_poetry_project_dependencies():
-    expected = expected_dependencies | {"python": "^3.10"}
+    expected = {**expected_dependencies, **{"python": "^3.10"}}
     data = tomlkit.loads(poetry_toml_deps)
 
     res = toml.parse_project_dependencies(data)
