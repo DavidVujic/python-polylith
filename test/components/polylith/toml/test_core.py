@@ -151,3 +151,141 @@ def test_parse_poetry_project_dependencies():
     res = toml.parse_project_dependencies(data)
 
     assert res == expected_dependencies
+
+
+def test_collect_hatch_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+exclude = ["**/one/*"]
+"""
+
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
+
+
+def test_collect_hatch_wheel_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+exclude = ["**/two/*"]
+"""
+
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {"**/two/*"}
+
+
+def test_collect_hatch_sdist_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+exclude = ["**/two/*"]
+"""
+
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {"**/two/*"}
+
+
+def test_collect_hatch_wheel_and_sdist_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+exclude = ["**/one/*"]
+
+[tool.hatch.build.targets.wheel]
+exclude = ["**/two/*"]
+
+[tool.hatch.build.targets.sdist]
+exclude = ["**/three/*"]
+"""
+
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {
+        "**/one/*",
+        "**/two/*",
+        "**/three/*",
+    }
+    assert toml.collect_configured_exclude_patterns(data, "wheel") == {"**/two/*"}
+    assert toml.collect_configured_exclude_patterns(data, "sdist") == {"**/three/*"}
+
+
+def test_collect_pdm_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.build]
+excludes = ["**/one/*"]
+"""
+
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
+
+
+def test_collect_poetry_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+exclude = ["**/one/*"]
+"""
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
+
+
+def test_collect_uv_sdist_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+source-exclude = ["**/one/*"]
+"""
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
+
+
+def test_collect_uv_wheel_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+wheel-exclude = ["**/one/*"]
+"""
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
+
+
+def test_collect_uv_combined_exclude_patterns() -> None:
+    toml_data = """\
+[build-system]
+requires = ["uv_build>=0.9.6,<0.10.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+source-exclude = ["**/one/*"]
+wheel-exclude = ["**/two/*"]
+"""
+    data = tomlkit.loads(toml_data)
+    assert toml.collect_configured_exclude_patterns(data, None) == {
+        "**/one/*",
+        "**/two/*",
+    }
