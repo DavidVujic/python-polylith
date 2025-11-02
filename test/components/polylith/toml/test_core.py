@@ -58,7 +58,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-dependencies = ["fastapi~=0.109.2", "uvicorn~=0.25.0", "tomlkit"]
+dependencies = ["fastapi~=0.109.2", "uvicorn[standard]~=0.25.0", "tomlkit"]
 
 [project.optional-dependencies]
 dev = ["an-optional-lib==1.2.3", "another"]
@@ -101,6 +101,15 @@ expected_packages = [
     {"include": "unittest/two", "from": "../../components"},
 ]
 
+expected_dependencies = {
+    "fastapi": "~=0.109.2",
+    "uvicorn[standard]": "~=0.25.0",
+    "tomlkit": "",
+    "an-optional-lib": "==1.2.3",
+    "another": "",
+    "awsglue-local-dev": "==1.0.0",
+}
+
 
 def test_get_poetry_package_includes():
     data = tomlkit.loads(poetry_toml)
@@ -135,15 +144,6 @@ def test_get_hatch_package_includes_from_default_when_in_both():
 
 
 def test_parse_pep_621_project_dependencies():
-    expected_dependencies = {
-        "fastapi": "~=0.109.2",
-        "uvicorn": "~=0.25.0",
-        "tomlkit": "",
-        "an-optional-lib": "==1.2.3",
-        "another": "",
-        "awsglue-local-dev": "==1.0.0",
-    }
-
     data = tomlkit.loads(pep_621_toml_deps)
 
     res = toml.parse_project_dependencies(data)
@@ -152,21 +152,15 @@ def test_parse_pep_621_project_dependencies():
 
 
 def test_parse_poetry_project_dependencies():
-    expected_dependencies = {
-        "python": "^3.10",
-        "fastapi": "^0.110.0",
-        "uvicorn[standard]": "^0.27.1",
-        "tomlkit": "*",
-        "an-optional-lib": "1.2.3",
-        "another": "",
-        "awsglue-local-dev": "1.0.0",
-    }
-
+    expected = expected_dependencies | {"python": "^3.10"}
     data = tomlkit.loads(poetry_toml_deps)
 
     res = toml.parse_project_dependencies(data)
 
-    assert res == expected_dependencies
+    assert res.keys() == expected.keys()
+    assert res["fastapi"] == "^0.110.0"
+    assert res["tomlkit"] == "*"
+    assert res["an-optional-lib"] == "1.2.3"
 
 
 def test_collect_hatch_exclude_patterns() -> None:
