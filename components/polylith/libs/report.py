@@ -19,8 +19,10 @@ def get_third_party_imports(root: Path, ns: str, project_data: dict) -> dict:
     bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
     components_paths = workspace.paths.collect_components_paths(root, ns, components)
 
-    bases_imports = grouping.get_third_party_imports(root, bases_paths)
-    components_imports = grouping.get_third_party_imports(root, components_paths)
+    bases_imports = grouping.get_third_party_imports(root, bases_paths, project_data)
+    components_imports = grouping.get_third_party_imports(
+        root, components_paths, project_data
+    )
 
     return {"bases": bases_imports, "components": components_imports}
 
