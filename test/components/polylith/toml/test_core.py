@@ -231,24 +231,6 @@ def test_collect_poetry_exclude_patterns() -> None:
     assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
 
 
-def test_collect_uv_sdist_exclude_patterns() -> None:
-    build_data = """\
-[tool.uv.build-backend]
-source-exclude = ["**/one/*"]
-"""
-    data = tomlkit.loads(uv_toml + build_data)
-    assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
-
-
-def test_collect_uv_wheel_exclude_patterns() -> None:
-    build_data = """\
-[tool.uv.build-backend]
-wheel-exclude = ["**/one/*"]
-"""
-    data = tomlkit.loads(uv_toml + build_data)
-    assert toml.collect_configured_exclude_patterns(data, None) == {"**/one/*"}
-
-
 def test_collect_uv_combined_exclude_patterns() -> None:
     build_data = """\
 [tool.uv.build-backend]
