@@ -39,3 +39,23 @@ def test_extract_collected_imports() -> None:
     res = report.extract_collected_imports(ns, imports_in_bases, imports_in_components)
 
     assert res == expected
+
+
+def test_create_exclude_report() -> None:
+    collected_excludes = {
+        "brick_imports": {
+            "bases": {"cli": {"second"}},
+            "components": {"first": {"third"}},
+        },
+        "third_party_imports": {
+            "bases": {"cli": {"tomlkit"}},
+            "components": {"second": {"httpx"}},
+        },
+    }
+
+    expected = {
+        "brick_exclude": {"second", "third"},
+        "libs_exclude": {"httpx", "tomlkit"},
+    }
+
+    assert report.create_exclude_report(collected_excludes) == expected
