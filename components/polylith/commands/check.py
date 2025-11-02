@@ -78,6 +78,7 @@ def run_each(
 ) -> Tuple[bool, dict]:
     is_quiet = options["quiet"]
     is_strict = options["strict"]
+    is_verbose = options["verbose"]
 
     name = project_data["name"]
     deps = project_data["deps"]
@@ -103,17 +104,26 @@ def run_each(
 
     exclude_details = check.report.create_exclude_report(collected_excludes)
 
-    brick_diff = details["brick_diff"].difference(exclude_details["brick_exclude"])
-    libs_diff = details["libs_diff"].difference(exclude_details["libs_exclude"])
+    brick_diff = details["brick_diff"]
+    libs_diff = details["libs_diff"]
+    brick_exclude = exclude_details["brick_exclude"]
+    libs_exclude = exclude_details["libs_exclude"]
 
-    res = all([not brick_diff, not libs_diff])
+    missing_bricks = brick_diff.difference(brick_exclude)
+    missing_libs = libs_diff.difference(libs_exclude)
+
+    res = all([not missing_bricks, not missing_libs])
 
     if not is_quiet:
-        check.report.print_missing_deps(details["brick_diff"], name)
-        check.report.print_missing_deps(details["libs_diff"], name)
+        check.report.print_missing_deps(missing_bricks, name)
+        check.report.print_missing_deps(missing_libs, name)
 
     if is_strict and not is_quiet:
         check.report.print_unused_bricks(details["unused_bricks"], name)
+
+    if is_verbose:
+        check.report.print_excluded_deps(brick_exclude, name)
+        check.report.print_excluded_deps(libs_exclude, name)
 
     return res, details
 

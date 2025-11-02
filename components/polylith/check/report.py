@@ -47,6 +47,19 @@ def print_missing_deps(diff: Set[str], project_name: str) -> None:
     )
 
 
+def print_excluded_deps(excluded: Set[str], project_name: str) -> None:
+    if not excluded:
+        return
+
+    console = Console(theme=theme.poly_theme)
+
+    skipped = ", ".join(sorted(excluded))
+
+    console.print(
+        f":information: Marked as excluded in [proj]{project_name}[/]: [data]{skipped}[/]"
+    )
+
+
 def print_unused_bricks(bricks: Set[str], project_name: str) -> None:
     if not bricks:
         return
