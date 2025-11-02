@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Set
 
 from polylith import configuration
-from polylith.imports import extract_top_ns, fetch_all_imports
+from polylith.imports import extract_top_ns, fetch_all_imports, fetch_excluded_imports
 from polylith.libs.stdlib import standard_libs
 
 
@@ -41,9 +41,21 @@ def extract_third_party_imports(all_imports: dict, top_ns: str) -> dict:
     return exclude_empty(with_third_party)
 
 
-def get_third_party_imports(root: Path, paths: Set[Path]) -> dict:
+def get_third_party_imports(
+    root: Path, paths: Set[Path], project_data: dict
+) -> dict:
     top_ns = configuration.get_namespace_from_config(root)
 
     all_imports = fetch_all_imports(paths)
 
-    return extract_third_party_imports(all_imports, top_ns)
+    third_party = extract_third_party_imports(all_imports, top_ns)
+
+    exclude = project_data["exclude"]
+
+    if not exclude:
+        return third_party
+
+    excluded = fetch_excluded_imports(paths, exclude)
+    excluded_third_party = extract_third_party_imports(excluded, top_ns)
+
+    return {k: v for k, v in third_party.items() if k not in excluded_third_party}

@@ -49,6 +49,68 @@ def get_hatch_project_packages(data) -> dict:
     return build_data.get("force-include", {})
 
 
+def collect_configured_hatch_exclude_patterns(
+    data: dict, target_name: Union[str, None]
+) -> set:
+    key = "exclude"
+
+    entry = data.get("tool", {}).get("hatch", {}).get("build", {})
+    targets = entry.get("targets", {})
+
+    if target_name:
+        exclude = targets.get(target_name, {}).get(key, [])
+    else:
+        wheel = targets.get("wheel", {}).get(key, [])
+        sdist = targets.get("sdist", {}).get(key, [])
+        both = entry.get(key, [])
+
+        exclude = wheel + sdist + both
+
+    return set(exclude)
+
+
+def collect_configured_pdm_exclude_patterns(data: dict) -> set:
+    entry = data.get("tool", {}).get("pdm", {}).get("build", {})
+    exclude = entry.get("excludes", [])
+
+    return set(exclude)
+
+
+def collect_configured_poetry_exclude_patterns(data: dict) -> set:
+    exclude = data["tool"]["poetry"].get("exclude", [])
+
+    return set(exclude)
+
+
+def collect_configured_uv_exclude_patterns(data: dict) -> set:
+    entry = data.get("tool", {}).get("uv", {}).get("build-backend", {})
+
+    wheel = entry.get("wheel-exclude", [])
+    sdist = entry.get("source-exclude", [])
+
+    exclude = wheel + sdist
+
+    return set(exclude)
+
+
+def collect_configured_exclude_patterns(
+    data: dict, target_name: Union[str, None] = None
+) -> set:
+    if repo.is_hatch(data):
+        return collect_configured_hatch_exclude_patterns(data, target_name)
+
+    if repo.is_pdm(data):
+        return collect_configured_pdm_exclude_patterns(data)
+
+    if repo.is_poetry(data):
+        return collect_configured_poetry_exclude_patterns(data)
+
+    if repo.is_uv(data):
+        return collect_configured_uv_exclude_patterns(data)
+
+    return set()
+
+
 def get_project_package_includes(namespace: str, data) -> List[dict]:
     if repo.is_poetry(data):
         return data["tool"]["poetry"].get("packages", [])

@@ -130,5 +130,9 @@ def is_pdm(pyproject: dict) -> bool:
     return has_build_requires(pyproject, "pdm")
 
 
+def is_uv(pyproject: dict) -> bool:
+    return has_build_requires(pyproject, "uv_build")
+
+
 def is_pep_621_ready(pyproject: dict) -> bool:
     return pyproject.get("project", {}).get("name") is not None

@@ -34,15 +34,6 @@ def filtered_bricks(data: dict, version: str) -> dict:
     return bricks
 
 
-def collect_configured_exclude_patterns(data: dict, target_name: str) -> set:
-    entry = data.get("tool", {}).get("hatch", {}).get("build", {})
-    target = entry.get("targets", {}).get(target_name, {})
-
-    exclude = target.get("exclude", [])
-
-    return set(exclude)
-
-
 def copy_bricks(bricks: dict, work_dir: Path, exclude_patterns: Set[str]) -> List[Path]:
     return [
         parsing.copy_brick(source, brick, work_dir, exclude_patterns)
@@ -76,7 +67,7 @@ class PolylithBricksHook(BuildHookInterface):
         ns = parsing.parse_brick_namespace_from_path(bricks)
         top_ns = core.get_top_namespace(data, self.config)
         work_dir = core.get_work_dir(self.config)
-        exclude_patterns = collect_configured_exclude_patterns(data, self.target_name)
+        exclude_patterns = toml.collect_configured_exclude_patterns(data, self.target_name)
 
         if not top_ns and not exclude_patterns:
             build_data[include_key] = bricks
