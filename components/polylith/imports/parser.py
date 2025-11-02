@@ -38,6 +38,7 @@ def parse_module(path: Path) -> ast.AST:
     return tree
 
 
+@lru_cache(maxsize=None)
 def extract_imports(path: Path) -> List[str]:
     tree = parse_module(path)
 
