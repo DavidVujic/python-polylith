@@ -1,6 +1,6 @@
 import pytest
 import tomlkit
-from polylith.project.get import (
+from polylith.project.templates import (
     hatch_pyproject_template,
     pdm_pyproject_template,
     poetry_pyproject_template,
