@@ -28,7 +28,7 @@ def flatten_dependent_bricks(
     changed_bricks: Set[str], bases: Set[str], components: Set[str], import_data: dict
 ) -> Set[str]:
     matrix = [
-        deps.report.sorted_used_by(brick, bases, components, import_data)
+        deps.core.sorted_used_by(brick, bases, components, import_data)
         for brick in changed_bricks
     ]
 
