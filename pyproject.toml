@@ -27,6 +27,7 @@ packages = [
     { include = "polylith/hatch", from = "components" },
     { include = "polylith/imports", from = "components" },
     { include = "polylith/info", from = "components" },
+    { include = "polylith/interactive",from = "components" },
     { include = "polylith/interface", from = "components" },
     { include = "polylith/libs", from = "components" },
     { include = "polylith/output", from = "components" },

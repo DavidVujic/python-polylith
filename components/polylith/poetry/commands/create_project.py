@@ -2,7 +2,7 @@ from pathlib import Path
 
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith import project
+from polylith import interactive, project
 from polylith.commands.create import create
 
 command_name = "poly create project"
@@ -37,6 +37,6 @@ class CreateProjectCommand(Command):
 
         create(name, description, create_project)
 
-        project.interactive.run(name)
+        interactive.project.run(name)
 
         return 0
