@@ -102,45 +102,17 @@ def print_deps(bricks: dict, import_data: dict, options: dict):
         output.save(table, options, "deps")
 
 
-def without(key: str, bricks: Set[str]) -> Set[str]:
-    return {b for b in bricks if b != key}
-
-
-def sorted_usings(usings: Set[str], bases: Set[str], components: Set[str]) -> List[str]:
-    usings_bases = sorted({b for b in usings if b in bases})
-    usings_components = sorted({c for c in usings if c in components})
-
-    return usings_components + usings_bases
-
-
-def sorted_used_by(
-    brick: str, bases: Set[str], components: Set[str], import_data: dict
-) -> List[str]:
-    brick_used_by = without(brick, {k for k, v in import_data.items() if brick in v})
-
-    return sorted_usings(brick_used_by, bases, components)
-
-
-def sorted_uses(
-    brick: str, bases: Set[str], components: Set[str], import_data: dict
-) -> List[str]:
-    brick_uses = without(brick, {b for b in import_data[brick]})
-
-    return sorted_usings(brick_uses, bases, components)
-
-
 def calculate_tag(brick: str, bases: Set[str]) -> str:
     return "base" if brick in bases else "comp"
 
 
-def print_brick_deps(brick: str, bricks: dict, import_data: dict, options: dict):
+def print_brick_deps(brick: str, bricks: dict, brick_deps: dict, options: dict):
     bases = bricks["bases"]
-    components = bricks["components"]
 
     save = options.get("save", False)
 
-    brick_used_by = sorted_used_by(brick, bases, components, import_data)
-    brick_uses = sorted_uses(brick, bases, components, import_data)
+    brick_used_by = brick_deps["used_by"]
+    brick_uses = brick_deps["uses"]
 
     tag = calculate_tag(brick, bases)
 
@@ -170,3 +142,24 @@ def print_brick_deps(brick: str, bricks: dict, import_data: dict, options: dict)
 
     if save:
         output.save(table, options, f"deps_{brick}")
+
+
+def print_brick_with_circular_deps(brick: str, deps: Set[str], bricks: dict) -> None:
+    bases = bricks["bases"]
+
+    console = Console(theme=theme.poly_theme)
+
+    tag = calculate_tag(brick, bases)
+
+    with_tags = [f"[{calculate_tag(name, bases)}]{name}" for name in sorted(deps)]
+    others = "[data],[/] ".join(with_tags)
+
+    prefix = ":information:"
+    message = f"[{tag}]{brick}[/] [data]is used by[/] {others} [data]and is also uses[/] {others}[data].[/]"
+
+    console.print(f"{prefix} {message}", overflow="ellipsis")
+
+
+def print_bricks_with_circular_deps(circular_bricks: dict, bricks: dict) -> None:
+    for brick, deps in circular_bricks.items():
+        print_brick_with_circular_deps(brick, deps, bricks)

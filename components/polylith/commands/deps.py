@@ -44,8 +44,23 @@ def run(root: Path, ns: str, options: dict):
 
     imports = get_imports(root, ns, bricks)
 
+    bricks_deps = {
+        b: deps.calculate_brick_deps(b, bricks, imports)
+        for b in set().union(*bricks.values())
+    }
+
+    circular_bricks = deps.find_bricks_with_circular_dependencies(bricks_deps)
+
     if brick and imports.get(brick):
-        deps.print_brick_deps(brick, bricks, imports, options)
+        brick_deps = bricks_deps[brick]
+        circular_deps = circular_bricks.get(brick)
+
+        deps.print_brick_deps(brick, bricks, brick_deps, options)
+
+        if circular_deps:
+            deps.print_brick_with_circular_deps(brick, circular_deps, bricks)
+
         return
 
     deps.print_deps(bricks, imports, options)
+    deps.print_bricks_with_circular_deps(circular_bricks, bricks)
