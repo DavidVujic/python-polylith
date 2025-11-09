@@ -155,7 +155,7 @@ def print_brick_with_circular_deps(brick: str, deps: Set[str], bricks: dict) -> 
     others = "[data],[/] ".join(with_tags)
 
     prefix = ":information:"
-    message = f"[{tag}]{brick}[/] [data]is used by[/] {others} [data]and is also uses[/] {others}[data].[/]"
+    message = f"[{tag}]{brick}[/] [data]is used by[/] {others} [data]and also uses[/] {others}[data].[/]"
 
     console.print(f"{prefix} {message}", overflow="ellipsis")
 
