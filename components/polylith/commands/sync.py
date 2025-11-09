@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Union
 
-from polylith import info, project, sync
+from polylith import info, interactive, sync
 
 
 def is_project_without_bricks(project_data: dict) -> bool:
@@ -17,7 +17,7 @@ def choose_base(root: Path, ns: str, project_data: dict) -> Union[str, None]:
     if not possible_bases:
         return None
 
-    return project.interactive.choose_base_for_project(
+    return interactive.project.choose_base_for_project(
         root, ns, project_data["name"], possible_bases
     )
 

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from polylith import project
+from polylith import interactive, project
 from polylith.bricks import base, component
 from polylith.commands.create import create
 from polylith.workspace.create import create_workspace
@@ -52,7 +52,7 @@ def project_command(
     """Creates a Polylith project."""
     create(name, description, _create_project)
 
-    project.interactive.run(name)
+    interactive.project.run(name)
 
 
 @app.command("workspace")
