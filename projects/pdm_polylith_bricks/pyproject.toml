@@ -12,6 +12,7 @@ packages = [
     {include = "polylith/pdm_project_hooks", from = "../../bases"},
     {include = "polylith/building",from = "../../components"},
     {include = "polylith/configuration",from = "../../components"},
+    {include = "polylith/environment",from = "../../components"},
     {include = "polylith/parsing",from = "../../components"},
     {include = "polylith/pdm",from = "../../components"},
     {include = "polylith/repo",from = "../../components"},
