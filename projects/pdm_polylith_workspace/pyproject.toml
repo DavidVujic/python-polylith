@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pdm-polylith-workspace"
-version = "1.3.4"
+version = "1.3.5"
 description = "a PDM build hook for a Polylith workspace"
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
 repository = "https://github.com/davidvujic/python-polylith"
@@ -11,6 +11,7 @@ readme = "README.md"
 packages = [
     {include = "polylith/pdm_workspace_hooks", from = "../../bases"},
     {include = "polylith/building",from = "../../components"},
+    {include = "polylith/environment",from = "../../components"},
     {include = "polylith/configuration",from = "../../components"},
     {include = "polylith/parsing",from = "../../components"},
     {include = "polylith/pdm",from = "../../components"},

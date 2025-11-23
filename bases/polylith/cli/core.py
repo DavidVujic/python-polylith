@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Union
 
 from polylith import commands, configuration, info, repo
-from polylith.cli import build, create, options, test
+from polylith.cli import build, create, env, options, test
 from typer import Exit, Option, Typer
 from typing_extensions import Annotated
 
@@ -15,6 +15,12 @@ app.add_typer(
     no_args_is_help=True,
 )
 
+app.add_typer(
+    test.app,
+    name="test",
+    help="Commands for tests.",
+    no_args_is_help=True,
+)
 
 app.add_typer(
     build.app,
@@ -24,9 +30,9 @@ app.add_typer(
 )
 
 app.add_typer(
-    test.app,
-    name="test",
-    help="Commands for tests.",
+    env.app,
+    name="env",
+    help="For Package & Dependency Management tools without support for plugins or build hooks.",
     no_args_is_help=True,
 )
 
