@@ -113,6 +113,25 @@ def fetch_all_imports(paths: Set[Path]) -> dict:
     return {k: v for row in rows for k, v in row.items()}
 
 
+def extract_api_part(path: str) -> str:
+    *_parts, api = str.split(path, ".")
+
+    return api
+
+
+def extract_api(paths: Set[str]) -> Set[str]:
+    return {extract_api_part(p) for p in paths}
+
+
+def fetch_api(paths: Set[Path]) -> dict:
+    interface = "__init__.py"
+    interfaces = [Path(p / interface) for p in paths]
+
+    rows = [{i.parent.name: extract_api(list_imports(i))} for i in interfaces]
+
+    return {k: v for row in rows for k, v in row.items()}
+
+
 def should_exclude(path: Path, excludes: Set[str]):
     return any(path.match(pattern) for pattern in excludes)
 
