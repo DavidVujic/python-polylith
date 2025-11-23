@@ -1,7 +1,7 @@
-from polylith.pdm.hooks.workspace import parse_paths
 from pathlib import Path
-import tomlkit
 
+import tomlkit
+from polylith.environment import parse_paths
 
 root = "/some/path"
 namespace = "my_namespace"
