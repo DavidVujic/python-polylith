@@ -14,8 +14,11 @@ def setup_command():
     ns = configuration.get_namespace_from_config(root)
 
     projects_data = info.get_projects_data(root, ns)
-    dev_project_data = next(p for p in projects_data if p["type"] == "development")
+    dev_project = next((p for p in projects_data if p["type"] == "development"), None)
+
+    if not dev_project:
+        return
 
     env_dir = Path(sysconfig.get_paths().get("purelib"))
 
-    environment.add_paths(dev_project_data, env_dir, root)
+    environment.add_paths(dev_project, env_dir, root)
