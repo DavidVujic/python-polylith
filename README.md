@@ -75,6 +75,7 @@ There's __more examples__ and production systems in the [documentation](https://
 ## Videos
 
 ### Talks
+- __PyData Amsterdam 2025__ - [The Gentle Monorepo](https://youtu.be/k49496sH9aw) (about 35 minutes with Q&A)
 - __FOSDEM 2025__ - [Python Monorepos: The Polylith Developer Experience](https://youtu.be/vtJS2O_P0ek?si=9P97dsisqn74V25R) (about 27 minutes with Q&A)
 - __PyCon DE & PyData Berlin 2024__ - [Python Monorepos: The Polylith Developer Experience](https://youtu.be/wGWjt9GJLU4?si=1nOpThiwayc4Crvm) (about 29 minutes)
 - __Python Web Conference 2023__ - Microservices, Monolith, Monorepos: the differences & how nicely Polylith solves the trade offs - [A Fresh Take on Monorepos in Python](https://youtu.be/HU61vjZPPfQ) (about 36 minutes)
