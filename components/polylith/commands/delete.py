@@ -217,6 +217,34 @@ def _print_usage_block(ctx: DeleteContext) -> None:
         print(f"Cannot delete '{name}' without --force")
 
 
+def _partition_existing_paths(paths: Iterable[Path]) -> Tuple[List[Path], List[Path]]:
+    existing: List[Path] = []
+    missing: List[Path] = []
+
+    for p in paths:
+        if p.exists():
+            existing.append(p)
+        else:
+            missing.append(p)
+
+    return existing, missing
+
+
+def _collect_pyprojects_to_update(ctx: DeleteContext) -> List[Path]:
+    pyprojects: List[Path] = []
+
+    for p in ctx.project_paths:
+        if _would_update_pyproject(p, ctx.brick_ref):
+            pyprojects.append(_project_pyproject_path(p))
+
+    return pyprojects
+
+
+def _print_prefixed_paths(prefix: str, paths: Iterable[Path]) -> None:
+    for p in paths:
+        print(f"{prefix}: {p}")
+
+
 def _print_dry_run(ctx: DeleteContext) -> None:
     request = ctx.request
     print(f"Dry run: delete {request.brick_type} '{request.name}'")
@@ -224,21 +252,12 @@ def _print_dry_run(ctx: DeleteContext) -> None:
     if _has_dependents(ctx.usage):
         _print_usage_block(ctx)
 
-    existing = [p for p in ctx.paths_to_delete if p.exists()]
-    missing = [p for p in ctx.paths_to_delete if not p.exists()]
+    existing, missing = _partition_existing_paths(ctx.paths_to_delete)
 
-    for p in existing:
-        print(f"Would delete: {p}")
-    for p in missing:
-        print(f"Skip missing: {p}")
+    _print_prefixed_paths("Would delete", existing)
+    _print_prefixed_paths("Skip missing", missing)
 
-    pyprojects_to_update = []
-    for p in ctx.project_paths:
-        if _would_update_pyproject(p, ctx.brick_ref):
-            pyprojects_to_update.append(_project_pyproject_path(p))
-
-    for fullpath in pyprojects_to_update:
-        print(f"Would update: {fullpath}")
+    _print_prefixed_paths("Would update", _collect_pyprojects_to_update(ctx))
 
 
 def _print_updated_pyprojects(updated_projects: List[Path]) -> None:
