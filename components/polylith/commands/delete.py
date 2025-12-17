@@ -1,7 +1,7 @@
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, List, Set, Tuple
+from typing import Iterable, List, Optional, Set, Tuple
 
 import tomlkit
 from polylith import configuration, deps, info, repo, toml
@@ -25,6 +25,18 @@ class BrickRef:
 class BrickUsage:
     used_by_bricks: List[str]
     used_by_projects: List[str]
+
+
+@dataclass(frozen=True)
+class DeleteContext:
+    root: Path
+    namespace: str
+    request: DeleteRequest
+    brick_ref: BrickRef
+    theme: str
+    paths_to_delete: List[Path]
+    project_paths: List[Path]
+    usage: BrickUsage
 
 
 def _brick_dir(theme: str, namespace: str, name: str, brick_dir_name: str) -> Path:
@@ -104,20 +116,15 @@ def _missing_brick_message(brick_type: str, name: str) -> str:
     return f"Base not found: {name}"
 
 
-def _paths_to_delete(
-    root: Path,
-    theme: str,
-    namespace: str,
-    brick_dir_name: str,
-    name: str,
-) -> List[Path]:
-    brick_dir = root / _brick_dir(theme, namespace, name, brick_dir_name)
-    test_dir = root / _test_dir(theme, namespace, name, brick_dir_name)
+def _paths_to_delete(ctx: DeleteContext) -> List[Path]:
+    request = ctx.request
+    brick_dir = ctx.root / _brick_dir(ctx.theme, ctx.namespace, request.name, ctx.brick_ref.dir_name)
+    test_dir = ctx.root / _test_dir(ctx.theme, ctx.namespace, request.name, ctx.brick_ref.dir_name)
 
     paths = [brick_dir]
 
     # In loose theme, tests live outside the brick folder.
-    if theme == "loose" and test_dir != brick_dir:
+    if ctx.theme == "loose" and test_dir != brick_dir:
         paths.append(test_dir)
 
     return paths
@@ -136,6 +143,10 @@ def _validate_can_delete(
     used_by_projects = _collect_projects_using_brick(projects_data, brick_type, name)
 
     return BrickUsage(used_by_bricks=used_by_bricks, used_by_projects=used_by_projects)
+
+
+def _has_dependents(usage: BrickUsage) -> bool:
+    return bool(usage.used_by_bricks or usage.used_by_projects)
 
 
 def _delete_paths(paths: Iterable[Path]) -> None:
@@ -157,7 +168,9 @@ def _would_update_pyproject(project_path: Path, brick_ref: BrickRef) -> bool:
     data = toml.read_toml_document(fullpath)
 
     return bool(
-        toml.remove_brick_from_project_packages(data, brick_ref.include, brick_ref.dir_name)
+        toml.remove_brick_from_project_packages(
+            data, brick_ref.include, brick_ref.dir_name
+        )
     )
 
 
@@ -191,29 +204,28 @@ def _parse_request(options: dict) -> DeleteRequest:
     return DeleteRequest(brick_type=brick_type, name=name, dry_run=dry_run, force=force)
 
 
-def _print_usage_block(usage: BrickUsage, name: str) -> None:
+def _print_usage_block(ctx: DeleteContext) -> None:
+    usage = ctx.usage
+    name = ctx.request.name
+
     if usage.used_by_bricks:
         print(f"Used by bricks: {', '.join(usage.used_by_bricks)}")
     if usage.used_by_projects:
         print(f"Used by projects: {', '.join(usage.used_by_projects)}")
 
-    if usage.used_by_bricks or usage.used_by_projects:
+    if _has_dependents(usage):
         print(f"Cannot delete '{name}' without --force")
 
 
-def _print_dry_run(
-    request: DeleteRequest,
-    paths_to_delete: List[Path],
-    project_paths: List[Path],
-    brick_ref: BrickRef,
-    usage: BrickUsage,
-) -> None:
+def _print_dry_run(ctx: DeleteContext) -> None:
+    request = ctx.request
     print(f"Dry run: delete {request.brick_type} '{request.name}'")
 
-    _print_usage_block(usage, request.name)
+    if _has_dependents(ctx.usage):
+        _print_usage_block(ctx)
 
-    existing = [p for p in paths_to_delete if p.exists()]
-    missing = [p for p in paths_to_delete if not p.exists()]
+    existing = [p for p in ctx.paths_to_delete if p.exists()]
+    missing = [p for p in ctx.paths_to_delete if not p.exists()]
 
     for p in existing:
         print(f"Would delete: {p}")
@@ -221,8 +233,8 @@ def _print_dry_run(
         print(f"Skip missing: {p}")
 
     pyprojects_to_update = []
-    for p in project_paths:
-        if _would_update_pyproject(p, brick_ref):
+    for p in ctx.project_paths:
+        if _would_update_pyproject(p, ctx.brick_ref):
             pyprojects_to_update.append(_project_pyproject_path(p))
 
     for fullpath in pyprojects_to_update:
@@ -234,44 +246,77 @@ def _print_updated_pyprojects(updated_projects: List[Path]) -> None:
         print(f"Updated: {_project_pyproject_path(p)}")
 
 
-def run(root: Path, namespace: str, options: dict) -> bool:
-    request = _parse_request(options)
+def _create_context(
+    root: Path, namespace: str, request: DeleteRequest
+) -> Optional[DeleteContext]:
     brick_dir_name = _get_brick_dir_name(request.brick_type)
-
     theme = configuration.get_theme_from_config(root)
-    bases, components = _get_all_bricks(root, namespace)
 
+    bases, components = _get_all_bricks(root, namespace)
     if not _brick_exists(request.brick_type, request.name, bases, components):
         print(_missing_brick_message(request.brick_type, request.name))
-        return False
-
-    paths_to_delete = _paths_to_delete(
-        root, theme, namespace, brick_dir_name, request.name
-    )
-
-    usage = _validate_can_delete(root, namespace, request.brick_type, request.name)
-
-    if not request.force and (usage.used_by_bricks or usage.used_by_projects):
-        _print_usage_block(usage, request.name)
-        return False
+        return None
 
     brick_ref = BrickRef(include=f"{namespace}/{request.name}", dir_name=brick_dir_name)
+    usage = _validate_can_delete(root, namespace, request.brick_type, request.name)
     project_paths = _project_paths(root)
 
-    if request.dry_run:
-        _print_dry_run(request, paths_to_delete, project_paths, brick_ref, usage)
-        return True
+    # Build once so dry-run and apply are consistent.
+    seed = DeleteContext(
+        root=root,
+        namespace=namespace,
+        request=request,
+        brick_ref=brick_ref,
+        theme=theme,
+        paths_to_delete=[],
+        project_paths=project_paths,
+        usage=usage,
+    )
 
+    paths_to_delete = _paths_to_delete(seed)
+
+    return DeleteContext(
+        root=root,
+        namespace=namespace,
+        request=request,
+        brick_ref=brick_ref,
+        theme=theme,
+        paths_to_delete=paths_to_delete,
+        project_paths=project_paths,
+        usage=usage,
+    )
+
+
+def _apply_delete(ctx: DeleteContext) -> None:
     updated_projects = []
-    for p in project_paths:
-        if _update_pyproject(p, brick_ref):
+    for p in ctx.project_paths:
+        if _update_pyproject(p, ctx.brick_ref):
             updated_projects.append(p)
 
-    _delete_paths(paths_to_delete)
+    _delete_paths(ctx.paths_to_delete)
 
     if updated_projects:
         _print_updated_pyprojects(updated_projects)
 
-    print(f"Deleted {request.brick_type}: {request.name}")
+    print(f"Deleted {ctx.request.brick_type}: {ctx.request.name}")
+
+
+def run(root: Path, namespace: str, options: dict) -> bool:
+    request = _parse_request(options)
+    ctx = _create_context(root, namespace, request)
+
+    if ctx is None:
+        return False
+
+    if not request.force:
+        if _has_dependents(ctx.usage):
+            _print_usage_block(ctx)
+            return False
+
+    if request.dry_run:
+        _print_dry_run(ctx)
+        return True
+
+    _apply_delete(ctx)
 
     return True
