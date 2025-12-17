@@ -49,7 +49,7 @@ typer = "0.*"
 pyyaml = "*"
 
 [tool.poetry.scripts]
-poly = "polylith_cli.polylith.cli.core:app"
+poly = "polylith.cli.core:app"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
