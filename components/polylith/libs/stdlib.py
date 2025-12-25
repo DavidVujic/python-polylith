@@ -289,13 +289,20 @@ def to_py313(stdlib: set) -> set:
     return union(stdlib, news, removed)
 
 
+def to_py314(stdlib: set) -> set:
+    news = {"annotationlib", "compression"}
+    removed: set = set()
+
+    return union(stdlib, news, removed)
+
+
 py38 = with_extras(stdlib_python_3_8)
 py39 = to_py39(py38)
 py310 = to_py310(py39)
 py311 = to_py311(py310)
 py312 = to_py312(py311)
 py313 = to_py313(py312)
-
+py314 = to_py314(py313)
 
 standard_libs = {
     "3.8": py38,
@@ -304,4 +311,5 @@ standard_libs = {
     "3.11": py311,
     "3.12": py312,
     "3.13": py313,
+    "3.14": py314,
 }
