@@ -79,3 +79,11 @@ def test_stdlib_3_13():
     }
 
     assert py313.difference(py312) == set()
+
+
+def test_stdlib_3_14():
+    py313 = stdlib.standard_libs["3.13"]
+    py314 = stdlib.standard_libs["3.14"]
+
+    assert py313.difference(py314) == set()
+    assert py314.difference(py313) == {"annotationlib", "compression"}
