@@ -124,6 +124,99 @@ def get_project_package_includes(namespace: str, data) -> List[dict]:
     return [transform_to_package(namespace, key) for key in includes.keys()]
 
 
+def _remove_brick_from_mapping(mapping, brick_include: str, brick_dir_name: str) -> bool:
+    try:
+        items = list(mapping.items())
+    except AttributeError:
+        return False
+
+    keys_to_remove = [
+        k
+        for k, v in items
+        if v == brick_include and f"{brick_dir_name}/" in str(k).replace("\\", "/")
+    ]
+
+    for k in keys_to_remove:
+        del mapping[k]
+
+    return bool(keys_to_remove)
+
+
+def _remove_brick_from_poetry_packages(
+    data, brick_include: str, brick_dir_name: str
+) -> bool:
+    poetry = data.get("tool", {}).get("poetry")
+
+    if not isinstance(poetry, dict):
+        return False
+
+    packages = poetry.get("packages")
+
+    if not packages:
+        return False
+
+    indexes = [
+        i
+        for i, p in enumerate(list(packages))
+        if p.get("include") == brick_include and brick_dir_name in str(p.get("from", ""))
+    ]
+
+    for i in reversed(indexes):
+        packages.pop(i)
+
+    if indexes and hasattr(packages, "multiline"):
+        packages.multiline(True)
+
+    return bool(indexes)
+
+
+def remove_brick_from_project_packages(data, brick_include: str, brick_dir_name: str) -> bool:
+    """Remove a brick from a project's packaging include configuration.
+
+    This targets the configuration that `poly sync` updates:
+    - Poetry: `[tool.poetry.packages]`
+    - Hatch: `[tool.polylith.bricks]` (or `[tool.hatch.build.force-include]`)
+    - PDM/PEP 621: `[tool.polylith.bricks]`
+
+    Args:
+        data: TOML document to update.
+        brick_include: The include value, e.g. `my_ns/my_brick`.
+        brick_dir_name: `components` or `bases`.
+
+    Returns:
+        bool: True if anything was removed.
+    """
+
+    if repo.is_poetry(data):
+        return _remove_brick_from_poetry_packages(data, brick_include, brick_dir_name)
+
+    polylith_bricks = data.get("tool", {}).get("polylith", {}).get("bricks")
+
+    if repo.is_hatch(data):
+        if polylith_bricks:
+            return _remove_brick_from_mapping(
+                polylith_bricks, brick_include, brick_dir_name
+            )
+
+        force_include = (
+            data.get("tool", {})
+            .get("hatch", {})
+            .get("build", {})
+            .get("force-include")
+        )
+
+        return _remove_brick_from_mapping(
+            force_include, brick_include, brick_dir_name
+        )
+
+    if polylith_bricks:
+        return _remove_brick_from_mapping(
+            polylith_bricks, brick_include, brick_dir_name
+        )
+
+    return False
+
+
 def parse_pep_621_dependency(dep: str) -> dict:
     parts = re.split(r"[\^~=!<>]", dep)
 
