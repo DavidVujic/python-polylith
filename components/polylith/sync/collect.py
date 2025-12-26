@@ -1,7 +1,27 @@
+from functools import partial
 from pathlib import Path
 from typing import Set
 
-from polylith import check, deps, info
+from polylith import check, configuration, deps, info
+
+
+def _is_empty(brick: str, bricks_path: Path) -> bool:
+    path = bricks_path / brick
+
+    return not any(path.iterdir())
+
+
+def _without_empty(
+    root: Path, namespace: str, bricks: Set[str], brick_type: str
+) -> Set[str]:
+    theme = configuration.get_theme_from_config(root)
+
+    if theme == "loose":
+        bricks_path = root / f"{brick_type}/{namespace}"
+    else:
+        bricks_path = root / f"{brick_type}"
+
+    return {brick for brick in bricks if not _is_empty(brick, bricks_path)}
 
 
 def _calculate(root: Path, namespace: str, project_data: dict, bases: Set[str]) -> dict:
@@ -20,14 +40,16 @@ def _calculate(root: Path, namespace: str, project_data: dict, bases: Set[str]) 
         brick_diff = check.collect.diff(all_bricks, bases, components)
 
     bases_diff = {b for b in brick_diff if b in all_bases}
-    components_diff = {b for b in brick_diff if b in all_components}
+    comp_diff = {b for b in brick_diff if b in all_components}
+
+    fn = partial(_without_empty, root, namespace)
 
     return {
         "name": project_data["name"],
         "path": project_data["path"],
         "is_project": is_project,
-        "bases": bases_diff,
-        "components": components_diff,
+        "bases": bases_diff if is_project else fn(bases_diff, "bases"),
+        "components": comp_diff if is_project else fn(comp_diff, "components"),
         "brick_imports": brick_imports,
     }
 
