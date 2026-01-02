@@ -124,8 +124,7 @@ def extract_api(paths: Set[str]) -> Set[str]:
 
 
 def fetch_api(paths: Set[Path]) -> dict:
-    interface = "__init__.py"
-    interfaces = [Path(p / interface) for p in paths]
+    interfaces = [Path(p / "__init__.py") for p in paths]
 
     rows = [{i.parent.name: extract_api(list_imports(i))} for i in interfaces]
 
