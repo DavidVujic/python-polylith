@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Union
 
-from polylith import check, diff, imports
+from polylith import diff, imports
 
 
 def is_test(root: Path, ns: str, path: Path, theme: str) -> bool:
@@ -34,4 +34,4 @@ def get_brick_imports_in_tests(
 
     all_imports = {k: v for k, v in enumerate(listed_imports)}
 
-    return check.grouping.extract_brick_imports(all_imports, ns)
+    return imports.extract_brick_imports(all_imports, ns)

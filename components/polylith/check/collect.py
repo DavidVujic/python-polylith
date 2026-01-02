@@ -1,13 +1,13 @@
 from pathlib import Path
 from typing import Set
 
-from polylith import check, imports, workspace
+from polylith import imports, workspace
 
 
 def extract_bricks(paths: Set[Path], ns: str) -> dict:
     all_imports = imports.fetch_all_imports(paths)
 
-    return check.grouping.extract_brick_imports(all_imports, ns)
+    return imports.extract_brick_imports(all_imports, ns)
 
 
 def with_unknown_components(root: Path, ns: str, brick_imports: dict) -> dict:

@@ -1,3 +1,3 @@
-from polylith.check import collect, grouping, report
+from polylith.check import collect, report
 
-__all__ = ["collect", "grouping", "report"]
+__all__ = ["collect", "report"]
