@@ -2,7 +2,7 @@ import ast
 from collections.abc import Iterable
 from functools import lru_cache
 from pathlib import Path
-from typing import List, Set, Union
+from typing import FrozenSet, List, Set, Union
 
 typing_ns = "typing"
 type_checking = "TYPE_CHECKING"
@@ -68,6 +68,48 @@ def parse_node(node: ast.AST) -> Union[dict, None]:
     return None
 
 
+def find_imported(node_id: str, imported: FrozenSet[str]) -> Union[str, None]:
+    return next((i for i in imported if str.endswith(i, f".{node_id}")), None)
+
+
+def extract_api_part(path: str) -> str:
+    *_parts, api = str.split(path, ".")
+
+    return api
+
+
+def find_matching_node(expr: ast.expr, imported: FrozenSet[str]) -> Union[str, None]:
+    api = {extract_api_part(i) for i in imported}
+
+    if isinstance(expr, ast.Name) and expr.id in api:
+        return find_imported(expr.id, imported)
+
+    return None
+
+
+def parse_import_usage(node: ast.AST, imported: FrozenSet[str]) -> Union[str, None]:
+    found = None
+    child = None
+
+    wrapper_nodes = (ast.Await, ast.Expr, ast.NamedExpr, ast.Starred, ast.Subscript)
+
+    if isinstance(node, ast.Attribute):
+        found = find_matching_node(node.value, imported)
+        child = node.value
+    elif isinstance(node, wrapper_nodes):
+        child = node.value
+    elif isinstance(node, ast.Call):
+        found = find_matching_node(node.func, imported)
+        child = node.func
+    elif isinstance(node, ast.UnaryOp):
+        child = node.operand
+
+    if found:
+        return found
+
+    return parse_import_usage(child, imported) if child is not None else None
+
+
 def parse_module(path: Path) -> ast.AST:
     with open(path.as_posix(), "r", encoding="utf-8", errors="ignore") as f:
         tree = ast.parse(f.read(), path.name)
@@ -113,10 +155,21 @@ def fetch_all_imports(paths: Set[Path]) -> dict:
     return {k: v for row in rows for k, v in row.items()}
 
 
-def extract_api_part(path: str) -> str:
-    *_parts, api = str.split(path, ".")
+def fetch_import_usages_in_module(path: Path, imported: FrozenSet[str]) -> Set[str]:
+    tree = parse_module(path)
 
-    return api
+    nodes = (parse_import_usage(n, imported) for n in ast.walk(tree))
+
+    return {n for n in nodes if n is not None}
+
+
+@lru_cache(maxsize=None)
+def fetch_brick_import_usages(path: Path, imported: FrozenSet[str]) -> Set[str]:
+    py_modules = find_files(path)
+
+    res = (fetch_import_usages_in_module(p, imported) for p in py_modules)
+
+    return {i for n in res if n for i in n}
 
 
 def extract_api(paths: Set[str]) -> Set[str]:
