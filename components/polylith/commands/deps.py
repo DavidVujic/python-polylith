@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Set
 
-from polylith import bricks, deps, info
+from polylith import bricks, deps, info, interface
 
 
 def get_imports(root: Path, ns: str, bricks: dict) -> dict:
@@ -30,6 +30,17 @@ def get_components(root: Path, ns: str, project_data: dict) -> Set[str]:
     return pick_name(bricks.get_components_data(root, ns))
 
 
+def used_by_as_bricks(bricks: dict, brick_deps: dict) -> dict:
+    bases = bricks["bases"]
+    components = bricks["components"]
+
+    used_by = brick_deps["used_by"]
+    return {
+        "bases": {b for b in used_by if b in bases},
+        "components": {b for b in used_by if b in components},
+    }
+
+
 def run(root: Path, ns: str, options: dict):
     directory = options.get("directory")
     brick = options.get("brick")
@@ -53,12 +64,16 @@ def run(root: Path, ns: str, options: dict):
 
     if brick and imports.get(brick):
         brick_deps = bricks_deps[brick]
+        used_bricks = used_by_as_bricks(bricks, brick_deps)
+
         circular_deps = circular_bricks.get(brick)
 
         deps.print_brick_deps(brick, bricks, brick_deps, options)
 
         if circular_deps:
             deps.print_brick_with_circular_deps(brick, circular_deps, bricks)
+
+        interface.report.print_brick_interface_usage(root, ns, brick, used_bricks)
 
         return
 
