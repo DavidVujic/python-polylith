@@ -9,6 +9,7 @@ type_checking = "TYPE_CHECKING"
 
 WRAPPER_NODES = (ast.Await, ast.Expr, ast.NamedExpr, ast.Starred, ast.Subscript)
 FN_NODES = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda)
+SYMBOLS = (*FN_NODES, ast.ClassDef)
 
 
 def parse_import(node: ast.Import) -> List[str]:
@@ -73,6 +74,10 @@ def parse_node(node: ast.AST) -> Union[dict, None]:
 
 def extract_api_part(path: str) -> str:
     return path.rsplit(".", 1)[-1]
+
+
+def extract_api(paths: Set[str]) -> Set[str]:
+    return {extract_api_part(p) for p in paths}
 
 
 def find_import_root_and_path(
@@ -174,7 +179,7 @@ def walk_usages(node: ast.AST, options: dict) -> Set[str]:
     return out
 
 
-def parse_module(path: Path) -> ast.AST:
+def parse_module(path: Path) -> ast.Module:
     with open(path.as_posix(), "r", encoding="utf-8", errors="ignore") as f:
         tree = ast.parse(f.read(), path.name)
 
@@ -244,18 +249,6 @@ def fetch_brick_import_usages(
     fetched = (fetch_import_usages_in_module(k, ns, v) for k, v in filtered.items())
 
     return {i for f in fetched if f for i in f}
-
-
-def extract_api(paths: Set[str]) -> Set[str]:
-    return {extract_api_part(p) for p in paths}
-
-
-def fetch_api(paths: Set[Path]) -> dict:
-    interfaces = [Path(p / "__init__.py") for p in paths]
-
-    rows = [{i.parent.name: extract_api(list_imports(i))} for i in interfaces]
-
-    return {k: v for row in rows for k, v in row.items()}
 
 
 def should_exclude(path: Path, excludes: Set[str]):

@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Dict, FrozenSet, Set, Tuple
 
 from polylith import imports
+from polylith.interface.parser import fetch_api
 from polylith.reporting import theme
 from polylith.workspace.paths import collect_bases_paths, collect_components_paths
 from rich.console import Console
@@ -16,7 +17,7 @@ def get_brick_interface(root: Path, ns: str, brick: str, bricks: dict) -> set:
     fn = collect_bases_paths if brick in bases else collect_components_paths
 
     brick_paths = fn(root, ns, paths)
-    bricks_api = imports.fetch_api(brick_paths)
+    bricks_api = fetch_api(brick_paths)
     brick_api = bricks_api.get(brick) or set()
     brick_ns = f"{ns}.{brick}"
 
