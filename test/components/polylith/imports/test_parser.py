@@ -3,7 +3,7 @@ import io
 from functools import partial
 from pathlib import Path
 
-from polylith.imports import parser
+from polylith.imports import usages
 
 fake_path = Path.cwd()
 
@@ -81,52 +81,52 @@ def fake_parse_module(contents: str, *args, **kwargs) -> ast.AST:
 
 def test_fetch_import_usages_in_module_ns_brick(monkeypatch) -> None:
     fn = partial(fake_parse_module, ns_brick_import)
-    monkeypatch.setattr(parser, "parse_module", fn)
+    monkeypatch.setattr(usages, "parse_module", fn)
 
     expected = {f"{top_ns}.{brick}.one", f"{top_ns}.{brick}.two"}
 
-    res = parser.fetch_import_usages_in_module(fake_path, top_ns, imported)
+    res = usages.fetch_import_usages_in_module(fake_path, top_ns, imported)
 
     assert res == expected
 
 
 def test_fetch_import_usages_in_module_ns_brick_fn(monkeypatch) -> None:
     fn = partial(fake_parse_module, ns_brick_import)
-    monkeypatch.setattr(parser, "parse_module", fn)
+    monkeypatch.setattr(usages, "parse_module", fn)
 
     expected = {f"{top_ns}.{brick}.one", f"{top_ns}.{brick}.two"}
 
-    res = parser.fetch_import_usages_in_module(fake_path, top_ns, imported)
+    res = usages.fetch_import_usages_in_module(fake_path, top_ns, imported)
 
     assert res == expected
 
 
 def test_fetch_import_usages_in_module_ns_brick_with_shadowed(monkeypatch) -> None:
     fn = partial(fake_parse_module, ns_brick_import_with_shadowed)
-    monkeypatch.setattr(parser, "parse_module", fn)
+    monkeypatch.setattr(usages, "parse_module", fn)
 
-    res = parser.fetch_import_usages_in_module(fake_path, top_ns, imported)
+    res = usages.fetch_import_usages_in_module(fake_path, top_ns, imported)
 
     assert res == set()
 
 
 def test_fetch_import_usages_in_module_ns(monkeypatch) -> None:
     fn = partial(fake_parse_module, ns_import)
-    monkeypatch.setattr(parser, "parse_module", fn)
+    monkeypatch.setattr(usages, "parse_module", fn)
 
     expected = {f"{top_ns}.{brick}.one"}
 
-    res = parser.fetch_import_usages_in_module(fake_path, top_ns, imported)
+    res = usages.fetch_import_usages_in_module(fake_path, top_ns, imported)
 
     assert res == expected
 
 
 def test_fetch_import_usages_in_module_ns_star(monkeypatch) -> None:
     fn = partial(fake_parse_module, ns_import_star)
-    monkeypatch.setattr(parser, "parse_module", fn)
+    monkeypatch.setattr(usages, "parse_module", fn)
 
     expected = {f"{top_ns}.{brick}.one"}
 
-    res = parser.fetch_import_usages_in_module(fake_path, top_ns, imported)
+    res = usages.fetch_import_usages_in_module(fake_path, top_ns, imported)
 
     assert res == expected
