@@ -16,6 +16,11 @@ class DepsCommand(Command):
             description="Shows dependencies for selected brick",
             flag=False,
         ),
+        option(
+            long_name="interface",
+            description="Show the brick interface",
+            flag=True,
+        ),
         command_options.save,
     ]
 
@@ -23,6 +28,7 @@ class DepsCommand(Command):
         directory = self.option("directory")
         brick = self.option("brick")
         save = self.option("save")
+        interface = self.option("interface")
 
         root = repo.get_workspace_root(Path.cwd())
         ns = configuration.get_namespace_from_config(root)
@@ -35,6 +41,7 @@ class DepsCommand(Command):
             "brick": brick,
             "save": save,
             "output": output,
+            "show_interface": interface,
         }
         commands.deps.run(root, ns, options)
 

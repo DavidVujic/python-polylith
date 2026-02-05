@@ -44,6 +44,7 @@ def used_by_as_bricks(bricks: dict, brick_deps: dict) -> dict:
 def run(root: Path, ns: str, options: dict):
     directory = options.get("directory")
     brick = options.get("brick")
+    show_interface = options.get("show_interface")
 
     projects_data = info.get_projects_data(root, ns) if directory else []
     project = next((p for p in projects_data if directory in p["path"].as_posix()), {})
@@ -73,7 +74,11 @@ def run(root: Path, ns: str, options: dict):
         if circular_deps:
             deps.print_brick_with_circular_deps(brick, circular_deps, bricks)
 
-        interface.report.print_brick_interface_usage(root, ns, brick, used_bricks)
+        if show_interface:
+            interface.report.print_brick_interface_invalid_usage(
+                root, ns, brick, used_bricks
+            )
+            interface.report.print_brick_interface(root, ns, brick, used_bricks)
 
         return
 

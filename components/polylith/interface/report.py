@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, FrozenSet, Set, Tuple
+from typing import Dict, FrozenSet, Set
 
 from polylith import imports
 from polylith.interface.parser import fetch_api
@@ -38,7 +38,7 @@ def get_brick_imports(root: Path, ns: str, bases: set, components: set) -> dict:
 
 
 def to_imported_api(brick_imports: Set[str]) -> Set[str]:
-    return {imports.parser.extract_api_part(b) for b in brick_imports}
+    return {imports.usages.extract_api_part(b) for b in brick_imports}
 
 
 def filter_by_brick(brick_imports: Set[str], brick: str, ns: str) -> Set[str]:
@@ -63,9 +63,7 @@ def frozen(data: Dict[str, Set[str]], key: str) -> FrozenSet[str]:
     return frozenset(data.get(key) or set())
 
 
-def check_brick_interface_usage(
-    root: Path, ns: str, brick: str, bricks: dict
-) -> Tuple[dict, set]:
+def check_brick_interface_usage(root: Path, ns: str, brick: str, bricks: dict) -> dict:
     brick_interface = get_brick_interface(root, ns, brick, bricks)
     bases = bricks["bases"]
     components = bricks["components"]
@@ -84,10 +82,12 @@ def check_brick_interface_usage(
 
     checked = {k: check_usage(v, brick_interface) for k, v in usage.items()}
 
-    return checked, brick_interface
+    return checked
 
 
-def print_brick_interface(brick: str, brick_interface: set, bricks: dict) -> None:
+def print_brick_interface(root: Path, ns: str, brick: str, bricks: dict) -> None:
+    brick_interface = get_brick_interface(root, ns, brick, bricks)
+
     console = Console(theme=theme.poly_theme)
 
     tag = "base" if brick in bricks["bases"] else "comp"
@@ -110,8 +110,10 @@ def unified_usages(usages: dict) -> Set[str]:
     return {f for f in filtered if starts_with(filtered, f)}
 
 
-def print_brick_interface_usage(root: Path, ns: str, brick: str, bricks: dict) -> None:
-    res, brick_interface = check_brick_interface_usage(root, ns, brick, bricks)
+def print_brick_interface_invalid_usage(
+    root: Path, ns: str, brick: str, bricks: dict
+) -> None:
+    res = check_brick_interface_usage(root, ns, brick, bricks)
 
     invalid_usage = {
         brick: unified_usages(usages)
@@ -140,5 +142,3 @@ def print_brick_interface_usage(root: Path, ns: str, brick: str, bricks: dict) -
             table.add_row(f"{message}")
 
     console.print(table, overflow="ellipsis")
-
-    print_brick_interface(brick, brick_interface, bricks)
