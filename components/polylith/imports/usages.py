@@ -1,7 +1,7 @@
 import ast
 from functools import lru_cache
 from pathlib import Path
-from typing import FrozenSet, Optional, Set, Tuple, Union
+from typing import FrozenSet, Set, Tuple, Union
 
 from polylith.imports.parser import extract_imports, find_files, parse_module
 
@@ -36,7 +36,7 @@ def with_ns(usage: str, ns: str) -> str:
     return usage if str.startswith(usage, ns + ".") else f"{ns}.{usage}"
 
 
-def find_matching_usage(expr: ast.expr, options: dict) -> Optional[str]:
+def find_matching_usage(expr: ast.expr, options: dict) -> Union[str, None]:
     ns = options["ns"]
     api_map = options["api_map"]
     allowed_prefixes = options["allowed_prefixes"]

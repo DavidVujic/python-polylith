@@ -1,7 +1,7 @@
 import ast
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional, Set
+from typing import Set, Union
 
 from polylith.imports import SYMBOLS, extract_api, list_imports, parse_module
 
@@ -60,7 +60,7 @@ def is_string_constant(expression: ast.AST) -> bool:
     return isinstance(expression, ast.Constant) and isinstance(expression.value, str)
 
 
-def find_the_all_variable(statement: ast.stmt) -> Optional[Set[str]]:
+def find_the_all_variable(statement: ast.stmt) -> Union[Set[str], None]:
     if not isinstance(statement, ast.Assign):
         return None
 
