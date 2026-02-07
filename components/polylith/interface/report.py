@@ -95,7 +95,7 @@ def print_brick_interface(root: Path, ns: str, brick: str, bricks: dict) -> None
     table = Table(box=None)
 
     message = f"[{tag}]{brick}[/] exposes:"
-    table.add_column(Padding(message, (1, 0, 0, 0)))
+    table.add_column(message)
 
     for endpoint in sorted(brick_interface):
         *_ns, exposes = str.split(endpoint, ".")

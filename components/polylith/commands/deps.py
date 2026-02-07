@@ -71,14 +71,15 @@ def run(root: Path, ns: str, options: dict):
 
         deps.print_brick_deps(brick, bricks, brick_deps, options)
 
-        if circular_deps:
-            deps.print_brick_with_circular_deps(brick, circular_deps, bricks)
-
         if show_interface:
+            interface.report.print_brick_interface(root, ns, brick, used_bricks)
+
             interface.report.print_brick_interface_invalid_usage(
                 root, ns, brick, used_bricks
             )
-            interface.report.print_brick_interface(root, ns, brick, used_bricks)
+
+        if circular_deps:
+            deps.print_brick_with_circular_deps(brick, circular_deps, bricks)
 
         return
 
