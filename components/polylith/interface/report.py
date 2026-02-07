@@ -6,7 +6,6 @@ from polylith.interface.parser import fetch_api
 from polylith.reporting import theme
 from polylith.workspace.paths import collect_bases_paths, collect_components_paths
 from rich.console import Console
-from rich.padding import Padding
 from rich.table import Table
 
 
