@@ -12,7 +12,7 @@ def extract_endpoint(usage: str) -> str:
     if separator not in usage:
         return usage
 
-    ns, brick, *rest = str.split(usage, separator)
+    _ns, _brick, *rest = str.split(usage, separator)
 
     return rest[0]
 
