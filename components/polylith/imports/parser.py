@@ -68,7 +68,7 @@ def parse_node(node: ast.AST) -> Union[dict, None]:
     return None
 
 
-def parse_module(path: Path) -> ast.AST:
+def parse_module(path: Path) -> ast.Module:
     with open(path.as_posix(), "r", encoding="utf-8", errors="ignore") as f:
         tree = ast.parse(f.read(), path.name)
 
@@ -88,7 +88,7 @@ def extract_imports(path: Path) -> List[str]:
     return [i for i in includes if i not in excludes]
 
 
-def extract_and_flatten(py_modules: Iterable) -> Set[str]:
+def extract_imports_and_flatten(py_modules: Iterable) -> Set[str]:
     return {i for m in py_modules for i in extract_imports(m)}
 
 
@@ -104,7 +104,7 @@ def find_files(path: Path) -> Iterable:
 def list_imports(path: Path) -> Set[str]:
     py_modules = find_files(path)
 
-    return extract_and_flatten(py_modules)
+    return extract_imports_and_flatten(py_modules)
 
 
 def fetch_all_imports(paths: Set[Path]) -> dict:
@@ -122,7 +122,7 @@ def list_excluded_imports(path: Path, excludes: Set[str]) -> Set[str]:
 
     filtered = [p for p in py_modules if should_exclude(p, excludes)]
 
-    return extract_and_flatten(filtered)
+    return extract_imports_and_flatten(filtered)
 
 
 def fetch_excluded_imports(paths: Set[Path], excludes: Set[str]) -> dict:

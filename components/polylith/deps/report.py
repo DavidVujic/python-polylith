@@ -6,6 +6,7 @@ from polylith import output
 from polylith.reporting import theme
 from rich import box
 from rich.console import Console
+from rich.padding import Padding
 from rich.table import Table
 
 
@@ -157,7 +158,7 @@ def print_brick_with_circular_deps(brick: str, deps: Set[str], bricks: dict) -> 
     prefix = ":information:"
     message = f"[{tag}]{brick}[/] [data]is used by[/] {others} [data]and also uses[/] {others}[data].[/]"
 
-    console.print(f"{prefix} {message}", overflow="ellipsis")
+    console.print(Padding(f"{prefix} {message}", (0, 0, 0, 1)), overflow="ellipsis")
 
 
 def print_bricks_with_circular_deps(circular_bricks: dict, bricks: dict) -> None:

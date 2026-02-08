@@ -34,3 +34,9 @@ def extract_brick_imports(all_imports: dict, top_ns) -> dict:
     with_only_brick_names = only_brick_names(with_only_bricks)
 
     return exclude_empty(with_only_brick_names)
+
+
+def extract_brick_imports_with_namespaces(all_imports: dict, top_ns) -> dict:
+    with_only_bricks = only_bricks(all_imports, top_ns)
+
+    return exclude_empty(with_only_bricks)

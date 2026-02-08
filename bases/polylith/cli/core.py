@@ -191,6 +191,7 @@ def sync_command(
 def deps_command(
     directory: Annotated[str, options.directory] = "",
     brick: Annotated[str, options.brick] = "",
+    interface: Annotated[bool, options.interface] = False,
     save: Annotated[bool, options.save] = False,
 ):
     """Visualize the dependencies between bricks."""
@@ -205,6 +206,7 @@ def deps_command(
         "brick": brick or None,
         "save": save,
         "output": output,
+        "show_interface": interface,
     }
 
     commands.deps.run(root, ns, cli_options)

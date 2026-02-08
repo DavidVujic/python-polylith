@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Set
 
 from polylith import imports, libs, workspace
-from polylith.check import collect, grouping
+from polylith.check import collect
 from polylith.reporting import theme
 from rich.console import Console
 
@@ -78,8 +78,8 @@ def extract_collected_imports(
     ns: str, imports_in_bases: dict, imports_in_components: dict
 ) -> dict:
     brick_imports = {
-        "bases": grouping.extract_brick_imports(imports_in_bases, ns),
-        "components": grouping.extract_brick_imports(imports_in_components, ns),
+        "bases": imports.grouping.extract_brick_imports(imports_in_bases, ns),
+        "components": imports.grouping.extract_brick_imports(imports_in_components, ns),
     }
 
     third_party_imports = {
