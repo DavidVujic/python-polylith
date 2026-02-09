@@ -98,7 +98,9 @@ def fetch_api_for_path(path: Path) -> Set[str]:
 
 
 def fetch_api(paths: Set[Path]) -> dict:
-    interfaces = [Path(p / "__init__.py") for p in paths]
+    interface_paths = [Path(p / "__init__.py") for p in paths]
+
+    interfaces = [p for p in interface_paths if p.exists()]
 
     rows = [{i.parent.name: fetch_api_for_path(i)} for i in interfaces]
 

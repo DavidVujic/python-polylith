@@ -10,6 +10,9 @@ from rich.table import Table
 def print_brick_interface(root: Path, ns: str, brick: str, bricks: dict) -> None:
     brick_interface = get_brick_interface(root, ns, brick, bricks)
 
+    if not brick_interface:
+        return
+
     console = Console(theme=theme.poly_theme)
 
     tag = "base" if brick in bricks["bases"] else "comp"

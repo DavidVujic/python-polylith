@@ -36,6 +36,20 @@ def with_ns(usage: str, ns: str) -> str:
     return usage if str.startswith(usage, ns + ".") else f"{ns}.{usage}"
 
 
+def match_usage(root_id: str, usage: str, entry: str) -> str:
+    separator = "."
+
+    part, *rest = str.split(usage, separator)
+
+    if root_id == usage:
+        return entry
+
+    if root_id == part:
+        return f"{separator}".join([entry, *rest])
+
+    return usage
+
+
 def find_matching_usage(expr: ast.expr, options: dict) -> Union[str, None]:
     ns = options["ns"]
     api_map = options["api_map"]
@@ -51,7 +65,8 @@ def find_matching_usage(expr: ast.expr, options: dict) -> Union[str, None]:
         return None
 
     if root.id in api_map:
-        found = api_map[root.id] if usage == root.id else usage
+        entry = api_map[root.id]
+        found = match_usage(root.id, usage, entry)
 
         return with_ns(found, ns)
 
