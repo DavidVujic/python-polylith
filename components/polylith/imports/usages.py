@@ -50,12 +50,22 @@ def find_matching_usage(expr: ast.expr, options: dict) -> Union[str, None]:
     if root.id in shadowed:
         return None
 
+    separator = "."
+
     if root.id in api_map:
-        found = api_map[root.id] if usage == root.id else usage
+        entry = api_map[root.id]
+        part, *rest = str.split(usage, separator)
+
+        if root.id == usage:
+            found = entry
+        elif root.id == part:
+            found = f"{separator}".join([entry, *rest])
+        else:
+            found = usage
 
         return with_ns(found, ns)
 
-    if any(usage.startswith(p + ".") for p in allowed_prefixes):
+    if any(usage.startswith(p + separator) for p in allowed_prefixes):
         return with_ns(usage, ns)
 
     return None
