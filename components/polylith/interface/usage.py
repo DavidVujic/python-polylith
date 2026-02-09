@@ -27,10 +27,15 @@ def to_imported_api(brick_imports: Set[str]) -> Set[str]:
     return {imports.usages.extract_api_part(b) for b in brick_imports}
 
 
-def filter_by_brick(brick_imports: Set[str], brick: str, ns: str) -> Set[str]:
-    brick_with_ns = f"{ns}.{brick}"
+def equals_or_starts_with(brick_import: str, brick: str, ns: str) -> bool:
+    brick_ns = f"{ns}.{brick}"
+    brick_ns_part = f"{brick_ns}."
 
-    return {b for b in brick_imports if str.startswith(b, brick_with_ns)}
+    return brick_import == brick_ns or str.startswith(brick_import, brick_ns_part)
+
+
+def filter_by_brick(brick_imports: Set[str], brick: str, ns: str) -> Set[str]:
+    return {b for b in brick_imports if equals_or_starts_with(b, brick, ns)}
 
 
 def is_within_namespace(current: str, namespaces: Set[str]) -> bool:
