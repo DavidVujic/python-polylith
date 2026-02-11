@@ -56,6 +56,10 @@ cleo = "^2.1.0"
 hatchling = "^1.21.0"
 typer = "0.*"
 pyyaml = "*"
+typing_extensions = [
+  { version = "<4.14", python = ">=3.8,<3.9" },
+  { version = "*",     python = ">=3.9" }
+]
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.3.0"
