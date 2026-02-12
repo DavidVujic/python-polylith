@@ -72,10 +72,9 @@ def test_extract_the_all_variable(monkeypatch) -> None:
     assert res == {"thing", "other", "message"}
 
 
-def test_extract_the_all_variable_from_module_pointer(tmp_path) -> None:
-    # Use real files to exercise module resolution:
-    # comp/__init__.py: __all__ = core.__all__
-    # comp/core.py: __all__ = ["pub_func"]
+def test_extract_the_all_variable_from_module_pointer(tmp_path: Path) -> None:
+    expected = "pub_func"
+
     parser.parse.cache_clear()
 
     package_dir = tmp_path / "comp"
@@ -84,15 +83,27 @@ def test_extract_the_all_variable_from_module_pointer(tmp_path) -> None:
     init = package_dir / "__init__.py"
     core = package_dir / "core.py"
 
-    init.write_text("from .core import *\n\n__all__ = core.__all__\n")
-    core.write_text(
-        "__all__ = [\"pub_func\"]\n\n\ndef pub_func():\n    pass\n"
+    init.write_text(
+        """
+from .core import *\
+
+
+__all__ = core.__all__
+"""
     )
 
-    res = parser.extract_the_all_variable(init)
+    core.write_text(
+        f"""
+__all__ = ["{expected}"]
 
-    assert res == {"pub_func"}
-    assert parser.fetch_api_for_path(init) == {"pub_func"}
+
+def pub_func():
+    pass
+"""
+    )
+
+    assert parser.extract_the_all_variable(init) == {expected}
+    assert parser.fetch_api_for_path(init) == {expected}
 
 
 def test_fetch_api_for_path(monkeypatch) -> None:
