@@ -91,8 +91,8 @@ def extract_collected_imports(
 
 
 def collect_all_imports(root: Path, ns: str, project_data: dict) -> dict:
-    bases = {b for b in project_data.get("bases", [])}
-    components = {c for c in project_data.get("components", [])}
+    bases = set(project_data.get("bases", []))
+    components = set(project_data.get("components", []))
 
     bases_paths = workspace.paths.collect_bases_paths(root, ns, bases)
     components_paths = workspace.paths.collect_components_paths(root, ns, components)
@@ -141,8 +141,8 @@ def create_report(
     third_party_libs: Set,
     is_strict: bool = False,
 ) -> dict:
-    bases = {b for b in project_data.get("bases", [])}
-    components = {c for c in project_data.get("components", [])}
+    bases = set(project_data.get("bases", []))
+    components = set(project_data.get("components", []))
 
     brick_imports = collected_imports["brick_imports"]
     third_party_imports = collected_imports["third_party_imports"]

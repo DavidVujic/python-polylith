@@ -78,7 +78,7 @@ def print_detected_changes_in_projects(projects: List[str], short: bool) -> None
 
 
 def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
-    sorted_projects = sorted(list(projects))
+    sorted_projects = sorted(projects)
 
     print_detected_changes(sorted_projects, "proj", short)
 

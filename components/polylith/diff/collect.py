@@ -92,7 +92,7 @@ def get_latest_tag(root: Path, key: Union[str, None]) -> Union[str, None]:
         capture_output=True,
     )
 
-    return next((tag for tag in res.stdout.decode("utf-8").split()), None)
+    return next(iter(res.stdout.decode("utf-8").split()), None)
 
 
 def get_files(tag: str) -> List[Path]:
