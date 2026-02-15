@@ -58,7 +58,11 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-dependencies = ["fastapi~=0.109.2", "uvicorn[standard]~=0.25.0", "tomlkit"]
+dependencies = ["fastapi~=0.109.2",
+                "uvicorn[standard]~=0.25.0",
+                "tomlkit",
+                "typing_extensions<4.7; python_version > '3.9'"
+]
 
 [project.optional-dependencies]
 dev = ["an-optional-lib==1.2.3", "another"]
@@ -71,6 +75,10 @@ python = "^3.10"
 fastapi = "^0.110.0"
 uvicorn = {extras = ["standard"], version = "^0.27.1"}
 tomlkit = "*"
+typing_extensions = [
+  { version = "<4.14", python = ">=3.8,<3.9" },
+  { version = "*",     python = ">=3.9" }
+]
 
 an-optional-lib = {version = "1.2.3", optional = true}
 another = {optional = true}
@@ -144,23 +152,36 @@ def test_get_hatch_package_includes_from_default_when_in_both():
 
 
 def test_parse_pep_621_project_dependencies():
+    expected_pep_621 = {
+        **expected_dependencies,
+        **{"typing_extensions": "<4.7; python_version > '3.9'"},
+    }
     data = tomlkit.loads(pep_621_toml_deps)
 
     res = toml.parse_project_dependencies(data)
 
-    assert res == expected_dependencies
+    assert res == expected_pep_621
 
 
 def test_parse_poetry_project_dependencies():
     expected = {**expected_dependencies, **{"python": "^3.10"}}
+    extra = {
+        "typing_extensions-python>=3.8,<3.9": "<4.14",
+        "typing_extensions-python>=3.9": "*",
+    }
+
+    expected_poetry = {**expected, **extra}
+
     data = tomlkit.loads(poetry_toml_deps)
 
     res = toml.parse_project_dependencies(data)
 
-    assert res.keys() == expected.keys()
+    assert res.keys() == expected_poetry.keys()
     assert res["fastapi"] == "^0.110.0"
     assert res["tomlkit"] == "*"
     assert res["an-optional-lib"] == "1.2.3"
+    assert res["typing_extensions-python>=3.8,<3.9"] == "<4.14"
+    assert res["typing_extensions-python>=3.9"] == "*"
 
 
 def test_collect_hatch_exclude_patterns() -> None:
