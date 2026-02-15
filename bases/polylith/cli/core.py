@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Union
 
 from polylith import commands, configuration, info, repo
-from polylith.cli import build, create, env, options, test
+from polylith.cli import build, create, delete, env, options, test
 from typer import Exit, Option, Typer
 from typing_extensions import Annotated
 
@@ -12,6 +12,13 @@ app.add_typer(
     create.app,
     name="create",
     help="Commands for creating a workspace, bases, components and projects.",
+    no_args_is_help=True,
+)
+
+app.add_typer(
+    delete.app,
+    name="delete",
+    help="Commands for deleting bases and components.",
     no_args_is_help=True,
 )
 
