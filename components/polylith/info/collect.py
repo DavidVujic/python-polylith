@@ -13,7 +13,7 @@ def get_matching_bricks(
 
     res = set(bricks).intersection(paths_in_namespace)
 
-    return sorted(list(res))
+    return sorted(res)
 
 
 def get_project_bricks(project_packages: List[dict], components, bases, namespace: str):
