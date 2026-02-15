@@ -3,15 +3,32 @@ from pathlib import Path
 import pytest
 from polylith.bricks.base import create_base
 
+source_file = """
+[tool.polylith]
+namespace = "test_space"
+
+[tool.polylith.structure]
+theme = "loose"
+
+[tool.polylith.tag.patterns]
+stable = "stable-*"
+release = "v[0-9]*"
+
+[tool.polylith.test]
+enabled = true
+
+[tool.polylith.resources]
+brick_docs_enabled = false
+"""
+
 
 @pytest.fixture(scope="function")
-def handle_workspace_files(tmp_path: Path):
+def handle_workspace_files(tmp_path: Path) -> Path:
     """Returns a temporary directory with a valid workspace file."""
     workspace_file = tmp_path / "workspace.toml"
     workspace_file.touch()
 
-    source_file = Path("test/test_data/workspace.toml")
-    workspace_file.write_text(source_file.read_text())
+    workspace_file.write_text(source_file)
 
     return tmp_path
 
