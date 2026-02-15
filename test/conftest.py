@@ -1,4 +1,3 @@
-import shutil
 from pathlib import Path
 
 import pytest
@@ -6,20 +5,15 @@ from polylith.bricks.base import create_base
 
 
 @pytest.fixture(scope="function")
-def handle_workspace_files():
-    """Creates a temporary directory with a valid workspace file and removes the directory in tear-down.
-
-    Yields:
-        Path: The temp directory path
-    """
-    temp_dir = Path("test/temp")
-    temp_dir.mkdir(parents=True, exist_ok=True)
-    workspace_file = temp_dir / "workspace.toml"
+def handle_workspace_files(tmp_path: Path):
+    """Returns a temporary directory with a valid workspace file."""
+    workspace_file = tmp_path / "workspace.toml"
     workspace_file.touch()
+
     source_file = Path("test/test_data/workspace.toml")
     workspace_file.write_text(source_file.read_text())
-    yield temp_dir
-    shutil.rmtree(temp_dir)
+
+    return tmp_path
 
 
 @pytest.fixture(scope="function")
@@ -42,5 +36,7 @@ def create_test_base(handle_workspace_files):
         "description": "test desc",
         "modulename": "core",
     }
+
     create_base(path=handle_workspace_files, options=options)
+
     yield handle_workspace_files
