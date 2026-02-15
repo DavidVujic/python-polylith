@@ -55,7 +55,7 @@ def print_detected_changes_affecting_bricks(
     bases: Set[str], components: Set[str], options: dict
 ) -> None:
     bricks = bases.union(components)
-    changes = sorted(list(bricks))
+    changes = sorted(bricks)
 
     print_detected_changes(changes, options)
 
@@ -63,8 +63,8 @@ def print_detected_changes_affecting_bricks(
 def print_test_report(
     projects_data: List[dict], bases: Set[str], components: Set[str], options: dict
 ) -> None:
-    b = sorted(list(bases))
-    c = sorted(list(components))
+    b = sorted(bases)
+    c = sorted(components)
 
     if not b and not c:
         return

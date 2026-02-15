@@ -148,7 +148,7 @@ def printable_header(header: str, short: bool) -> str:
 
 
 def is_same_version(versions: list) -> bool:
-    unique = set([v for v in versions if v])
+    unique = {v for v in versions if v}
 
     return len(unique) == 1 if unique else True
 

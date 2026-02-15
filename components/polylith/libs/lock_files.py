@@ -58,10 +58,10 @@ def extract_libs_from_yaml(path: Path) -> dict:
     pkgs = data["packages"]
 
     conda_pkgs = [parse_conda(p) for p in pkgs if "conda" in p.keys()]
-    conda_d = {name: version for name, version in conda_pkgs}
+    conda_d = dict(conda_pkgs)
 
     pypi_pkgs = [parse_pypi(p) for p in pkgs if "pypi" in p.keys()]
-    pypi_d = {name: version for name, version in pypi_pkgs}
+    pypi_d = dict(pypi_pkgs)
 
     return {**conda_d, **pypi_d}
 
