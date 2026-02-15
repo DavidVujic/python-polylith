@@ -150,7 +150,7 @@ def parse_poetry_dependency(acc: dict, kv: tuple) -> dict:
 
 def get_pep_621_optional_dependencies(data) -> List[str]:
     groups = data["project"].get("optional-dependencies", {})
-    matrix = [v for v in groups.values()] if isinstance(groups, dict) else []
+    matrix = list(groups.values()) if isinstance(groups, dict) else []
 
     return sum(matrix, [])
 

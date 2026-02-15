@@ -32,6 +32,6 @@ def get_brick_imports_in_tests(
 
     listed_imports = [imports.list_imports(m) for m in matched]
 
-    all_imports = {k: v for k, v in enumerate(listed_imports)}
+    all_imports = dict(enumerate(listed_imports))
 
     return imports.extract_brick_imports(all_imports, ns)
