@@ -2,7 +2,7 @@ import re
 import sys
 from functools import lru_cache, reduce
 from pathlib import Path
-from typing import List, Union
+from typing import Any, List, Union
 
 import tomlkit
 from polylith import repo
@@ -133,15 +133,32 @@ def parse_pep_621_dependency(dep: str) -> dict:
     return {name: version} if name else {}
 
 
+def _parse_poetry_complex_dependency(k: str, v: Any) -> dict:
+    if not isinstance(v, dict):
+        message = f"Unexpected dependency format. {k}: {v}"
+        raise ValueError(message)
+
+    extras = sorted(v.get("extras") or [])
+    version = v.get("version") or ""
+    py_version = v.get("python")
+
+    python_version = str.replace(str(py_version), " ", "") if py_version else None
+
+    key = f"{k}-python{python_version}" if python_version else k
+    name = key + str.replace(f"{extras}", "'", "") if extras else key
+
+    return {name: version}
+
+
 def parse_poetry_dependency(acc: dict, kv: tuple) -> dict:
     k, v = kv
 
     if isinstance(v, dict):
-        extras = sorted(v.get("extras", []))
-        version = v.get("version", "")
+        parsed = _parse_poetry_complex_dependency(k, v)
+    elif isinstance(v, list):
+        deps = [_parse_poetry_complex_dependency(k, i) for i in v]
 
-        name = k + str.replace(f"{extras}", "'", "") if extras else k
-        parsed = {name: version}
+        parsed = {k: v for dep in deps for k, v in dep.items()}
     else:
         parsed = {k: v}
 
