@@ -10,13 +10,22 @@ from typing_extensions import Annotated
 app = Typer()
 
 
+def _try_create(name: str, description: str, fn):
+    try:
+        create(name, description, fn)
+    except ValueError as e:
+        print(f"Did not create: {e}")
+
+        raise Exit(code=1)
+
+
 @app.command("base")
 def base_command(
     name: Annotated[str, Option(help="Name of the base.")],
     description: Annotated[str, Option(help="Description of the base.")] = "",
 ):
     """Creates a Polylith base."""
-    create(name, description, base.create_base)
+    _try_create(name, description, base.create_base)
 
 
 @app.command("component")
@@ -25,7 +34,7 @@ def component_command(
     description: Annotated[str, Option(help="Description of the component.")] = "",
 ):
     """Creates a Polylith component."""
-    create(name, description, component.create_component)
+    _try_create(name, description, component.create_component)
 
 
 def _create_project(root: Path, options: dict):
