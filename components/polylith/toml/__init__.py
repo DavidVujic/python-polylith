@@ -7,6 +7,7 @@ from polylith.toml.core import (
     load_toml,
     parse_project_dependencies,
     read_toml_document,
+    remove_brick_from_project_packages,
 )
 
 __all__ = [
@@ -18,4 +19,5 @@ __all__ = [
     "load_toml",
     "parse_project_dependencies",
     "read_toml_document",
+    "remove_brick_from_project_packages",
 ]
