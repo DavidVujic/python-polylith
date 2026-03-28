@@ -2,7 +2,7 @@ from typing import Set, Union
 
 
 def only_brick_imports(imports: Set[str], top_ns: str) -> Set[str]:
-    return {i for i in imports if i.startswith(top_ns)}
+    return {i for i in imports if i == top_ns or i.startswith(f"{top_ns}.")}
 
 
 def only_bricks(import_data: dict, top_ns: str) -> dict:
@@ -29,7 +29,7 @@ def exclude_empty(import_data: dict) -> dict:
     return {k: v for k, v in import_data.items() if v}
 
 
-def extract_brick_imports(all_imports: dict, top_ns) -> dict:
+def extract_brick_imports(all_imports: dict, top_ns: str) -> dict:
     with_only_bricks = only_bricks(all_imports, top_ns)
     with_only_brick_names = only_brick_names(with_only_bricks)
 
