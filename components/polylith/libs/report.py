@@ -135,12 +135,7 @@ def get_version(lib: str, project_data: dict) -> str:
     return project_data["deps"]["items"].get(lib)
 
 
-def find_version(
-    lib: str, project_data: dict, projects_data: List[dict]
-) -> Union[str, None]:
-    project_name = project_data["name"]
-    project_data = next(p for p in projects_data if p["name"] == project_name)
-
+def find_version(lib: str, project_data: dict) -> Union[str, None]:
     return get_version(lib, project_data)
 
 
@@ -179,7 +174,7 @@ def libs_in_projects_table(
         table.add_column(header)
 
     for lib in sorted(libraries):
-        proj_versions = [find_version(lib, p, projects_data) for p in projects]
+        proj_versions = [find_version(lib, p) for p in projects]
         dev_version = get_version(lib, development_data)
 
         is_same = is_same_version(proj_versions + [dev_version])
