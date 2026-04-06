@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import List
+from typing import List, Set, Union
 
 import tomlkit
 from polylith import configuration, repo, toml
@@ -21,6 +21,18 @@ def get_project_name_from_toml(data: dict) -> str:
         path = data["path"]
 
         raise KeyError(f"Error in {path}") from e
+
+
+def get_project_alias(path: Path, data: dict) -> Union[str, None]:
+    project_name = get_project_name_from_toml(data)
+
+    return configuration.get_project_alias_from_config(path, project_name)
+
+
+def get_project_groups(path: Path, data: dict) -> Set[str]:
+    project_name = get_project_name_from_toml(data)
+
+    return configuration.get_project_groups_from_config(path, project_name)
 
 
 @lru_cache
@@ -58,6 +70,8 @@ def get_packages_for_projects(root: Path) -> List[dict]:
     return [
         {
             "name": get_project_name_from_toml(d),
+            "alias": get_project_alias(root, d),
+            "groups": get_project_groups(root, d),
             "packages": toml.get_project_package_includes(namespace, d["toml"]),
             "path": d["path"],
             "type": d["type"],

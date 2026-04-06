@@ -21,6 +21,14 @@ release = "v[0-9]*"
 
 [tool.polylith.test]
 enabled = true
+
+[tool.polylith.projects.alias]
+my-project-with-a-long-name = "first"
+my-other-project-that-also-has-a-long-name = "second"
+
+[tool.polylith.projects.groups]
+accounting = ["the-accounting-project", "my-project-with-a-long-name"]
+handlers = ["my-project-with-a-long-name", "other-handler-project"]
 """
 
 
@@ -136,3 +144,19 @@ def test_get_structure_for_tdd_theme(use_tdd):
     assert brick == "{brick}/{package}/src/{namespace}/{package}"
     assert test == "{brick}/{package}/test/{namespace}/{package}"
     assert resources == "{brick}/{package}"
+
+
+def test_get_project_alias_from_config(use_loose):
+    first = core.get_project_alias_from_config(fake_path, "my-project-with-a-long-name")
+    other = core.get_project_alias_from_config(fake_path, "unknown")
+
+    assert first == "first"
+    assert other is None
+
+
+def test_get_project_groups_from_config(use_loose):
+    first = core.get_project_groups_from_config(fake_path, "my-project-with-a-long-name")
+    other = core.get_project_groups_from_config(fake_path, "unknown")
+
+    assert first == {"accounting", "handlers"}
+    assert other == set()

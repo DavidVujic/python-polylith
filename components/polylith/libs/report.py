@@ -135,16 +135,18 @@ def get_version(lib: str, project_data: dict) -> str:
     return project_data["deps"]["items"].get(lib)
 
 
-def find_version(
-    lib: str, project_name: str, projects_data: List[dict]
-) -> Union[str, None]:
-    project_data = next(p for p in projects_data if p["name"] == project_name)
-
+def find_version(lib: str, project_data: dict) -> Union[str, None]:
     return get_version(lib, project_data)
 
 
 def printable_header(header: str, short: bool) -> str:
     return "\n".join(header) if short else header
+
+
+def printable_project_header(project_data: dict, short: bool) -> str:
+    name = project_data.get("alias") or project_data["name"]
+
+    return printable_header(name, short)
 
 
 def is_same_version(versions: list) -> bool:
@@ -163,16 +165,16 @@ def libs_in_projects_table(
 
     short = options["short"]
 
-    project_names = sorted({p["name"] for p in projects_data})
-    project_headers = [f"[proj]{printable_header(n, short)}[/]" for n in project_names]
+    projects = sorted(projects_data, key=lambda p: p["name"])
+    proj_headers = [f"[proj]{printable_project_header(p, short)}[/]" for p in projects]
     dev_header = printable_header("development", short)
-    headers = ["[data]library[/]"] + project_headers + [f"[data]{dev_header}[/]"]
+    headers = ["[data]library[/]"] + proj_headers + [f"[data]{dev_header}[/]"]
 
     for header in headers:
         table.add_column(header)
 
     for lib in sorted(libraries):
-        proj_versions = [find_version(lib, n, projects_data) for n in project_names]
+        proj_versions = [find_version(lib, p) for p in projects]
         dev_version = get_version(lib, development_data)
 
         is_same = is_same_version(proj_versions + [dev_version])

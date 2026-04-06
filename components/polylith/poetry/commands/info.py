@@ -9,7 +9,7 @@ class InfoCommand(Command):
     name = "poly info"
     description = "Info about the <comment>Polylith</> workspace."
 
-    options = [command_options.save, command_options.short]
+    options = [command_options.save, command_options.short, command_options.group]
 
     def handle(self) -> int:
         short = True if self.option("short") else False
@@ -22,6 +22,7 @@ class InfoCommand(Command):
             "short": short,
             "save": save,
             "output": output,
+            "groups": set(self.option("group") or []),
         }
         commands.info.run(root, options)
 

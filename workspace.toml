@@ -10,3 +10,14 @@ release = "v[0-9]*"
 
 [tool.polylith.test]
 enabled = true
+
+[tool.polylith.projects.alias]
+hatch-polylith-bricks = "hatch"
+pdm-polylith-bricks = "pdm-bricks"
+pdm-polylith-workspace = "pdm-workspace"
+poetry-polylith-plugin = "poetry-plugin"
+polylith-cli = "cli"
+
+[tool.polylith.projects.groups]
+hooks = ["hatch-polylith-bricks", "pdm-polylith-bricks", "pdm-polylith-workspace"]
+command-line = ["poetry-polylith-plugin", "polylith-cli"]

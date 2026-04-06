@@ -80,7 +80,7 @@ def run_each(
     is_strict = options["strict"]
     is_verbose = options["verbose"]
 
-    name = project_data["name"]
+    name = project_data.get("alias") or project_data["name"]
     deps = project_data["deps"]
     alias = options["alias"]
 
