@@ -33,3 +33,11 @@ strict = option(
     description="More strict checks when matching name and version of third-party libraries and imports.",
     flag=True,
 )
+
+
+group = option(
+    long_name="group",
+    description="Show contents based on configured project group",
+    flag=False,
+    multiple=True,
+)

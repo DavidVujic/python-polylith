@@ -94,6 +94,8 @@ def print_workspace_summary(
     options: dict,
 ) -> None:
     save = options.get("save", False)
+    groups = ", ".join(options.get("groups") or set())
+
     console = Console(theme=theme.poly_theme, record=save)
 
     console.print(Padding("[data]Workspace summary[/]", (1, 0, 1, 0)))
@@ -107,6 +109,9 @@ def print_workspace_summary(
     console.print(f"[comp]components[/]: [data]{number_of_components}[/]")
     console.print(f"[base]bases[/]: [data]{number_of_bases}[/]")
     console.print(f"[data]development[/]: [data]{number_of_dev}[/]")
+
+    if groups:
+        console.print(Padding(f"[data]group[/]: [proj]{groups}[/]", (1, 0, 0, 0)))
 
     if save:
         output.save_recorded(console, options, "workspace_summary")
