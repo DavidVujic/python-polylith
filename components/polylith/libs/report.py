@@ -165,7 +165,7 @@ def libs_in_projects_table(
 
     short = options["short"]
 
-    projects = sorted([p for p in projects_data], key=lambda p: p["name"])
+    projects = sorted(projects_data, key=lambda p: p["name"])
     proj_headers = [f"[proj]{printable_project_header(p, short)}[/]" for p in projects]
     dev_header = printable_header("development", short)
     headers = ["[data]library[/]"] + proj_headers + [f"[data]{dev_header}[/]"]
