@@ -21,12 +21,14 @@ def is_project(project: dict) -> bool:
 
 
 def printable_name(project: dict, short: bool) -> str:
+    alias = project.get("alias")
+
     if is_project(project):
         template = "[proj]{name}[/]"
-        name = project["name"]
+        name = alias or project["name"]
     else:
         template = "[data]{name}[/]"
-        name = "development"
+        name = alias or "development"
 
     if short:
         return template.format(name="\n".join(name))
