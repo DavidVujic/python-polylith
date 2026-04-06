@@ -13,7 +13,7 @@ def print_summary(diff: dict) -> None:
     console = Console(theme=theme.poly_theme)
 
     is_project = diff["is_project"]
-    name = diff["name"] if is_project else "development"
+    name = diff["alias"] or diff["name"] if is_project else "development"
     bases = diff["bases"]
     components = diff["components"]
 

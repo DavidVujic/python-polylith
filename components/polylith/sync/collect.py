@@ -46,6 +46,7 @@ def _calculate(root: Path, namespace: str, project_data: dict, bases: Set[str]) 
 
     return {
         "name": project_data["name"],
+        "alias": project_data["alias"],
         "path": project_data["path"],
         "is_project": is_project,
         "bases": bases_diff if is_project else fn(bases_diff, "bases"),
