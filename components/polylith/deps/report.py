@@ -145,7 +145,9 @@ def print_brick_deps(brick: str, bricks: dict, brick_deps: dict, options: dict):
         output.save(table, options, f"deps_{brick}")
 
 
-def print_brick_with_circular_deps(brick: str, deps: Set[str], bricks: dict) -> None:
+def print_brick_with_circular_deps(
+    brick: str, deps: Set[str], bricks: dict, padding: Union[tuple, None] = None
+) -> None:
     bases = bricks["bases"]
 
     console = Console(theme=theme.poly_theme)
@@ -158,9 +160,13 @@ def print_brick_with_circular_deps(brick: str, deps: Set[str], bricks: dict) -> 
     prefix = ":information:"
     message = f"[{tag}]{brick}[/] [data]is used by[/] {others} [data]and also uses[/] {others}[data].[/]"
 
-    console.print(Padding(f"{prefix} {message}", (0, 0, 0, 1)), overflow="ellipsis")
+    pad = padding or (1, 0, 0, 1)
+    console.print(Padding(f"{prefix} {message}", pad), overflow="ellipsis")
 
 
 def print_bricks_with_circular_deps(circular_bricks: dict, bricks: dict) -> None:
+    console = Console(theme=theme.poly_theme)
+    console.print()
+
     for brick, deps in circular_bricks.items():
-        print_brick_with_circular_deps(brick, deps, bricks)
+        print_brick_with_circular_deps(brick, deps, bricks, (0, 0, 0, 1))

@@ -41,6 +41,20 @@ def used_by_as_bricks(bricks: dict, brick_deps: dict) -> dict:
     }
 
 
+def print_possible_invalid_bricks_interfaces_usage(
+    root: Path, ns: str, bricks: dict, bricks_deps: dict
+) -> None:
+    flattened_bricks = set().union(*bricks.values())
+    bricks_with_deps = {b: bricks_deps[b] for b in flattened_bricks if b in bricks_deps}
+
+    for brick, brick_deps in bricks_with_deps.items():
+        used_bricks = used_by_as_bricks(bricks, brick_deps)
+
+        interface.report.print_brick_interface_invalid_usage(
+            root, ns, brick, used_bricks
+        )
+
+
 def run(root: Path, ns: str, options: dict):
     directory = options.get("directory")
     brick = options.get("brick")
@@ -84,4 +98,8 @@ def run(root: Path, ns: str, options: dict):
         return
 
     deps.print_deps(bricks, imports, options)
+
+    if show_interface:
+        print_possible_invalid_bricks_interfaces_usage(root, ns, bricks, bricks_deps)
+
     deps.print_bricks_with_circular_deps(circular_bricks, bricks)

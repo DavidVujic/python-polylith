@@ -4,6 +4,7 @@ from polylith.interface.collect import get_brick_interface
 from polylith.interface.usage import check_brick_interface_usage, unified_usages
 from polylith.reporting import theme
 from rich.console import Console
+from rich.padding import Padding
 from rich.table import Table
 
 
@@ -26,7 +27,7 @@ def print_brick_interface(root: Path, ns: str, brick: str, bricks: dict) -> None
         *_ns, exposes = str.split(endpoint, ".")
         table.add_row(f"[data]{exposes}[/]")
 
-    console.print(table, overflow="ellipsis")
+    console.print(Padding(table, (0, 0, 1, 0)), overflow="ellipsis")
 
 
 def print_brick_interface_invalid_usage(
@@ -45,7 +46,6 @@ def print_brick_interface_invalid_usage(
 
     console = Console(theme=theme.poly_theme)
 
-    table = Table(box=None)
     tag = "base" if brick in bricks["bases"] else "comp"
 
     for using_brick, usages in invalid_usage.items():
@@ -58,6 +58,4 @@ def print_brick_interface_invalid_usage(
 
             message = f":information: {prefix}: {middle}."
 
-            table.add_row(f"{message}")
-
-    console.print(table, overflow="ellipsis")
+            console.print(Padding(f"{message}", (0, 0, 0, 1)), overflow="ellipsis")
