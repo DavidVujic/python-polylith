@@ -77,7 +77,7 @@ def collect_configured_pdm_exclude_patterns(data: dict) -> set:
 
 
 def collect_configured_poetry_exclude_patterns(data: dict) -> set:
-    exclude = data["tool"]["poetry"].get("exclude", [])
+    exclude = data.get("tool", {}).get("poetry", {}).get("exclude", [])
 
     return set(exclude)
 
