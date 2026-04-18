@@ -80,9 +80,6 @@ def generate_updated_poetry_project(data: TOMLDocument, packages: List[dict]) ->
 def generate_updated_project(
     data: TOMLDocument, packages: List[dict]
 ) -> Union[str, None]:
-    if repo.is_poetry(data):
-        return generate_updated_poetry_project(data, packages)
-
     bricks_to_add: dict = reduce(to_key_value_include, packages, {})
 
     if repo.is_hatch(data):
@@ -90,6 +87,9 @@ def generate_updated_project(
 
     if repo.is_pep_621_ready(data):
         return generate_updated_pep_621_project(data, bricks_to_add)
+
+    if repo.is_poetry(data):
+        return generate_updated_poetry_project(data, packages)
 
     return None
 
