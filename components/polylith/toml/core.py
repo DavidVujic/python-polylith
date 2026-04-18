@@ -111,8 +111,12 @@ def collect_configured_exclude_patterns(
     return set()
 
 
+def is_poetry_without_pep_621_support(data) -> bool:
+    return repo.is_poetry(data) and not repo.is_pep_621_ready(data)
+
+
 def get_project_package_includes(namespace: str, data) -> List[dict]:
-    if repo.is_poetry(data):
+    if is_poetry_without_pep_621_support(data):
         return data["tool"]["poetry"].get("packages", [])
 
     includes = (
@@ -170,10 +174,6 @@ def get_pep_621_optional_dependencies(data) -> List[str]:
     matrix = list(groups.values()) if isinstance(groups, dict) else []
 
     return sum(matrix, [])
-
-
-def is_poetry_without_pep_621_support(data) -> bool:
-    return repo.is_poetry(data) and not repo.is_pep_621_ready(data)
 
 
 def parse_project_dependencies(data) -> dict:
