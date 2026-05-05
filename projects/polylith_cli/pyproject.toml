@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "polylith-cli"
-version = "1.46.0"
+version = "1.47.0"
 description = "Python tooling support for the Polylith Architecture"
 authors = ['David Vujic']
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
@@ -39,6 +39,7 @@ packages = [
     { include = "polylith/toml", from = "../../components" },
     { include = "polylith/workspace", from = "../../components" },
     { include = "polylith/yaml", from = "../../components" },
+    { include = ".agents", from = "../../"}
 ]
 
 [tool.poetry.dependencies]
