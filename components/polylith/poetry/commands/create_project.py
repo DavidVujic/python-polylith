@@ -34,9 +34,11 @@ class CreateProjectCommand(Command):
     def handle(self) -> int:
         name = self.option("name")
         description = self.option("description")
+        quiet = self.option("quiet")
 
         create(name, description, create_project)
 
-        interactive.project.run(name)
+        if not quiet:
+            interactive.project.run(name)
 
         return 0
