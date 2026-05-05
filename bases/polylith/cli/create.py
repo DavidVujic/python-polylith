@@ -2,6 +2,7 @@ from pathlib import Path
 
 from polylith import interactive, project
 from polylith.bricks import base, component
+from polylith.cli import options
 from polylith.commands.create import create
 from polylith.workspace.create import create_workspace
 from typer import Exit, Option, Typer
@@ -57,11 +58,13 @@ def _create_project(root: Path, options: dict):
 def project_command(
     name: Annotated[str, Option(help="Name of the project.")],
     description: Annotated[str, Option(help="Description of the project.")] = "",
+    quiet: Annotated[bool, options.quiet] = False,
 ):
     """Creates a Polylith project."""
     create(name, description, _create_project)
 
-    interactive.project.run(name)
+    if not quiet:
+        interactive.project.run(name)
 
 
 @app.command("workspace")
