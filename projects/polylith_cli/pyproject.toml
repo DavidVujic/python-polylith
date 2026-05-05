@@ -39,6 +39,7 @@ packages = [
     { include = "polylith/toml", from = "../../components" },
     { include = "polylith/workspace", from = "../../components" },
     { include = "polylith/yaml", from = "../../components" },
+    { include = ".agents", from = "../../"}
 ]
 
 [tool.poetry.dependencies]
