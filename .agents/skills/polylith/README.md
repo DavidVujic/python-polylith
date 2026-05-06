@@ -20,17 +20,3 @@
 | [Check](./polylith-check/SKILL.md)                                 | `poly check`            | Validate the workspace (CI gate; exits 1 on failure).                                |
 | [Libs](./polylith-libs/SKILL.md)                                   | `poly libs`             | Inspect third-party libraries per project.                                           |
 | [Concepts](./polylith-concepts/SKILL.md)                           | —                       | Provides foundational knowledge about Polylith architecture and terminology.           |
-
----
-
-## For humans — getting started
-
-1. **Set up the workspace** — [Workspace Setup](./workspace_setup/SKILL.md).
-2. **Understand the basics** — [Concepts](./concepts/SKILL.md).
-3. **Create bricks** — [Component Creation](./component_creation/SKILL.md) and [Base Creation](./base_creation/SKILL.md).
-4. **Create deployable projects** — [Project Management](./project_management/SKILL.md).
-5. **Remove bricks safely** — [Brick Removal](./brick_removal/SKILL.md).
-6. **Sync brick usage** — [Sync](./sync/SKILL.md).
-7. **Inspect** — [Workspace Inspection](./workspace_inspection/SKILL.md) (brick × project) and [Dependency Visualization](./dependency_visualization/SKILL.md) (brick × brick).
-8. **Validate** — [Check](./check/SKILL.md) (CI gate) and [Libs](./libs/SKILL.md) (library inspection).
-9. **Diff between releases** — [Diff](./diff/SKILL.md) and [Testing](./testing/SKILL.md).
