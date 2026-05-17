@@ -1,6 +1,6 @@
 ---
 name: convert-type-checker
-description: Replace the project's existing type checker with the workspace's configured type-checking tool to align with the workspace's standards.
+description: Replace the project's existing type checker with a workspace-standard tool (e.g., **ty**) to align with the workspace's standards.
 ---
 
 # Skill: convert-type-checker

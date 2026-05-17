@@ -1,6 +1,6 @@
 ---
 name: convert-package-manager
-description: Convert the project's `pyproject.toml` to PEP 621/uv format and register it as a workspace member (if the user opts in).
+description: Convert the project's `pyproject.toml` to a workspace-standard format (e.g., PEP 621/uv) and register it as a workspace member (if the user opts in).
 ---
 
 # Skill: convert-package-manager

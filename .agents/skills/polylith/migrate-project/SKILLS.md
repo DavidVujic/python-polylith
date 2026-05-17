@@ -8,7 +8,7 @@ description: Skills for migrating a non-Polylith Python project into a Polylith 
 This file serves as an index for all **project migration skills** available in the Polylith CLI. These skills are **only** for migrating **non-Polylith Python projects** into a Polylith workspace **when explicitly requested by a human**.
 
 **⚠️ When to Use These Skills**
-- A human has **explicitly instructed** to migrate a specific project (e.g., "Migrate the project `my-app` in `/projects/my-app` to Polylith").
+- A human has **explicitly instructed** to migrate a specific project (e.g., "Migrate the project `<project-name>` in `/projects/<project-name>` to Polylith").
 - The target project has been copied into the `/projects` folder of this Polylith workspace.
 - These skills are **not** relevant for daily Polylith workflows or already-migrated projects.
 - They are **not** intended for automated or unattended use.

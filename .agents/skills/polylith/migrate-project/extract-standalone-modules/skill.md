@@ -1,6 +1,6 @@
 ---
 name: extract-standalone-modules
-description: Extract foundational modules (e.g., `consts.py`, `exceptions.py`) from the residual component into standalone components.
+description: Extract foundational modules (e.g., `consts.py`, `exceptions.py`, or similar) from the residual component into standalone components.
 ---
 
 # Skill: extract-standalone-modules

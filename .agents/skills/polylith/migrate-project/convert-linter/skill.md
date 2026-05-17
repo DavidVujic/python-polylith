@@ -31,7 +31,7 @@ From `migration/<PROJECT>/state.md`:
 - Identify any project-specific rules or ignores that differ from the workspace's standards.
 
 ### 3. Merge Project-Specific Rules
-- If the project has unique linting rules or ignores, merge them into the workspace root's `[tool.ruff]` configuration.
+- If the project has unique linting rules or ignores, merge them into the workspace root's linting configuration (e.g., `[tool.ruff]`).
 - For conflicts (e.g., stricter rules in the project), ask the user to provide guidance on whether to:
   - Adopt the project's rules in the workspace.
   - Suppress the project's rules in favor of the workspace's.

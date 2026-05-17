@@ -6,7 +6,7 @@ description: Split monolithic `core.py` files in shared components into domain-f
 # Skill: split-component-internals
 
 ## Goal
-Split monolithic `core.py` files in **shared components** (e.g., `models_shared`, `schemas_shared`) into domain-focused modules. This skill ensures that shared components remain well-organized and maintainable.
+Split monolithic `core.py` files in **shared components** (e.g., `models_shared`, `schemas_shared`, or similar) into domain-focused modules. This skill ensures that shared components remain well-organized and maintainable.
 
 ## Inputs
 From `migration/<PROJECT>/state.md`:

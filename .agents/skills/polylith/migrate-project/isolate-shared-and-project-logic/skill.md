@@ -1,6 +1,6 @@
 ---
 name: isolate-shared-and-project-logic
-description: Identify and isolate shared and project-specific logic in monolithic components (e.g., `models`, `schemas`).
+description: Identify and isolate shared and project-specific logic in monolithic components (e.g., `models`, `schemas`, or similar).
 ---
 
 # Skill: isolate-shared-and-project-logic
