@@ -1,0 +1,169 @@
+---
+name: migrate-discover
+description: "[Internal sub-skill of `migrate-orchestrator` (phase 1 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Create `migration/<PROJECT>/state.md` and `migration/<PROJECT>/manifest.md` by inspecting the existing project under `projects/<PROJECT>/`."
+---
+
+# Skill: migrate-discover
+
+## Goal
+Inspect the project and create two artifacts that drive every subsequent migration phase:
+- `migration/<PROJECT>/state.md` — a flat `KEY=value` file (see schema below).
+- `migration/<PROJECT>/manifest.md` — a human-readable structural inventory.
+
+> 💡 `<PROJECT>` is the project subfolder name (e.g., `api` for `projects/api/`). Use that exact string everywhere — paths, filenames, branch names.
+
+## Canonical `state.md` schema
+
+All later skills read `state.md` as a flat `KEY=value` file. Use **exactly** this format — no markdown tables, no fenced TOML, no inline comments. One key per line.
+
+```ini
+# migration/<PROJECT>/state.md
+PROJECT_DIR=projects/<PROJECT>
+ORIG_TOP_NS=<current import namespace>
+TARGET_TOP_NS=<desired Polylith namespace, defaults to ORIG_TOP_NS>
+INITIAL_BASE_NAME=<snake_case base name for the temporary migration base>
+ALIAS=<short kebab-case alias for poly info/deps tables, or empty>
+GROUP=<polylith project group, or empty>
+
+PACKAGE_MANAGER=<poetry|pipenv|pip|uv|setuptools>
+LINTER=<flake8|pylint|ruff|none>
+FORMATTER=<black|isort|ruff|none>
+TYPE_CHECKER=<mypy|pyright|ty|none>
+POLY_CMD_PREFIX=<poetry poly|pipenv run poly|pdm run poly|hatch run poly|uv run poly|poly>
+
+CONVERT_LINTER=<yes|no>
+CONVERT_TYPE_CHECKER=<yes|no>
+CONVERT_PACKAGE_MANAGER=<yes|no>
+
+RUN_TEST_CMD=<full command to run tests>
+RUN_LINT_CMD=<full command to run linting, or empty>
+RUN_TYPECHECK_CMD=<full command to run type checking, or empty>
+
+GIT_BRANCH=<migration branch name created in orchestrator Phase 0>
+GIT_BASE_SHA=<commit SHA of the migration branch start point>
+```
+
+### Field reference
+
+| Key | Description | Source |
+|-----|-------------|--------|
+| `PROJECT_DIR` | Project subfolder path. | The orchestrator's `<PROJECT>`. |
+| `ORIG_TOP_NS` | Current top-level Python package name. | First non-`tests` directory under `projects/<PROJECT>/src/` or `projects/<PROJECT>/`. |
+| `TARGET_TOP_NS` | Desired Polylith namespace. | `workspace.toml` `[tool.polylith].namespace`, or `ORIG_TOP_NS` if no workspace exists yet. |
+| `INITIAL_BASE_NAME` | Name of the **single temporary base** used to hold all code during early phases. Becomes the **default base name** in `migrate-isolate-base-and-big-component`. Final migrations usually contain *several* bases — this is just the starting one. | Derived from `[project.name]`, confirmed by user. |
+| `ALIAS` | Short alias shown in `poly info` / `poly deps` tables. Optional. | Derived, confirmed by user. |
+| `GROUP` | Polylith project group. Optional. | Asked from user. |
+| `PACKAGE_MANAGER` / `LINTER` / `FORMATTER` / `TYPE_CHECKER` | Detected tooling. | Detection table below. |
+| `POLY_CMD_PREFIX` | Prefix every `poly …` command in later skills uses. | Derived from `PACKAGE_MANAGER`. |
+| `CONVERT_*` | Whether the user opted in to a tooling conversion. | Asked from user. |
+| `RUN_TEST_CMD` etc. | The exact shell commands the migration verifies against after each phase. | Derived from project config, confirmed by user if ambiguous. |
+| `GIT_BRANCH` / `GIT_BASE_SHA` | Set by the orchestrator's Phase 0; recorded here so later skills know where to roll back to. | Orchestrator. |
+
+### Deriving `INITIAL_BASE_NAME` and `ALIAS` from `[project.name]`
+
+| `[project.name]`        | `INITIAL_BASE_NAME` (snake) | `ALIAS` (kebab) |
+|-------------------------|-----------------------------|-----------------|
+| `example-service-a`     | `example_a`                 | `svc-a`         |
+| `order-management-api`  | `order_management`          | `order-mgmt`    |
+| `payment-worker`        | `payment`                   | `payment`       |
+
+## Steps
+
+> Run these in order. Every step writes to `state.md` or `manifest.md`. Do not skip the confirmation gates (steps 4 and 7).
+
+### 1. Record project metadata
+Read `projects/<PROJECT>/pyproject.toml` (or `setup.cfg`/`setup.py`) and fill in `PROJECT_DIR`, `ORIG_TOP_NS`, `TARGET_TOP_NS`, and the **derived** `INITIAL_BASE_NAME`, `ALIAS` per the tables above.
+
+### 2. Detect tooling
+Scan project config files and fill in `PACKAGE_MANAGER`, `LINTER`, `FORMATTER`, `TYPE_CHECKER`:
+
+| Tool | Detection criteria |
+|------|--------------------|
+| **Package Manager** | |
+| Poetry      | `poetry.lock` or `[tool.poetry]` in `pyproject.toml` |
+| Pipenv      | `Pipfile` or `Pipfile.lock` |
+| Pip         | `requirements.txt` (no lock file) |
+| UV          | `uv.lock` or `[tool.uv]` in `pyproject.toml` |
+| Setuptools  | `setup.py` or `setup.cfg` only |
+| **Linter** | |
+| Flake8 | `setup.cfg`, `tox.ini` `[flake8]` section, or `.flake8` |
+| Pylint | `[tool.pylint]` or `.pylintrc` |
+| Ruff   | `[tool.ruff]` |
+| **Formatter** | |
+| Black  | `[tool.black]` |
+| Isort  | `[tool.isort]` |
+| Ruff   | `[tool.ruff.format]` |
+| **Type Checker** | |
+| Mypy    | `mypy.ini`, `.mypy.ini`, or `[tool.mypy]` |
+| Pyright | `[tool.pyright]` or `pyrightconfig.json` |
+| Ty      | `[tool.ty]` |
+
+### 3. Derive `POLY_CMD_PREFIX`
+Map `PACKAGE_MANAGER` to the command prefix:
+
+| `PACKAGE_MANAGER` | `POLY_CMD_PREFIX` |
+|-------------------|-------------------|
+| `poetry`     | `poetry poly`     |
+| `pipenv`     | `pipenv run poly` |
+| `pdm`        | `pdm run poly`    |
+| `hatch`      | `hatch run poly`  |
+| `uv`         | `uv run poly`     |
+| `pip` / `setuptools` / activated venv | `poly` |
+
+### 4. Discover verification commands
+Inspect `Makefile`, `Justfile`, `tox.ini`, `pyproject.toml` `[tool.pytest.ini_options]`, and CI config (`.github/workflows/*.yml`, `.circleci/config.yml`, etc.) to identify the project's existing commands. Fill `RUN_TEST_CMD`, and `RUN_LINT_CMD` / `RUN_TYPECHECK_CMD` when present. If a command can't be found, leave the value empty.
+
+### 5. Determine tooling-conversion eligibility
+Read the **workspace root** `pyproject.toml` to determine the workspace's standard linter, formatter, type checker, and package manager.
+
+- If the project's `LINTER`/`FORMATTER` already matches the workspace's → set `CONVERT_LINTER=no` (skip).
+- If the project's `TYPE_CHECKER` already matches the workspace's → set `CONVERT_TYPE_CHECKER=no` (skip).
+- If the project's `PACKAGE_MANAGER` is already `uv` **and** the workspace uses uv → set `CONVERT_PACKAGE_MANAGER=no` (skip).
+- If the workspace does **not** use uv, `migrate-convert-package-manager` does not apply at all — set `CONVERT_PACKAGE_MANAGER=no` and skip the question below.
+
+### 6. Create `manifest.md`
+Record the following in `migration/<PROJECT>/manifest.md`:
+- Directory tree of `projects/<PROJECT>/` (output of a `directory_tree` tool call).
+- **Module map** — for each Python module/package: path, one-line description of its role (e.g., "FastAPI route handlers", "Kafka consumer", "domain model").
+- **Entrypoints** — every file that is the start of a deployable (FastAPI `app`, CLI `main`, Lambda `handler`, worker `run`).
+- **Tests** — test directory structure, test file count, fixture file locations (`conftest.py`).
+- **Infrastructure files** — Dockerfiles, k8s manifests, Helm charts, alembic configs, deploy scripts.
+
+### 7. Present derived values, then confirm with the user
+**Do not proceed past this step without explicit user confirmation.** Present the derived state in one block:
+
+```
+Derived from projects/<PROJECT>/:
+  INITIAL_BASE_NAME = <value>     ← initial base name; you will likely add more bases later
+  ALIAS             = <value>     ← short alias for poly info/deps tables (optional)
+  GROUP             = <value>     ← project group (optional)
+
+Detected tooling:
+  PACKAGE_MANAGER = <value>
+  LINTER          = <value>
+  FORMATTER       = <value>
+  TYPE_CHECKER    = <value>
+
+Verification commands:
+  RUN_TEST_CMD       = <value>
+  RUN_LINT_CMD       = <value or empty>
+  RUN_TYPECHECK_CMD  = <value or empty>
+
+Optional conversions you can opt into:
+  - Convert linter/formatter to match workspace standard?     (default: no)
+  - Convert type checker to match workspace standard?         (default: no)
+  - Convert package manager to uv (workspace-uv only)?        (default: no)
+
+Confirm the values above, or correct any of them.
+```
+
+Wait for the user's response. Update `state.md` with corrections and the `CONVERT_*` answers.
+
+## Done When
+The following artifacts and conditions all hold:
+
+- [ ] `migration/<PROJECT>/state.md` exists and contains **every** key in the schema (empty values where N/A, but no missing keys).
+- [ ] `migration/<PROJECT>/manifest.md` exists with all five sections (directory tree, module map, entrypoints, tests, infrastructure).
+- [ ] The user has explicitly confirmed `INITIAL_BASE_NAME`, `ALIAS`, `GROUP`, and the three `CONVERT_*` flags.
+- [ ] `RUN_TEST_CMD` is set and **runs successfully on the project's current code** (the migration's baseline pass-rate).
+- [ ] `GIT_BRANCH` and `GIT_BASE_SHA` are populated (from orchestrator Phase 0).
