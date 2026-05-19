@@ -24,6 +24,8 @@ From `migration/<PROJECT>/state.md`:
 From `migration/<PROJECT>/manifest.md`:
 - Module map of components.
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 1. Identify Monolithic Components
@@ -65,9 +67,27 @@ From `migration/<PROJECT>/manifest.md`:
 - Linting and type-checking pass (if set).
 - The workspace structure is valid (`POLY_CMD_PREFIX check`).
 
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| Only one project exists in the workspace, so there's nothing to compare against | Running this skill on the **first** project migration. | Skip the skill entirely. Record `migrate-isolate-shared-and-project-logic: skipped (single-project workspace)` in `migration/<PROJECT>/state.md` and proceed to `migrate-distribute-wiring`. Revisit when a second project is migrated. |
+| A definition looks shared but is actually used by one project via two different bases inside that project | Bases within one project both use it — still single-project usage. | Leave it project-specific. Cross-project sharing requires consumers in **different** projects under `projects/`. |
+| Two projects each have a "same" class with subtle field differences (extra fields, different defaults) | Silent merging would change behaviour. | Do **not** merge silently. Either create a shared base class + project-specific subclasses, or keep the implementations separate and accept the duplication. Confirm with the user. |
+
 ## Done When
 - Shared logic is extracted into reusable components.
 - Project-specific logic is isolated into project-specific components.
 - Similar models reuse shared logic where possible.
 - All tests and checks pass.
 - The workspace structure is valid.
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 7 — isolate-shared-and-project-logic"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

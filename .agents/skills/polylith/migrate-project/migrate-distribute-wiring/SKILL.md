@@ -18,6 +18,8 @@ From `migration/<PROJECT>/state.md`:
 From `migration/<PROJECT>/manifest.md`:
 - Current module map, including what remains in the residual component.
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 1. Read the Residual Component
@@ -65,3 +67,13 @@ From `migration/<PROJECT>/manifest.md`:
 | `poly check` says the residual brick is still declared but its files are gone | `pyproject.toml` `[tool.polylith.bricks]` still lists the deleted brick. | Remove the line from `[tool.polylith.bricks]` and re-run `POLY_CMD_PREFIX sync --quiet`. |
 | Application starts but a runtime feature is missing (e.g., logging, DB) | A shared init helper was moved into one base only. The other base never calls it. | Promote the helper to a shared `bootstrap` component and call it from every base's startup path. |
 | Verification fails and you can't quickly diagnose | Phase commit not yet made. | `git reset --hard HEAD` to roll back to the previous phase's commit and consult the user. |
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 8 — distribute-wiring"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

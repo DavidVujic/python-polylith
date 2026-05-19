@@ -19,6 +19,35 @@ Identify duplication candidates during the migration process and execute control
 - After splitting the big component or extracting standalone modules.
 - When potential duplication between components is suspected.
 
+## Classification
+
+Use this table when deciding whether a candidate is a real duplicate:
+
+| Class | Definition | Action |
+|-------|------------|--------|
+| **Identical** | Same logic, same control flow, only trivial differences (variable names, formatting, ordering of independent statements). | Extract into a shared component. Both call sites import from it. |
+| **Similar** | Same purpose, slightly different behaviour (e.g., different default arguments, project-specific fields on an otherwise shared model). | Extract a **parameterized** shared component. Project-specific behaviour passes in as arguments or subclass hooks. Avoid forcing a one-size-fits-all signature. |
+| **Coincidental** | Looks similar (same function name, same shape) but serves unrelated purposes. | Leave alone. Sharing here would couple two domains that should evolve independently. |
+
+## When to parameterize vs. keep separate
+
+- **Parameterize** when the core logic is identical and only data/config differs.
+- **Keep separate** when control flow or structure diverges (different frameworks, different patterns) — forcing a shared abstraction here creates a brittle "shared core" that grows project-specific flags over time.
+- **Extract shared base + per-project wrappers** when there's a significant shared core but non-trivial project-specific logic around it.
+
+### Worked example — logging
+
+Two projects each had their own `init_logging`. The core (structlog setup, base log levels, JSON formatter) was identical; the differences were:
+
+- Project A added loggers for `httpx`, `backoff`.
+- Project B added a logger for `confluent_kafka_helpers`.
+
+The shared component exposed an `init(config, *, extra_loggers=None, cache_logger_on_first_use=False)` function. Each project's base calls `init` with its own `extra_loggers` dict. No coincidental coupling, no version skew, and adding a third project requires only its own dict — not a change to the shared component.
+
+## Shared-component naming
+
+When creating a shared component to deduplicate code, name it after the **domain or capability** it represents, never after how it's used. Good: `logging`, `kafka_client`, `merchant_serializer`. Bad: `shared_utils`, `common`, `helpers`, `misc`. Generic-named bricks attract more code over time and become the next thing that needs decomposing.
+
 ## Inputs
 From `migration/<PROJECT>/state.md`:
 - `TARGET_TOP_NS`
@@ -26,6 +55,8 @@ From `migration/<PROJECT>/state.md`:
 
 From `migration/<PROJECT>/manifest.md`:
 - Module map of components.
+
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
 
 ## Steps
 
@@ -62,8 +93,26 @@ From `migration/<PROJECT>/manifest.md`:
 - Linting and type-checking pass (if set).
 - The workspace structure is valid (`POLY_CMD_PREFIX check`).
 
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| Two pieces of code look identical but operate on different domains (e.g., both are `validate(...)` but one is for users, the other for transactions) | Coincidental similarity, not real duplication. | Classify as "coincidental"; leave both in place. Resist the urge to share. |
+| The candidate shared component would pull in framework-specific dependencies (e.g., a "logging" shared brick that needs both `confluent_kafka_helpers` and `httpx`) | Wrong shared abstraction — you're sharing the union of two project surfaces. | Revert and parameterize instead: keep the shared core minimal and pass project-specific values as arguments. See the "Pattern: Parameterize the shared component" guidance in `migrate-split-big-component`. |
+| Tests break after deduplication because `mock.patch("<old.path>")` no longer hits anything | Patch strings reference the pre-dedup module path. | Update patch strings to the new shared module path. Validate by deliberately breaking the patched function and confirming the test fails. |
+
 ## Done When
 - Duplication candidates are identified and presented to the user.
 - User-approved candidates are deduplicated.
 - All tests and checks pass.
 - The workspace structure is valid.
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase optional — dedupe"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

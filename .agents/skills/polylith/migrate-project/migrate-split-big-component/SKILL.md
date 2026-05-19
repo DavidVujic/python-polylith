@@ -23,6 +23,8 @@ From `migration/<PROJECT>/state.md`:
 From `migration/<PROJECT>/manifest.md`:
 - Module map of the big component.
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### Phase 1: Plan the Split
@@ -170,3 +172,22 @@ For each planned component in `split_plan.md`:
 - If set, `RUN_LINT_CMD` and `RUN_TYPECHECK_CMD` succeed.
 - Run `POLY_CMD_PREFIX check` to validate the workspace structure.
 - Run `POLY_CMD_PREFIX sync` to synchronize the `[tool.polylith.bricks]` table with actual imports.
+
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| New component is named `utils`, `helpers`, `common`, or `misc` | Naming taken from old module names instead of the domain the code serves. | Rename to a domain-specific name (see the "Examples of Component Naming" table). Generic-named bricks attract more code and become the next big component. |
+| Extracted component imports back into the residual via the residual's `__init__.py` | Circular import — see the "Avoiding circular imports" subsection above. | Apply strategies 1–3 from that subsection (extract the cyclic part, trim `__init__.py` exports, or restructure to standalone). Strategy 4 (deferred import) only as last resort. |
+| `poly check` flags the newly extracted component as not used by any project | The project's base still imports from the residual path (`<TARGET_TOP_NS>.<INITIAL_BASE_NAME>.<x>`) instead of the new component. | Update the base's imports to the new component's public API, then `POLY_CMD_PREFIX sync --quiet` and re-run check. |
+| Verification fails and you can't quickly diagnose | Phase commit not yet made. | `git reset --hard HEAD` to roll back to the previous phase's commit and consult the user. |
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 5 — split-big-component"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

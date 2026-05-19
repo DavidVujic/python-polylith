@@ -17,6 +17,8 @@ From `migration/<PROJECT>/state.md`:
 - `TYPE_CHECKER`
 - `RUN_TEST_CMD` (optional: `RUN_LINT_CMD`, `RUN_TYPECHECK_CMD`)
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 0. Identify the workspace's tool
@@ -54,6 +56,14 @@ If the workspace has no type checker configured at all, stop and ask the user ho
 - `RUN_TEST_CMD` succeeds.
 - If set, `RUN_LINT_CMD` succeeds.
 
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| The workspace's checker surfaces type errors the old checker didn't | Stricter type rules expose real bugs that were always there. | Fix the bugs now where cheap (small handful). For systemic gaps, suppress per-module in the workspace's checker config and document the debt in `state.md`. Do **not** blanket-ignore at file scope. |
+| Stub packages (`types-*`, `django-stubs`, `sqlalchemy-stubs`) were required by the old checker but the new one bundles its own | Dependency carryover. | Remove the stub packages from `pyproject.toml`. Re-run the workspace's checker to confirm it picks up its own stubs. |
+| `# type: ignore[<old-code>]` comments still reference the old checker's error codes | Step 2 missed some. | Strip the `[<code>]` bracket. If the suppression is still needed, leave a bare `# type: ignore` **with a comment explaining why**; otherwise remove the suppression entirely. |
+
 ## Done When
 - No old type checker config files remain.
 - Old type checker dependencies are removed from `pyproject.toml`.
@@ -61,3 +71,13 @@ If the workspace has no type checker configured at all, stop and ask the user ho
 - `TYPE_CHECKER` in `migration/<PROJECT>/state.md` matches the workspace's type-checking tool.
 - The workspace's type-checking tool runs cleanly or known issues are documented in `state.md`.
 - Tests pass via the workspace's tooling.
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase optional — convert-type-checker"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

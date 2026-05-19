@@ -21,6 +21,8 @@ From `migration/<PROJECT>/state.md`:
 From `migration/<PROJECT>/manifest.md`:
 - Infra files list.
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 1. Verify Project Subfolder
@@ -70,3 +72,13 @@ From `migration/<PROJECT>/manifest.md`:
 | Infra folder move breaks deploy scripts that hardcoded paths (e.g., `helm/<chart>/values.yaml`) | Deploy scripts haven't been updated to the new `infra/<folder>/<project-name>/` location. | Either update the scripts, or symlink the new location from the old one as a transitional step (record the symlink in `migration/<PROJECT>/state.md`). |
 | `poly check` complains about brick references after dependency consolidation | A runtime dependency was moved to the workspace root but the project's `pyproject.toml` doesn't declare it. | Add the dependency name (no version) back to the project's `[project.dependencies]`. The version stays only at the workspace root. |
 | Verification fails and you can't quickly diagnose | Phase commit not yet made. | `git reset --hard HEAD` to roll back to the previous phase's commit and consult the user. |
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 3 — prepare-project"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

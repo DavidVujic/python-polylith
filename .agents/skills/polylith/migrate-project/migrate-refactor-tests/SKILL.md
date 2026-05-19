@@ -27,6 +27,8 @@ From `workspace.toml`:
 From `test/`:
 - Current test directory structure.
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Target layout
 
 | Theme    | Test path for a base   | Test path for a component  |
@@ -77,3 +79,13 @@ If a test exercises 2+ bricks at integration level, classify it as integration a
 | `ImportError: cannot import name 'fixture_<x>'` from `conftest.py` | A `conftest.py` `import`s a moved test helper module that didn't follow it. | Move the helper next to the new `conftest.py`, or import it from its new brick path. |
 | Tests for moved code suddenly find themselves under a brick name that doesn't match their content | Misclassification in step 1. | Re-read the test's imports — the brick most imported is the one that owns the test. Move and update. |
 | Verification fails and you can't quickly diagnose | Phase commit not yet made. | `git reset --hard HEAD` to roll back to the previous phase's commit and consult the user. |
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 10 — refactor-tests"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

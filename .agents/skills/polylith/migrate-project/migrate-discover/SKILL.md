@@ -67,6 +67,19 @@ GIT_BASE_SHA=<commit SHA of the migration branch start point>
 | `order-management-api`  | `order_management`          | `order-mgmt`    |
 | `payment-worker`        | `payment`                   | `payment`       |
 
+### Validation rules
+
+When any later phase loads `state.md`, validate before proceeding:
+
+1. **File exists** at `migration/<PROJECT>/state.md`.
+2. **Format**: every line is one of: blank, `# comment`, or `KEY=value`. No markdown tables, no fenced TOML, no inline comments after a value.
+3. **Schema coverage**: every key from the schema above is present. A value may be empty (for optional keys), but the key line must exist.
+4. **Enumerations**: `PACKAGE_MANAGER`, `LINTER`, `FORMATTER`, `TYPE_CHECKER`, and the three `CONVERT_*` flags use only the documented values.
+5. **Required non-empty**: `PROJECT_DIR`, `ORIG_TOP_NS`, `TARGET_TOP_NS`, `INITIAL_BASE_NAME`, `PACKAGE_MANAGER`, `POLY_CMD_PREFIX`, `RUN_TEST_CMD`, `GIT_BRANCH`, `GIT_BASE_SHA` must all be non-empty.
+6. **Consistency**: `POLY_CMD_PREFIX` matches `PACKAGE_MANAGER` per the mapping table.
+
+If validation fails, abort the phase, surface the offending line(s) to the user, and ask them to fix `state.md` before retrying. Never silently coerce values.
+
 ## Steps
 
 > Run these in order. Every step writes to `state.md` or `manifest.md`. Do not skip the confirmation gates (steps 4 and 7).
@@ -122,12 +135,38 @@ Read the **workspace root** `pyproject.toml` to determine the workspace's standa
 - If the workspace does **not** use uv, `migrate-convert-package-manager` does not apply at all — set `CONVERT_PACKAGE_MANAGER=no` and skip the question below.
 
 ### 6. Create `manifest.md`
-Record the following in `migration/<PROJECT>/manifest.md`:
-- Directory tree of `projects/<PROJECT>/` (output of a `directory_tree` tool call).
-- **Module map** — for each Python module/package: path, one-line description of its role (e.g., "FastAPI route handlers", "Kafka consumer", "domain model").
-- **Entrypoints** — every file that is the start of a deployable (FastAPI `app`, CLI `main`, Lambda `handler`, worker `run`).
-- **Tests** — test directory structure, test file count, fixture file locations (`conftest.py`).
-- **Infrastructure files** — Dockerfiles, k8s manifests, Helm charts, alembic configs, deploy scripts.
+
+Write `migration/<PROJECT>/manifest.md` using **exactly** this template — fixed headings, fixed shapes. Later phases parse this file by heading.
+
+`````markdown
+# migration/<PROJECT>/manifest.md
+
+## Directory tree
+
+<output of a `directory_tree` call on `projects/<PROJECT>/`, fenced as a code block>
+
+## Module map
+
+| Path | Role |
+|------|------|
+| `<relative path>` | <one-line description: "FastAPI route handlers", "Kafka consumer", "domain model", etc.> |
+
+## Entrypoints
+
+- `<path>`: <entrypoint type — FastAPI app / CLI main / Lambda handler / worker run / scheduled job>
+
+## Tests
+
+- Root: `<path>` (relative to project)
+- File count: <n>
+- Fixture files: `<path>`, `<path>`, …
+
+## Infrastructure
+
+- `<path>`: <type — Dockerfile / k8s manifest / Helm chart / alembic config / deploy script>
+`````
+
+> ⚠ Keep the five `##` headings literal. Downstream phases reference them by name; renaming a heading silently breaks input discovery.
 
 ### 7. Present derived values, then confirm with the user
 **Do not proceed past this step without explicit user confirmation.** Present the derived state in one block:
@@ -159,6 +198,14 @@ Confirm the values above, or correct any of them.
 
 Wait for the user's response. Update `state.md` with corrections and the `CONVERT_*` answers.
 
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| Derived `INITIAL_BASE_NAME` collides with an existing brick under `bases/<TARGET_TOP_NS>/` or `components/<TARGET_TOP_NS>/` | Two projects derive the same base name from a generic `[project.name]`. | Append a project-specific suffix (e.g., `payment_api` instead of `payment`) and re-confirm with the user. Check before writing `state.md`. |
+| Project has no detectable test command | No `pytest` / `make test` / CI config that reveals a runnable test command. | Ask the user explicitly. If none exists, set `RUN_TEST_CMD=` empty and record that **every later phase loses its primary safety check** — flag the heightened risk and require manual smoke-testing at the entrypoint level. |
+| Multiple linters or formatters are configured simultaneously (e.g., black + ruff format both active) | Project history accumulated tools without a cleanup. | Record both in `state.md` (comma-separated values are acceptable in this one case), and flag for resolution during `migrate-convert-linter`. Do **not** silently pick one. |
+
 ## Done When
 The following artifacts and conditions all hold:
 
@@ -167,3 +214,13 @@ The following artifacts and conditions all hold:
 - [ ] The user has explicitly confirmed `INITIAL_BASE_NAME`, `ALIAS`, `GROUP`, and the three `CONVERT_*` flags.
 - [ ] `RUN_TEST_CMD` is set and **runs successfully on the project's current code** (the migration's baseline pass-rate).
 - [ ] `GIT_BRANCH` and `GIT_BASE_SHA` are populated (from orchestrator Phase 0).
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 1 — discover"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

@@ -25,6 +25,8 @@ From `migration/<PROJECT>/state.md`:
 - `PACKAGE_MANAGER`
 - `RUN_TEST_CMD` (optional: `RUN_LINT_CMD`, `RUN_TYPECHECK_CMD`)
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 1. Ask for User Approval
@@ -75,6 +77,14 @@ From `migration/<PROJECT>/state.md`:
 - If set, run `RUN_LINT_CMD` and `RUN_TYPECHECK_CMD`.
 - Ensure `uv lock` and `uv sync` succeed from the workspace root.
 
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| Workspace root does not use uv (no `[tool.uv.workspace]`, no `uv.lock`) | This skill does not apply — the opinionation gate at the top of this file rules it out. | Stop. Set `CONVERT_PACKAGE_MANAGER=no` in `state.md`. Align the project to the workspace's actual manager (Poetry/PDM/Hatch) via a manual step instead. |
+| `uv lock` fails with "no version satisfies …" after adding the project as a workspace member | Project's old version constraints conflict with the workspace root's pins. | Relax the workspace root's range, or, if the project legitimately needs a different version, pin it explicitly in the project's `pyproject.toml`. As a last resort, exclude the project from the workspace and use a separate environment. |
+| Project depends on a private/internal package that the workspace root doesn't know about | Private index or path-dependency not declared at the root. | Add the dependency (and its source — `[tool.uv.sources]` or `[[tool.uv.index]]`) to the workspace root `pyproject.toml`. |
+
 ## Done When
 - The project is listed as a workspace member in the root `pyproject.toml`.
 - `uv lock` and `uv sync` succeed from the workspace root.
@@ -82,3 +92,13 @@ From `migration/<PROJECT>/state.md`:
 - `PACKAGE_MANAGER=uv` is recorded in `migration/<PROJECT>/state.md`.
 - Verification commands in `state.md` use `uv run`.
 - Tests pass via `uv run`.
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase optional — convert-package-manager"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

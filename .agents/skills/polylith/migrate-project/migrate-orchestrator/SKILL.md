@@ -47,7 +47,7 @@ Migration is destructive — files move, directories are deleted, `pyproject.tom
    ```bash
    git checkout -b migrate/<project-name>
    ```
-3. After **each completed phase below**, commit the current state with a phase-tagged message:
+3. After each completed phase, commit per that phase's `## Commit` section. The commit message follows the pattern `migrate(<project-name>): phase <N> — <phase-name>` so phases can be located in `git log` later.
    ```bash
    git add -A && git commit -m "migrate(<project-name>): phase <N> — <phase-name>"
    ```
@@ -87,16 +87,26 @@ These are not part of the linear flow above. They are triggered when the user op
 
 > ⚠ `migrate-convert-package-manager` only converts **to uv**. If the workspace uses Poetry, PDM, or Hatch as its standard, **skip this skill entirely** — the project should be aligned to the workspace's manager via a manual step instead.
 
+### Ordering when multiple converters are opted in
+
+When the user opts into more than one of the optional `migrate-convert-*` skills during `migrate-discover`, run them in **this order** between phase 1 and phase 2:
+
+1. `migrate-convert-package-manager` — runs first because it rewrites `pyproject.toml` wholesale; subsequent skills must operate on the final layout.
+2. `migrate-convert-linter` — runs second so workspace-level lint config consolidation happens against the final `pyproject.toml`.
+3. `migrate-convert-type-checker` — runs last; type-checker config is the most localized of the three.
+
+`migrate-dedupe` is triggered later (after phase 5 or phase 6 surfaces duplication candidates) and has **no ordering dependency** with the converters.
+
+Commit between each optional skill the same way the main phases commit (see each skill's `## Commit` section).
+
 ## Execution checklist
 
 For each phase:
-1. Load the skill (`migrate-<phase>`).
-2. Execute its `Steps` in order.
-3. Run its `Verify` section. **If verification fails, do not commit and do not proceed.** Either fix the issue, or `git reset --hard` to back out the phase and consult the user.
-4. On success, commit:
-   ```bash
-   git add -A && git commit -m "migrate(<project-name>): phase <N> — <phase-name>"
-   ```
+1. **Validate `state.md`** against the rules in `migrate-discover` (`### Validation rules`). Abort the phase if validation fails.
+2. Load the skill (`migrate-<phase>`).
+3. Execute its `Steps` in order.
+4. Run its `Verify` section. **If verification fails, do not commit and do not proceed.** Either fix the issue, or `git reset --hard` to back out the phase and consult the user.
+5. On success, commit per the phase's `## Commit` section.
 
 ## Validation
 - No circular dependencies exist in the phase graph above (verified by the dependency table).

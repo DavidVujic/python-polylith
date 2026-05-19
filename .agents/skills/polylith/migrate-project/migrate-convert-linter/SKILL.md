@@ -17,6 +17,8 @@ From `migration/<PROJECT>/state.md`:
 - `LINTER`, `FORMATTER`
 - `RUN_TEST_CMD` (optional: `RUN_LINT_CMD`, `RUN_TYPECHECK_CMD`)
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 0. Identify the workspace's tool
@@ -58,8 +60,26 @@ If the workspace has no linter configured at all, stop and ask the user how to p
 - `RUN_TEST_CMD` succeeds.
 - If set, `RUN_TYPECHECK_CMD` succeeds.
 
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| The workspace's linter surfaces hundreds of violations the project's old linter didn't catch | Stricter ruleset; not a "fix everything now" situation. | Ask the user: fix now, suppress via `[tool.<linter>]` ignores in the project subsection, or defer in a follow-up branch. Do **not** auto-fix silently — record the decision in `state.md`. |
+| Project-specific lint rules are stricter than the workspace's standard | Project had higher discipline; lowering it would regress quality. | Add the project's rule as a per-path override in the workspace's lint config (most linters support per-directory rule overrides). Do not weaken the rule globally. |
+| Old linter config file (`.flake8`, `.pylintrc`, etc.) lingers and confuses developers' local editors | Step 1 missed a config file. | Delete it; mention in the commit message so reviewers update their editor configs. |
+
 ## Done When
 - No project-specific linter/formatter config files or dependencies remain.
 - Project-specific linting rules are merged into the workspace root's configuration.
 - `LINTER` and `FORMATTER` in `migration/<PROJECT>/state.md` match the workspace's tools.
 - Tests pass via the workspace's tooling.
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase optional — convert-linter"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

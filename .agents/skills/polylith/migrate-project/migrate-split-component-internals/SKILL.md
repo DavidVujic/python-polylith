@@ -21,6 +21,8 @@ From `migration/<PROJECT>/state.md`:
 From `migration/<PROJECT>/manifest.md`:
 - Current component list and structure.
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 1. Identify Candidates
@@ -48,3 +50,21 @@ From `migration/<PROJECT>/manifest.md`:
 ## Verify
 - `RUN_TEST_CMD` succeeds.
 - If set, `RUN_LINT_CMD` and `RUN_TYPECHECK_CMD` succeed.
+
+## Common failure modes
+
+| Symptom | Likely cause | Remediation |
+|---------|--------------|-------------|
+| `core.py` is small (<100 lines) but mixes two domains | The component itself is too small to warrant an internal split. | Leave it. Splitting adds indirection without benefit at this size; revisit when the file grows. |
+| After splitting, an import like `from <ns>.<component> import <symbol>` fails | `__init__.py` was not updated to re-export the symbol from its new module. | Add `from <ns>.<component>.<new_module> import <symbol>` to `__init__.py`. The component's public API must remain stable across the split. |
+| New files inside the component now circularly import each other (e.g., `models/user.py` ↔ `models/transaction.py`) | Domain split was too aggressive; the two files genuinely share a concept. | Extract the shared concept into a third file (e.g., `models/_base.py`) and have both depend on it. |
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 9 — split-component-internals"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

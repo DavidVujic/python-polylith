@@ -19,6 +19,8 @@ From `migration/<PROJECT>/state.md`:
 From `migration/<PROJECT>/manifest.md`:
 - Entrypoints list.
 
+> All inputs from `state.md` are assumed to satisfy the validation rules in `migrate-discover` (`### Validation rules`). Validate before proceeding.
+
 ## Steps
 
 ### 1. Create the Big Component
@@ -71,3 +73,13 @@ From `migration/<PROJECT>/manifest.md`:
 | `poly check` flags the component as not used by any project | The base's imports go to the wrong namespace (e.g., `from <ORIG_TOP_NS>...`) so the import graph doesn't reach the component. | Update base imports to `from <TARGET_TOP_NS>.<INITIAL_BASE_NAME> import …` and re-run `POLY_CMD_PREFIX sync`. |
 | Tests for moved code now fail to find fixtures | `conftest.py` was left in the base or moved to the wrong scope. | Move test fixtures alongside the code they cover; usually that's under `test/components/<TARGET_TOP_NS>/<INITIAL_BASE_NAME>/`. |
 | Verification fails and you can't quickly diagnose | Phase commit not yet made. | `git reset --hard HEAD` to roll back to the previous phase's commit and consult the user. |
+
+## Commit
+
+After verification passes, commit this phase to the migration branch:
+
+```bash
+git add -A && git commit -m "migrate(<PROJECT>): phase 4 — isolate-base-and-big-component"
+```
+
+Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.
