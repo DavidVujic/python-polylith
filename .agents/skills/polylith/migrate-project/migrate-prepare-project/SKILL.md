@@ -54,7 +54,13 @@ From `migration/<PROJECT>/manifest.md`:
 ### 5. Consolidate Dependencies
 - Move third-party dependencies with version constraints to the workspace root `pyproject.toml`.
 - Move dev/test/tooling dependencies to the workspace root.
-- List runtime dependencies without version numbers in the project `pyproject.toml`.
+- List runtime dependencies **without version numbers** in the project `pyproject.toml`.
+- Run `uv sync` (or equivalent for your package manager) to update the virtual environment.
+- Verify dependencies with:
+  ```bash
+  uv run pip list  # Confirm all dependencies are installed
+  uv run python -c "import <dependency>"  # Verify key dependencies are available
+  ```
 
 ## Verify
 - `RUN_TEST_CMD` succeeds against the **new** test location.
