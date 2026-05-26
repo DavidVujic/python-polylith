@@ -124,7 +124,23 @@ Map `PACKAGE_MANAGER` to the command prefix:
 | `pip` / `setuptools` / activated venv | `poly` |
 
 ### 4. Discover verification commands
-Inspect `Makefile`, `Justfile`, `tox.ini`, `pyproject.toml` `[tool.pytest.ini_options]`, and CI config (`.github/workflows/*.yml`, `.circleci/config.yml`, etc.) to identify the project's existing commands. Fill `RUN_TEST_CMD`, and `RUN_LINT_CMD` / `RUN_TYPECHECK_CMD` when present. If a command can't be found, leave the value empty.
+1. **Check for Virtualenv**: Verify if the project has a virtualenv or if dependencies are installed. For example:
+   - For `uv`: Check for `uv.lock` or `.venv`. If no virtualenv exists, guide the user to run `uv sync`.
+   - For `pdm`: Run `pdm venv list` to check for a virtualenv. If none exists, guide the user to run `pdm install`.
+   - For `poetry`: Run `poetry env list` to check for a virtualenv. If none exists, guide the user to run `poetry install`.
+   - For `pip`: Check if a `venv` or `.venv` directory exists. If not, guide the user to create and activate one.
+
+2. **Verify `RUN_TEST_CMD`**: Run the test command in the project's directory to ensure it works. For example:
+   - For `uv`: Run `uv run pytest tests --collect-only -q | tail -1`. If the command fails, guide the user to install test dependencies (e.g., `uv sync --extra tests`).
+   - For `pdm`: Run `pdm run pytest tests --collect-only -q | tail -1`. If the command fails, guide the user to install test dependencies (e.g., `pdm install --group tests`).
+   - For `poetry`: Run `poetry run pytest tests --collect-only -q | tail -1`. If the command fails, guide the user to install test dependencies (e.g., `poetry install --with tests`).
+   - For `pip`: Run `python -m pytest tests --collect-only -q | tail -1`. If the command fails, guide the user to install test dependencies (e.g., `pip install -e ".[tests]"`).
+
+3. **Record Baseline**: Record the baseline test count (e.g., number of tests collected) in `state.md`. If the command differs (e.g., `python -m pytest`), update `RUN_TEST_CMD` to match the working command.
+
+4. **Inspect Config Files**: Inspect `Makefile`, `Justfile`, `tox.ini`, `pyproject.toml` `[tool.pytest.ini_options]`, and CI config (`.github/workflows/*.yml`, `.circleci/config.yml`, etc.) to identify the project's existing commands. Fill `RUN_TEST_CMD`, and `RUN_LINT_CMD` / `RUN_TYPECHECK_CMD` when present. If a command can't be found, leave the value empty.
+
+5. **Proceed Only After Verification**: Only proceed to the next phase if `RUN_TEST_CMD` succeeds. If it fails, guide the user to resolve the issue before continuing.
 
 ### 5. Determine tooling-conversion eligibility
 Read the **workspace root** `pyproject.toml` to determine the workspace's standard linter, formatter, type checker, and package manager.
