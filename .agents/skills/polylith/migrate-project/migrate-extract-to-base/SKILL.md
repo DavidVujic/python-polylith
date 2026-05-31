@@ -48,8 +48,8 @@ From `migration/<PROJECT>/manifest.md`:
 ### 6. Handle Namespace Changes
 If `TARGET_TOP_NS != ORIG_TOP_NS`, the migration orchestrator will handle this in subsequent phases:
 
-1. `migrate-generate-shim` will create a compatibility shim at `projects/<PROJECT>/<ORIG_TOP_NS>/__init__.py` that re-exports from `<TARGET_TOP_NS>`.
-2. `migrate-automate-import-updates` will update imports in the new base location to reference the new namespace.
+1. `migrate-generate-shim` will create a compatibility shim at `projects/${PROJECT}/${ORIG_TOP_NS}/__init__.py` that re-exports from `${TARGET_TOP_NS}.${INITIAL_BASE_NAME}`.
+2. `migrate-automate-import-updates` will update imports in the new base location (at `bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/`) to reference the new namespace.
 3. `migrate-update-tests` will update test files to use the compatibility shim.
 
 ### 7. Use Shims if Needed

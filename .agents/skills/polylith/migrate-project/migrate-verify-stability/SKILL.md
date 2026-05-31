@@ -52,6 +52,6 @@ Verify that the migration did not break the project by:
 
 ## Commit
 ```bash
-git add migration/<project-name>/stability_report.md
-git commit -m "migrate(<project-name>): phase 10 — verify-stability"
+git add migration/${PROJECT}/stability_report.md
+git commit -m "migrate(${PROJECT}): phase 10 — verify-stability"
 ```

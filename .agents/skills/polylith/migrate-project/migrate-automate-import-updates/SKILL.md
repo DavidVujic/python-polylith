@@ -17,12 +17,12 @@ Update imports in the new base location to reference the new namespace instead o
 ## Steps
 
 ### 1. Identify files in the new base location importing from the original namespace
-1. Review the import analysis report to identify files in the new base location that import from the original namespace.
+1. Review the import analysis report to identify files in the new base location (at `bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/`) that import from the original namespace.
 
 ### 2. Update imports to reference the new namespace
 1. For each file in the new base location that imports from the original namespace:
-   - Replace `from <original_namespace> import ...` with `from <new_namespace>.<module> import ...`
-   - Replace `import <original_namespace>` with `import <new_namespace>`
+   - Replace `from ${ORIG_TOP_NS} import ...` with `from ${TARGET_TOP_NS}.${INITIAL_BASE_NAME}.<module> import ...`
+   - Replace `import ${ORIG_TOP_NS}` with `import ${TARGET_TOP_NS}.${INITIAL_BASE_NAME}`
 
 Example:
 ```python
@@ -31,12 +31,12 @@ from myproject.core import MyClass
 import myproject.utils
 
 # After
-from mynamespace.core import MyClass
-import mynamespace.utils
+from mynamespace.mybase.core import MyClass
+import mynamespace.mybase.utils
 ```
 
 ### 3. Record updated files
-1. Record all updated files in `migration/<project-name>/import_updates.md`.
+1. Record all updated files in `migration/${PROJECT}/import_updates.md`.
 
 ## Output
 - Updated files in the new base location
@@ -49,6 +49,7 @@ import mynamespace.utils
 
 ## Commit
 ```bash
-git add bases/<new_namespace>/ migration/<project-name>/import_updates.md
-git commit -m "migrate(<project-name>): phase 5 — automate-import-updates"
+git add bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/
+git add migration/${PROJECT}/import_updates.md
+git commit -m "migrate(${PROJECT}): phase 5 — automate-import-updates"
 ```

@@ -40,6 +40,6 @@ Detect and report circular imports introduced by the namespace migration, partic
 
 ## Commit
 ```bash
-git add migration/<project-name>/circular_imports.md
-git commit -m "migrate(<project-name>): phase 6 — detect-circular-imports"
+git add migration/${PROJECT}/circular_imports.md
+git commit -m "migrate(${PROJECT}): phase 6 — detect-circular-imports"
 ```

@@ -48,6 +48,7 @@ from mynamespace.core import MyClass
 
 ## Commit
 ```bash
-git add bases/<new_namespace>/ migration/<project-name>/circular_imports_resolved.md
-git commit -m "migrate(<project-name>): phase 7 — resolve-circular-imports"
+git add bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/
+git add migration/${PROJECT}/circular_imports_resolved.md
+git commit -m "migrate(${PROJECT}): phase 7 — resolve-circular-imports"
 ```

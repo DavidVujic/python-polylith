@@ -20,16 +20,16 @@ This information is used to guide the namespace migration and generate a compati
 ## Steps
 
 ### 1. Identify files importing from the original namespace
-1. Search for `from <original_namespace> import` and `import <original_namespace>` in all Python files in the project.
-2. Record the file paths and import statements in `migration/<project-name>/import_analysis.md`.
+1. Search for `from ${ORIG_TOP_NS} import` and `import ${ORIG_TOP_NS}` in all Python files in the project.
+2. Record the file paths and import statements in `migration/${PROJECT}/import_analysis.md`.
 
 ### 2. Identify potential circular imports
 1. Manually inspect the import graph to detect circular dependencies between the original namespace and the new base location.
-2. Record any circular import chains in `migration/<project-name>/import_analysis.md`.
+2. Record any circular import chains in `migration/${PROJECT}/import_analysis.md`.
 
 ### 3. List symbols exported by the original namespace
-1. Inspect the original namespace's `__init__.py` to list all public symbols (those not starting with `_`).
-2. Record the exported symbols in `migration/<project-name>/import_analysis.md`.
+1. Inspect the original namespace's `__init__.py` (typically at `projects/${PROJECT}/src/${ORIG_TOP_NS}/__init__.py` or `projects/${PROJECT}/${ORIG_TOP_NS}/__init__.py`) to list all public symbols (those not starting with `_`).
+2. Record the exported symbols in `migration/${PROJECT}/import_analysis.md`.
 
 ## Output
 - A report file: `migration/<project-name>/import_analysis.md` with:
@@ -46,6 +46,6 @@ This information is used to guide the namespace migration and generate a compati
 
 ## Commit
 ```bash
-git add migration/<project-name>/import_analysis.md
-git commit -m "migrate(<project-name>): phase 2 — analyze-imports"
+git add migration/${PROJECT}/import_analysis.md
+git commit -m "migrate(${PROJECT}): phase 2 — analyze-imports"
 ```
