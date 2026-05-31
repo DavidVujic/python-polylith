@@ -46,16 +46,16 @@ From `migration/<PROJECT>/manifest.md`:
 - Reflect the new structure in `migration/<PROJECT>/manifest.md`.
 
 ### 6. Handle Namespace Changes
-If `TARGET_TOP_NS != ORIG_TOP_NS`, choose one of the following options:
+If `TARGET_TOP_NS != ORIG_TOP_NS`, the migration orchestrator will handle this in subsequent phases:
 
-| Option | Description | Risk |
-|--------|-------------|------|
-| **Compatibility Shim** | Keep `ORIG_TOP_NS` as a shim that re-exports from `TARGET_TOP_NS`. | Lower |
-| **Rewrite Imports** | Rewrite all imports to the new namespace in one go. | Higher |
+1. `migrate-generate-shim` will create a compatibility shim at `projects/<PROJECT>/<ORIG_TOP_NS>/__init__.py` that re-exports from `<TARGET_TOP_NS>`.
+2. `migrate-automate-import-updates` will update imports in the new base location to reference the new namespace.
+3. `migrate-update-tests` will update test files to use the compatibility shim.
 
 ### 7. Use Shims if Needed
-- If imports break, add temporary shims to re-export names from the new brick API.
+- If imports break during this phase, add minimal temporary shims to re-export names from the new brick API.
 - Track shims in `migration/shims.md`.
+- Note that comprehensive shim generation will be handled in the `migrate-generate-shim` phase.
 
 ## Verify
 - `RUN_TEST_CMD` succeeds with the same pass/fail counts as the pre-migration baseline recorded in `migrate-discover`.

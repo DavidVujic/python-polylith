@@ -63,16 +63,23 @@ Execute the phases in this order. **Verify each phase's `Verify` section succeed
 | # | Phase                                  | Skill                                          | Depends on                                          |
 |---|----------------------------------------|------------------------------------------------|-----------------------------------------------------|
 | 1 | Discover                               | `migrate-discover`                             | —                                                   |
-| 2 | Extract to base                        | `migrate-extract-to-base`                      | `migrate-discover`                                  |
-| 3 | Prepare project                        | `migrate-prepare-project`                      | `migrate-extract-to-base`                           |
-| 4 | Isolate base and big component         | `migrate-isolate-base-and-big-component`       | `migrate-prepare-project`                           |
-| 5 | Split big component                    | `migrate-split-big-component`                  | `migrate-isolate-base-and-big-component`            |
-| 6 | Extract standalone modules             | `migrate-extract-standalone-modules`           | `migrate-split-big-component`                       |
-| 7 | Isolate shared and project logic       | `migrate-isolate-shared-and-project-logic`     | `migrate-extract-standalone-modules`, `migrate-split-big-component` |
-| 8 | Distribute wiring                      | `migrate-distribute-wiring`                    | `migrate-isolate-shared-and-project-logic`          |
-| 9 | Split component internals              | `migrate-split-component-internals`            | `migrate-distribute-wiring`                         |
-| 10| Refactor tests                         | `migrate-refactor-tests`                       | `migrate-split-component-internals`                 |
-| 11| Definition of done                     | `migrate-definition-of-done`                   | `migrate-refactor-tests`                            |
+| 2 | Analyze imports                        | `migrate-analyze-imports`                      | `migrate-discover`                                  |
+| 3 | Generate compatibility shim            | `migrate-generate-shim`                        | `migrate-analyze-imports`                           |
+| 4 | Extract to base                        | `migrate-extract-to-base`                      | `migrate-generate-shim`                             |
+| 5 | Update imports in new base             | `migrate-automate-import-updates`              | `migrate-extract-to-base`                           |
+| 6 | Detect circular imports                | `migrate-detect-circular-imports`              | `migrate-automate-import-updates`                   |
+| 7 | Resolve circular imports               | `migrate-resolve-circular-imports`             | `migrate-detect-circular-imports`                  |
+| 8 | Update test files                      | `migrate-update-tests`                         | `migrate-resolve-circular-imports`                  |
+| 9 | Prepare project                        | `migrate-prepare-project`                      | `migrate-update-tests`                              |
+| 10| Verify stability                       | `migrate-verify-stability`                     | `migrate-prepare-project`                           |
+| 11| Isolate base and big component         | `migrate-isolate-base-and-big-component`       | `migrate-verify-stability`                          |
+| 12| Split big component                    | `migrate-split-big-component`                  | `migrate-isolate-base-and-big-component`            |
+| 13| Extract standalone modules             | `migrate-extract-standalone-modules`           | `migrate-split-big-component`                       |
+| 14| Isolate shared and project logic       | `migrate-isolate-shared-and-project-logic`     | `migrate-extract-standalone-modules`, `migrate-split-big-component` |
+| 15| Distribute wiring                      | `migrate-distribute-wiring`                    | `migrate-isolate-shared-and-project-logic`          |
+| 16| Split component internals              | `migrate-split-component-internals`            | `migrate-distribute-wiring`                         |
+| 17| Refactor tests                         | `migrate-refactor-tests`                       | `migrate-split-component-internals`                 |
+| 18| Definition of done                     | `migrate-definition-of-done`                   | `migrate-refactor-tests`                            |
 
 ## Optional Skills
 

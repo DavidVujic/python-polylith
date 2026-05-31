@@ -10,6 +10,7 @@ Clean up the project subfolder (`projects/<PROJECT>/`) and consolidate dependenc
 - Project `pyproject.toml` (with brick references).
 - Task runners (`Makefile`, `Justfile`).
 - Project-specific config (e.g., `alembic.ini`).
+- Compatibility shim (if namespace migration was performed).
 
 ## Inputs
 From `migration/<PROJECT>/state.md`:
