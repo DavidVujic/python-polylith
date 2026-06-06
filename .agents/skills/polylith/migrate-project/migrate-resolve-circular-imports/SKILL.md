@@ -5,6 +5,8 @@ description: Resolve circular imports by updating imports in the new base locati
 
 # Skill: migrate-resolve-circular-imports
 
+> ⛓ **Conditional phase (4b).** Runs **only when `SHIM_STRATEGY=shim`** (chosen in `migrate-analyze-imports`) and only if `migrate-detect-circular-imports` found cycles. **Skipped** on the shimless path. See the `migrate-orchestrator` workflow.
+
 ## Goal
 Resolve circular imports by updating imports in the new base location to avoid referencing the compatibility shim, ensuring a clean dependency graph.
 
@@ -50,5 +52,6 @@ from mynamespace.mybase.core import MyClass
 ```bash
 git add bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/
 git add migration/${PROJECT}/circular_imports_resolved.md
-git commit -m "migrate(${PROJECT}): phase 7 — resolve-circular-imports"
+git commit -m "migrate(${PROJECT}): phase <N> — resolve-circular-imports"
 ```
+> `<N>` is this phase's number from the `migrate-orchestrator` table (the single source of truth) — do not hardcode it.

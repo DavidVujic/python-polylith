@@ -1,6 +1,6 @@
 ---
 name: migrate-convert-package-manager
-description: "[Internal sub-skill of `migrate-orchestrator` (optional, runs only when opted in during phase 1). Do not load directly — load `migrate-orchestrator` first.] Convert the project's `pyproject.toml` to PEP 621/uv-workspaces format and register it as a uv-workspace member. **Opinionated about uv** — only applies when the workspace itself uses uv. Skip otherwise."
+description: "[Internal sub-skill of `migrate-orchestrator` (optional, runs only when opted in during `migrate-discover`). Do not load directly — load `migrate-orchestrator` first.] Convert the project's `pyproject.toml` to PEP 621/uv-workspaces format and register it as a uv-workspace member. **Opinionated about uv** — only applies when the workspace itself uses uv. Skip otherwise."
 ---
 
 # Skill: migrate-convert-package-manager

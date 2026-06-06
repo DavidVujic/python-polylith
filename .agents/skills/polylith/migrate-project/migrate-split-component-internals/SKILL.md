@@ -1,6 +1,6 @@
 ---
 name: migrate-split-component-internals
-description: "[Internal sub-skill of `migrate-orchestrator` (phase 9 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Split monolithic `core.py` files in shared components into domain-focused modules."
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Split monolithic `core.py` files in shared components into domain-focused modules."
 ---
 
 # Skill: migrate-split-component-internals
@@ -64,7 +64,7 @@ From `migration/<PROJECT>/manifest.md`:
 After verification passes, commit this phase to the migration branch:
 
 ```bash
-git add -A && git commit -m "migrate(<PROJECT>): phase 9 — split-component-internals"
+git add -A && git commit -m "migrate(<PROJECT>): phase <N> — split-component-internals"
 ```
 
 Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

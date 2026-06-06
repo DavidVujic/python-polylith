@@ -1,6 +1,6 @@
 ---
 name: migrate-distribute-wiring
-description: "[Internal sub-skill of `migrate-orchestrator` (phase 8 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Distribute app-wiring code from the residual component into the appropriate bases and shared components."
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Distribute app-wiring code from the residual component into the appropriate bases and shared components."
 ---
 
 # Skill: migrate-distribute-wiring
@@ -73,7 +73,7 @@ From `migration/<PROJECT>/manifest.md`:
 After verification passes, commit this phase to the migration branch:
 
 ```bash
-git add -A && git commit -m "migrate(<PROJECT>): phase 8 — distribute-wiring"
+git add -A && git commit -m "migrate(<PROJECT>): phase <N> — distribute-wiring"
 ```
 
 Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

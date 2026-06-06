@@ -53,5 +53,6 @@ Verify that the migration did not break the project by:
 ## Commit
 ```bash
 git add migration/${PROJECT}/stability_report.md
-git commit -m "migrate(${PROJECT}): phase 10 — verify-stability"
+git commit -m "migrate(${PROJECT}): phase <N> — verify-stability"
 ```
+> `<N>` is this phase's number from the `migrate-orchestrator` table (the single source of truth) — do not hardcode it.

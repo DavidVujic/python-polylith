@@ -1,6 +1,6 @@
 ---
 name: migrate-refactor-tests
-description: "[Internal sub-skill of `migrate-orchestrator` (phase 10 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Restructure unit tests to align with the workspace's Polylith theme."
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Restructure unit tests to align with the workspace's Polylith theme."
 ---
 
 # Skill: migrate-refactor-tests
@@ -11,6 +11,35 @@ Restructure unit tests so they live next to the brick they test, following the w
 ## Scope
 - **Unit tests only.** Integration tests typically stay in a shared location (e.g., `test/integration/` or `test/<project>/integration/`). Do not redistribute them across bricks.
 - **Structure only.** Reorganize test files and update imports/mock patch strings. Do not rewrite test logic or fixtures unless an import/path change makes it strictly necessary.
+
+## Shared test helpers & the namespace-merge hazard (read before moving)
+
+Two real traps when moving unit tests next to their bricks:
+
+1. **Shared test-support packages stop resolving.** If tests import shared
+   helpers/fixtures by package (e.g. `from <svc>_service.helpers import …`,
+   `from <svc>_service.fixtures import …`), those resolve today only because the
+   service test dir sits on `sys.path` (pytest inserts the topmost non-package dir).
+   Once a test moves to `test/components/<TARGET_TOP_NS>/<comp>/` (no `__init__.py`),
+   pytest inserts the **leaf** test dir instead, and the shared import breaks.
+2. **Do NOT "fix" it by adding `test/` to `pythonpath`.** That makes
+   `test/<…>/<TARGET_TOP_NS>/<brick>/` directories **merge into the real
+   `<TARGET_TOP_NS>` namespace** and collide with `components/<TARGET_TOP_NS>/<brick>`
+   / `bases/<TARGET_TOP_NS>/<brick>` — an ambiguous, hard-to-debug namespace package.
+
+### Two sanctioned layouts — pick one
+
+- **Per-brick (the target table below).** Use it **after** making shared helpers
+  reachable *without* putting `test/` on the path: convert them to `conftest.py`
+  **fixtures** (pytest injects fixtures with no import), or move pure helper functions
+  to an on-path support location. Unit tests then live under `test/<theme>/<TARGET_TOP_NS>/<brick>/`.
+- **Workspace-level service dir.** Keep the project's tests under a single
+  `test/<svc>_service/` directory (the importable, valid-package name that
+  `migrate-prepare-project` created). Shared helpers stay co-located and importable.
+  Choose this when converting helpers to fixtures isn't worth it; record the choice in
+  `state.md`. This still satisfies "tests at workspace level".
+
+If unsure, the **workspace-level service dir is the lower-risk default**.
 
 ## Inputs
 From `migration/<PROJECT>/state.md`:
@@ -78,6 +107,7 @@ If a test exercises 2+ bricks at integration level, classify it as integration a
 | Tests pass but assert nothing useful (`mock.patch` no longer hits anything) | Patch string still points at the pre-migration module path. | Re-derive the patch path: `<TARGET_TOP_NS>.<brick_name>.<module>.<symbol>`. Validate by deliberately breaking the patched function and confirming the test fails. |
 | `ImportError: cannot import name 'fixture_<x>'` from `conftest.py` | A `conftest.py` `import`s a moved test helper module that didn't follow it. | Move the helper next to the new `conftest.py`, or import it from its new brick path. |
 | Tests for moved code suddenly find themselves under a brick name that doesn't match their content | Misclassification in step 1. | Re-read the test's imports — the brick most imported is the one that owns the test. Move and update. |
+| `ModuleNotFoundError: No module named '<svc>_service'` after moving a test to `test/<theme>/<TARGET_TOP_NS>/<brick>/` | Shared test-support package is no longer on `sys.path`. | Use a sanctioned layout (above): convert the helpers to conftest fixtures, or keep tests in the workspace-level `<svc>_service/` dir. Do **not** add `test/` to `pythonpath` (namespace merge with the real bricks). |
 | Verification fails and you can't quickly diagnose | Phase commit not yet made. | `git reset --hard HEAD` to roll back to the previous phase's commit and consult the user. |
 
 ## Commit
@@ -85,7 +115,7 @@ If a test exercises 2+ bricks at integration level, classify it as integration a
 After verification passes, commit this phase to the migration branch:
 
 ```bash
-git add -A && git commit -m "migrate(<PROJECT>): phase 10 — refactor-tests"
+git add -A && git commit -m "migrate(<PROJECT>): phase <N> — refactor-tests"
 ```
 
 Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

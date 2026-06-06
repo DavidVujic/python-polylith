@@ -5,6 +5,8 @@ description: Generate a compatibility shim that re-exports all symbols from the 
 
 # Skill: migrate-generate-shim
 
+> ⛓ **Conditional phase (4b).** Runs **only when `SHIM_STRATEGY=shim`** (chosen in `migrate-analyze-imports`). On the **shimless** path this phase is **skipped** — the namespace rewrite in `migrate-automate-import-updates` (phase 4) covers base internals, external consumers, and tests directly, leaving no shim to maintain or remove. See the `migrate-orchestrator` workflow.
+
 ## Goal
 Generate a compatibility shim (`projects/<project-name>/<original_namespace>/__init__.py`) that re-exports all symbols from the new base location to maintain backward compatibility during namespace migration.
 
@@ -56,5 +58,6 @@ __all__ = [
 ```bash
 git add projects/${PROJECT}/${ORIG_TOP_NS}/__init__.py
 git add migration/${PROJECT}/shim_report.md
-git commit -m "migrate(${PROJECT}): phase 3 — generate-shim"
+git commit -m "migrate(${PROJECT}): phase <N> — generate-shim"
 ```
+> `<N>` is this phase's number from the `migrate-orchestrator` table (the single source of truth) — do not hardcode it.

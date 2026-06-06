@@ -1,6 +1,6 @@
 ---
 name: migrate-convert-type-checker
-description: "[Internal sub-skill of `migrate-orchestrator` (optional, runs only when opted in during phase 1). Do not load directly — load `migrate-orchestrator` first.] Align the project's type checker with the **workspace's** configured tool (whatever it is — mypy, pyright, ty, etc.). Removes project-specific config and consolidates settings into the workspace root."
+description: "[Internal sub-skill of `migrate-orchestrator` (optional, runs only when opted in during `migrate-discover`). Do not load directly — load `migrate-orchestrator` first.] Align the project's type checker with the **workspace's** configured tool (whatever it is — mypy, pyright, ty, etc.). Removes project-specific config and consolidates settings into the workspace root."
 ---
 
 # Skill: migrate-convert-type-checker

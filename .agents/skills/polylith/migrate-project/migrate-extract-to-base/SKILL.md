@@ -1,6 +1,6 @@
 ---
 name: migrate-extract-to-base
-description: "[Internal sub-skill of `migrate-orchestrator` (phase 2 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Extract all application code from `projects/<PROJECT>/` into a temporary migration base."
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Extract all application code from `projects/<PROJECT>/` into a temporary migration base."
 ---
 
 # Skill: migrate-extract-to-base
@@ -78,7 +78,7 @@ If `TARGET_TOP_NS != ORIG_TOP_NS`, the migration orchestrator will handle this i
 After verification passes, commit this phase to the migration branch:
 
 ```bash
-git add -A && git commit -m "migrate(<PROJECT>): phase 2 — extract-to-base"
+git add -A && git commit -m "migrate(<PROJECT>): phase <N> — extract-to-base"
 ```
 
 Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

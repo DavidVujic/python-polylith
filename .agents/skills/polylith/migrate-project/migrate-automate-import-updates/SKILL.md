@@ -6,7 +6,27 @@ description: Update imports in the new base location to reference the new namesp
 # Skill: migrate-automate-import-updates
 
 ## Goal
-Update imports in the new base location to reference the new namespace instead of the original namespace, ensuring that the codebase remains functional after the namespace migration.
+Update imports to reference the new namespace instead of the original namespace, ensuring that the codebase remains functional after the namespace migration.
+
+> **Scope depends on `SHIM_STRATEGY`** (set by `migrate-analyze-imports`):
+> - `shim`: rewrite imports **in the new base location only** — external consumers keep
+>   using the original namespace via the shim (phase 4b).
+> - `shimless`: rewrite **every** reference to the original namespace — base internals,
+>   entrypoints / run-scripts, infra (e.g. `alembic/env.py`), and tests — so nothing
+>   imports the old namespace and no shim is needed.
+>
+> Cover **all three reference forms** (see `migrate-analyze-imports`): dotted
+> `from <ns>.<sub> import …`, bare-submodule `from <ns> import <sub>` (incl. multi-name
+> and **mixed** lines), and quoted string paths (`mock.patch("<ns>.x.Y")`, logging
+> dict-config). A naive "`from <ns>.`" replace silently misses the bare and quoted forms.
+>
+> 💡 **Script the rewrite for anything non-trivial.** A small text-in → text-out helper
+> (a pure function: file text + an `{old → new}` mapping → rewritten text) handles all
+> three forms — including splitting a mixed bare-import line into moved vs. not-moved
+> names — far more reliably than ad-hoc edits across dozens of files. Keep it as plain
+> functions (no classes), run it over `bases/`, `components/`, `test/`, and the project
+> dir, then verify by grepping for any residual `<ns>` reference. The same helper is
+> reusable for the component-extraction rewrites in `migrate-split-big-component`.
 
 ## Inputs
 - Project name (from `migration/<project-name>/state.md`)
@@ -51,5 +71,6 @@ import mynamespace.mybase.utils
 ```bash
 git add bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/
 git add migration/${PROJECT}/import_updates.md
-git commit -m "migrate(${PROJECT}): phase 5 — automate-import-updates"
+git commit -m "migrate(${PROJECT}): phase <N> — automate-import-updates"
 ```
+> `<N>` is this phase's number from the `migrate-orchestrator` table (the single source of truth) — do not hardcode it.

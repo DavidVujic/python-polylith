@@ -1,6 +1,6 @@
 ---
 name: migrate-split-big-component
-description: "[Internal sub-skill of `migrate-orchestrator` (phase 5 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Split the big component (`components/<top_ns>/<INITIAL_BASE_NAME>/`) into multiple focused components."
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Split the big component (`components/<top_ns>/<INITIAL_BASE_NAME>/`) into multiple focused components."
 ---
 
 # Skill: migrate-split-big-component
@@ -163,7 +163,7 @@ For each planned component in `split_plan.md`:
 1. **Create the Component**: Create the component directory with `__init__.py`.
 2. **Move Files/Modules**: Move the relevant files/modules into the new component.
 3. **Define the Public API**: Update `__init__.py` to re-export the public API.
-4. **Update Callers**: Update all imports to reference the new component.
+4. **Update Callers**: Update all imports to reference the new component. For anything beyond a handful of call sites, drive this with the small text-in → text-out rewrite helper described in `migrate-automate-import-updates` (it covers dotted, bare-submodule, and quoted-string references and splits mixed import lines), then grep for residual references to the old path.
 5. **Update `pyproject.toml`**: Add the new brick to the project's `[tool.polylith.bricks]`.
 6. **Run Verification**: Ensure tests, linting, and type-checking pass.
 
@@ -187,7 +187,7 @@ For each planned component in `split_plan.md`:
 After verification passes, commit this phase to the migration branch:
 
 ```bash
-git add -A && git commit -m "migrate(<PROJECT>): phase 5 — split-big-component"
+git add -A && git commit -m "migrate(<PROJECT>): phase <N> — split-big-component"
 ```
 
 Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

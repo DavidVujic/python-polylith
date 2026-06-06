@@ -5,6 +5,8 @@ description: Update test files to import from the compatibility shim or the new 
 
 # Skill: migrate-update-tests
 
+> ⛓ **Conditional phase (4b).** Runs **only when `SHIM_STRATEGY=shim`** (chosen in `migrate-analyze-imports`), to point test imports at the compatibility shim. On the **shimless** path this phase is **skipped** — test imports are rewritten to the new namespace as part of `migrate-automate-import-updates` (phase 4). (Physical test relocation to the workspace happens later in `migrate-prepare-project` / `migrate-refactor-tests`, regardless of strategy.) See the `migrate-orchestrator` workflow.
+
 ## Goal
 Update test files to import from the compatibility shim or the new namespace, ensuring that tests remain functional after the namespace migration.
 
@@ -52,5 +54,6 @@ from myproject import MyClass
 ```bash
 git add projects/${PROJECT}/tests/
 git add migration/${PROJECT}/test_updates.md
-git commit -m "migrate(${PROJECT}): phase 8 — update-tests"
+git commit -m "migrate(${PROJECT}): phase <N> — update-tests"
 ```
+> `<N>` is this phase's number from the `migrate-orchestrator` table (the single source of truth) — do not hardcode it.

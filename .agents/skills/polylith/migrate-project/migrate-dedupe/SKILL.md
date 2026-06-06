@@ -1,6 +1,6 @@
 ---
 name: migrate-dedupe
-description: "[Internal sub-skill of `migrate-orchestrator` (optional, runs only when opted in during phase 1). Do not load directly — load `migrate-orchestrator` first.] Identify and execute controlled deduplication of code during migration (if the user opts in)."
+description: "[Internal sub-skill of `migrate-orchestrator` (optional, runs only when opted in during `migrate-discover`). Do not load directly — load `migrate-orchestrator` first.] Identify and execute controlled deduplication of code during migration (if the user opts in)."
 ---
 
 # Skill: migrate-dedupe

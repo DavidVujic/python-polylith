@@ -1,6 +1,6 @@
 ---
 name: migrate-extract-standalone-modules
-description: "[Internal sub-skill of `migrate-orchestrator` (phase 6 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Extract foundational modules (e.g., `consts.py`, `exceptions.py`, or similar) from the residual component into standalone components."
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Extract foundational modules (e.g., `consts.py`, `exceptions.py`, or similar) from the residual component into standalone components."
 ---
 
 # Skill: migrate-extract-standalone-modules
@@ -59,7 +59,7 @@ From `migration/<PROJECT>/manifest.md`:
 After verification passes, commit this phase to the migration branch:
 
 ```bash
-git add -A && git commit -m "migrate(<PROJECT>): phase 6 — extract-standalone-modules"
+git add -A && git commit -m "migrate(<PROJECT>): phase <N> — extract-standalone-modules"
 ```
 
 Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

@@ -5,6 +5,8 @@ description: Detect and report circular imports introduced by the namespace migr
 
 # Skill: migrate-detect-circular-imports
 
+> ⛓ **Conditional phase (4b).** Runs **only when `SHIM_STRATEGY=shim`** (chosen in `migrate-analyze-imports`). On the **shimless** path this phase is **skipped** — a pure namespace rename introduces no base↔shim cycles. See the `migrate-orchestrator` workflow.
+
 ## Goal
 Detect and report circular imports introduced by the namespace migration, particularly between the new base location and the compatibility shim.
 
@@ -41,5 +43,6 @@ Detect and report circular imports introduced by the namespace migration, partic
 ## Commit
 ```bash
 git add migration/${PROJECT}/circular_imports.md
-git commit -m "migrate(${PROJECT}): phase 6 — detect-circular-imports"
+git commit -m "migrate(${PROJECT}): phase <N> — detect-circular-imports"
 ```
+> `<N>` is this phase's number from the `migrate-orchestrator` table (the single source of truth) — do not hardcode it.

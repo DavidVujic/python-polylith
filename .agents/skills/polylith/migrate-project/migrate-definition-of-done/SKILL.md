@@ -1,6 +1,6 @@
 ---
 name: migrate-definition-of-done
-description: "[Internal sub-skill of `migrate-orchestrator` (phase 11 of 11). Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Define the criteria for completing the migration process."
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Define the criteria for completing the migration process."
 ---
 
 # Skill: migrate-definition-of-done
@@ -22,25 +22,24 @@ description: "[Internal sub-skill of `migrate-orchestrator` (phase 11 of 11). Do
 - Base names are project-prefixed to avoid collisions.
 
 ### Tests
-- Tests are moved from `projects/<PROJECT>/tests/` to workspace level.
-- Unit tests are organized according to the Polylith theme in use:
-  - **`loose` theme:** unit tests live under `test/bases/<TARGET_TOP_NS>/<base>/` and `test/components/<TARGET_TOP_NS>/<component>/`.
-  - **`tdd` theme:** unit tests live under `bases/<base>/test/<TARGET_TOP_NS>/<base>/` and `components/<component>/test/<TARGET_TOP_NS>/<component>/`.
-- Integration tests live in a shared location (e.g., `test/integration/`).
-- Shared fixtures live in `test/<TARGET_TOP_NS>/conftest.py` or `test/conftest.py`.
+- Tests are moved from `projects/<PROJECT>/tests/` to workspace level (**required**).
+- Unit-test layout — **one** of the following (see `migrate-refactor-tests`):
+  - **Per-brick (theme-aligned):** `loose` → `test/bases/<TARGET_TOP_NS>/<base>/` and `test/components/<TARGET_TOP_NS>/<component>/`; `tdd` → `bases/<base>/test/<TARGET_TOP_NS>/<base>/` and `components/<component>/test/<TARGET_TOP_NS>/<component>/`. **Or**
+  - **Workspace-level service dir** `test/<svc>_service/` — valid when shared test helpers can't cheaply become fixtures (the namespace-merge hazard makes a per-brick split unsafe otherwise). Record the chosen layout in `state.md`.
+- Integration tests live in a shared location (e.g., `test/integration/` or `test/<svc>_service/integration/`).
+- Shared fixtures live in a `conftest.py` (e.g. `test/<TARGET_TOP_NS>/conftest.py`, `test/conftest.py`, or the service dir's `conftest.py`).
 - `RUN_TEST_CMD` points to the test root **and collects the same number of tests as the pre-migration baseline**.
 
 ### Infrastructure
-- Infrastructure folders are moved to `infra/<folder>/<project-name>/`.
+- Infrastructure folders are moved to `infra/<folder>/<project-name>/`, **or** the move is **deferred with a documented rationale** in `state.md` when the deploy cannot be verified in the migration environment (see `migrate-prepare-project`). Either way, `alembic/` stays with `alembic.ini` in the project.
 
 ### Interfaces
 - Each component defines its public API via `__init__.py`.
 - Bricks import each other via those APIs.
 
 ### Linting and Type-Checking
-- Linting and formatting use the workspace's configured tool(s).
-- Type-checking uses the workspace's configured tool(s) (if applicable).
-- `RUN_LINT_CMD` and `RUN_TYPECHECK_CMD` pass.
+- Linting/formatting and type-checking use the workspace's configured tool(s).
+- `RUN_LINT_CMD` and `RUN_TYPECHECK_CMD` pass **if set**. They may be intentionally empty when the project's pre-migration baseline already failed these gates (recorded in `migrate-discover`); **pre-existing** violations are not the migration's responsibility — note them as a follow-up rather than blocking the migration.
 
 ### Dependencies
 - Workspace root `pyproject.toml` contains all third-party dependencies with version constraints.
@@ -59,7 +58,7 @@ These checks go beyond per-phase verification and exercise the migrated project 
 For **each base** in the project, smoke-test its entrypoint:
 
 - **HTTP API base** → start the server and curl a health endpoint (or any GET that doesn't require auth). Verify it returns 200.
-- **CLI base** → run `<cli> --help` and a no-op subcommand. Verify exit code 0.
+- **CLI base** → run `<cli> --help` and a no-op subcommand. Verify exit code 0. (If the entrypoint does real I/O at startup — e.g. a CLI that calls `init_db()` in `__main__` *before* arg parsing — that is **pre-existing behavior**, not a migration regression. In that case verify the module imports cleanly and the wiring matches the original.)
 - **Worker/consumer base** → start the process and observe one cycle of its main loop in the logs. Stop it cleanly.
 - **Lambda / Cloud Function base** → invoke the handler with a representative event payload (mocked or recorded). Verify it returns without exception.
 
@@ -101,7 +100,7 @@ Inspect `migration/<PROJECT>/shims.md` (if it exists):
 After verification passes, commit this phase to the migration branch:
 
 ```bash
-git add -A && git commit -m "migrate(<PROJECT>): phase 11 — definition-of-done"
+git add -A && git commit -m "migrate(<PROJECT>): phase <N> — definition-of-done"
 ```
 
 Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.
