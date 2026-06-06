@@ -27,30 +27,30 @@ From `migration/<PROJECT>/manifest.md`:
 ## Steps
 
 ### 1. Verify Project Subfolder
-- Run `directory_tree` on `projects/<PROJECT>/` to confirm only infra and config files remain.
+- Run `directory_tree` on `projects/${PROJECT}/` to confirm only infra and config files remain.
 
 ### 2. Update `pyproject.toml`
 - Add brick references to `[tool.polylith.bricks]`:
   ```toml
   [tool.polylith.bricks]
-  "../../bases/<TARGET_TOP_NS>/<base>" = "<TARGET_TOP_NS>/<base>"
+  "../../bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}" = "${TARGET_TOP_NS}/${INITIAL_BASE_NAME}"
   ```
 - Register the project alias and group in `workspace.toml` (if provided):
   ```toml
   [tool.polylith.projects.alias]
-  <project-directory-name> = "<ALIAS>"
+  ${PROJECT} = "${ALIAS}"
 
   [tool.polylith.projects.groups]
-  <group-name> = ["<project-directory-name>"]
+  ${GROUP} = ["${PROJECT}"]
   ```
 
 ### 3. Move Tests to Workspace Level
-- Move `tests/` to `test/<sanitized_project_name>/`.
-- Update `RUN_TEST_CMD` in `migration/<PROJECT>/state.md` to point to the new location.
+- Move `tests/` to `test/${PROJECT}/`.
+- Update `RUN_TEST_CMD` in `migration/${PROJECT}/state.md` to point to the new location.
 - Update imports and mock patch strings in test files if paths changed.
 
 ### 4. Move Infrastructure Folders
-- Move infra folders (e.g., `helm/`, `k8s/`, `kustomize`, `alembic/`) to `infra/<folder>/<project-name>/`.
+- Move infra folders (e.g., `helm/`, `k8s/`, `kustomize`, `alembic/`) to `infra/<folder}/${PROJECT}/`.
 
 ### 5. Consolidate Dependencies
 - Move third-party dependencies with version constraints to the workspace root `pyproject.toml`.
@@ -73,10 +73,10 @@ From `migration/<PROJECT>/manifest.md`:
 
 | Symptom | Likely cause | Remediation |
 |---------|--------------|-------------|
-| `RUN_TEST_CMD` collects 0 tests after step 3 | The command in `state.md` still references the old `projects/<PROJECT>/tests` path. | Update `RUN_TEST_CMD` to the new `test/<sanitized_project_name>/` location. Also check `[tool.pytest.ini_options].testpaths` / `rootdir` / `conftest.py` discovery. |
+| `RUN_TEST_CMD` collects 0 tests after step 3 | The command in `state.md` still references the old `projects/${PROJECT}/tests` path. | Update `RUN_TEST_CMD` to the new `test/${PROJECT}/` location. Also check `[tool.pytest.ini_options].testpaths` / `rootdir` / `conftest.py` discovery. |
 | Tests fail with `ModuleNotFoundError` on internal imports | Tests use `from tests.fixtures import …` and the `tests` package name changed. | Update test imports to the new test root path. If many tests reference the old name, consider keeping `tests` as the leaf directory and only renaming the parent. |
 | `mock.patch("<old.path>")` fails with `AttributeError` | Mock patch strings reference moved modules. | Update patch strings to the new module paths. Use `grep -r 'patch("' test/` to find them all. |
-| Infra folder move breaks deploy scripts that hardcoded paths (e.g., `helm/<chart>/values.yaml`) | Deploy scripts haven't been updated to the new `infra/<folder>/<project-name>/` location. | Either update the scripts, or symlink the new location from the old one as a transitional step (record the symlink in `migration/<PROJECT>/state.md`). |
+| Infra folder move breaks deploy scripts that hardcoded paths (e.g., `helm/<chart>/values.yaml`) | Deploy scripts haven't been updated to the new `infra/<folder}/${PROJECT}/` location. | Either update the scripts, or symlink the new location from the old one as a transitional step (record the symlink in `migration/${PROJECT}/state.md`). |
 | `poly check` complains about brick references after dependency consolidation | A runtime dependency was moved to the workspace root but the project's `pyproject.toml` doesn't declare it. | Add the dependency name (no version) back to the project's `[project.dependencies]`. The version stays only at the workspace root. |
 | Verification fails and you can't quickly diagnose | Phase commit not yet made. | `git reset --hard HEAD` to roll back to the previous phase's commit and consult the user. |
 

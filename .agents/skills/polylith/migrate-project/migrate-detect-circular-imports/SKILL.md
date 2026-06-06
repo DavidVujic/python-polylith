@@ -18,13 +18,13 @@ Detect and report circular imports introduced by the namespace migration, partic
 
 ### 1. Analyze the import graph
 1. Manually inspect the import graph to identify circular dependencies:
-   - Between the new base location and the compatibility shim
+   - Between the new base location (`bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/`) and the compatibility shim (`projects/${PROJECT}/${ORIG_TOP_NS}/__init__.py`)
    - Within the new base location itself
 
 ### 2. Report circular imports
-1. Record all circular import chains in `migration/<project-name>/circular_imports.md`.
+1. Record all circular import chains in `migration/${PROJECT}/circular_imports.md`.
 2. For each circular import chain, document:
-   - The files involved
+   - The files involved (use full paths like `bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/module.py`)
    - The import statements causing the circularity
    - Suggested resolution steps
 

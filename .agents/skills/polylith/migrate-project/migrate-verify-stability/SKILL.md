@@ -19,21 +19,21 @@ Verify that the migration did not break the project by:
 ## Steps
 
 ### 1. Run test discovery
-1. Run the test discovery command from `migration/<project-name>/state.md`.
-2. Compare the test count with the baseline from `migration/<project-name>/state.md`.
-3. Record any discrepancies in `migration/<project-name>/stability_report.md`.
+1. Run the test discovery command from `migration/${PROJECT}/state.md`.
+2. Compare the test count with the baseline from `migration/${PROJECT}/state.md`.
+3. Record any discrepancies in `migration/${PROJECT}/stability_report.md`.
 
 ### 2. Run a subset of tests
-1. Run a representative subset of tests using the test command from `migration/<project-name>/state.md`.
-2. Record any test failures in `migration/<project-name>/stability_report.md`.
+1. Run a representative subset of tests using the test command from `migration/${PROJECT}/state.md`.
+2. Record any test failures in `migration/${PROJECT}/stability_report.md`.
 
 ### 3. Check for circular imports
-1. Verify that no circular imports remain by reviewing `migration/<project-name>/circular_imports_resolved.md`.
-2. Record any remaining circular imports in `migration/<project-name>/stability_report.md`.
+1. Verify that no circular imports remain by reviewing `migration/${PROJECT}/circular_imports_resolved.md`.
+2. Record any remaining circular imports in `migration/${PROJECT}/stability_report.md`.
 
 ### 4. Verify shim coverage
-1. Ensure the compatibility shim covers all necessary symbols by comparing it with the original namespace's exports.
-2. Record any missing symbols in `migration/<project-name>/stability_report.md`.
+1. Ensure the compatibility shim (`projects/${PROJECT}/${ORIG_TOP_NS}/__init__.py`) covers all necessary symbols by comparing it with the original namespace's exports.
+2. Record any missing symbols in `migration/${PROJECT}/stability_report.md`.
 
 ## Output
 - A report file: `migration/<project-name>/stability_report.md` summarizing:

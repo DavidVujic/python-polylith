@@ -21,7 +21,7 @@ Resolve circular imports by updating imports in the new base location to avoid r
 
 ### 2. Resolve circular imports
 1. For each circular import chain:
-   - Update imports in the new base location to avoid referencing the compatibility shim
+   - Update imports in the new base location (`bases/${TARGET_TOP_NS}/${INITIAL_BASE_NAME}/`) to avoid referencing the compatibility shim
    - Use direct imports from the new namespace instead
    - Consider using forward references or dependency injection where necessary
 
@@ -31,11 +31,11 @@ Example:
 from myproject.core import MyClass
 
 # After (direct import from new namespace)
-from mynamespace.core import MyClass
+from mynamespace.mybase.core import MyClass
 ```
 
 ### 3. Record resolved circular imports
-1. Record all resolved circular imports in `migration/<project-name>/circular_imports_resolved.md`.
+1. Record all resolved circular imports in `migration/${PROJECT}/circular_imports_resolved.md`.
 
 ## Output
 - Updated files in the new base location
