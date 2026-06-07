@@ -53,8 +53,18 @@ From `migration/<PROJECT>/manifest.md`:
 
 ### 4. Move Infrastructure Folders
 - Move **deployment** infra folders (e.g., `helm/`, `k8s/`, `kustomize/`, `skaffold/`) to `infra/<folder>/${PROJECT}/`.
-- **Keep `alembic/` together with `alembic.ini` in the project** — do **not** split them. `alembic.ini`'s `script_location` points at `alembic/` relatively, and `alembic/env.py` imports the project's bricks; separating them breaks migrations. (Alembic is project-specific config, which the project subfolder is allowed to keep.)
-- ⚠ **Deploy-path breakage:** moving infra breaks deploy scripts / `skaffold` / CI that hardcode the old paths. If you **cannot verify the deploy** in the migration environment (no deploy / manifest-diff cycle available), it is acceptable to **defer the infra move and document it** in `state.md` rather than relocate blindly. Otherwise, update the referencing scripts (or add a transitional symlink) and record the change.
+- 🔒 **Secret & `.gitignore` check before the move.** Infra folders frequently carry
+  secret material (e.g. `values-secret.yaml`, `*.env`, sealed-secret sources, TLS
+  keys). Two hazards when relocating them:
+  - **`.gitignore` scope shifts.** Ignore rules scoped to the **old** path stop
+    matching at the new `infra/<folder>/${PROJECT}/` path, so a previously-ignored
+    secret file can become **tracked** after the move. Verify the destination is
+    still covered by `.gitignore` for anything that was ignored at the source.
+  - **Inline secrets.** Scan the moved manifests/values for inline credentials
+    before committing. Do **not** commit newly-tracked secrets; have the user move
+    them to an ignored path or a secret manager first.
+- **Keep `alembic/` together with `alembic.ini` in the project** — do **not** split them. `alembic.ini`'s `script_location` points at `alembic/` relatively, and `alembic/env.py` imports the project's bricks; separating them breaks migrations. (Alembic is project-specific config, which the project subfolder is allowed to keep.) ⚠ `alembic.ini` commonly holds a `sqlalchemy.url` with DB credentials — if it is not already tracked, do not newly commit it with a literal credential; reference an env var instead.
+- ⚠ **Deploy-path breakage:** moving infra breaks deploy scripts / `skaffold` / CI that hardcode the old paths. If you **cannot verify the deploy** in the migration environment (no deploy / manifest-diff cycle available), it is acceptable to **defer the infra move and document it** in `state.md` rather than relocate blindly. Otherwise, update the referencing scripts and record the change. Prefer updating references over committing a **symlink**: a committed symlink can point outside the repo and behaves inconsistently across checkouts/OSes — if you must use one as a transition, keep it within the repo, record it in `state.md`, and schedule its removal.
 
 ### 5. Consolidate Dependencies
 - Move third-party dependencies with version constraints to the workspace root `pyproject.toml`.

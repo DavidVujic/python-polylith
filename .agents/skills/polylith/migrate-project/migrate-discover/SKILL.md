@@ -145,7 +145,14 @@ Map `PACKAGE_MANAGER` to the command prefix:
    - Sanity-check in the workspace env: `<package-manager> run python -c "import <TARGET_TOP_NS>"` (once at least one brick exists, e.g. after phase 3). It must succeed.
    > ⚠ **Common trap:** a root `pyproject.toml` with both `dev-mode-dirs` **and** `[tool.uv] package = false` looks configured but installs nothing — `<TARGET_TOP_NS>.*` is then unimportable and **every** post-`extract-to-base` test run fails with `ModuleNotFoundError: No module named '<TARGET_TOP_NS>'`. Prefer `pytest-pythonpath` (it avoids changing the install model), or make the root installable.
 
-4. **Verify `RUN_TEST_CMD`**: Run the test command in the project's directory to ensure it works. For example:
+4. **Verify `RUN_TEST_CMD`**: Run the test command in the project's directory to ensure it works.
+   > ⚠ **You are executing untrusted code.** Running the project's tests and the
+   > install/sync commands below executes arbitrary code from the project (e.g.
+   > `setup.py`, `conftest.py`, build hooks) **and** from resolved third-party
+   > packages (post-install scripts). Only run these on a project the user trusts;
+   > do not proceed on an unknown or untrusted codebase.
+
+   For example:
    - For `uv`: Run `uv run pytest tests --collect-only -q | tail -1`. If the command fails, guide the user to install test dependencies (e.g., `uv sync --extra tests`).
    - For `pdm`: Run `pdm run pytest tests --collect-only -q | tail -1`. If the command fails, guide the user to install test dependencies (e.g., `pdm install --group tests`).
    - For `poetry`: Run `poetry run pytest tests --collect-only -q | tail -1`. If the command fails, guide the user to install test dependencies (e.g., `poetry install --with tests`).
@@ -154,6 +161,13 @@ Map `PACKAGE_MANAGER` to the command prefix:
 5. **Record Baseline**: Record the baseline test count (e.g., number of tests collected) in `state.md`. If the command differs (e.g., `python -m pytest`), update `RUN_TEST_CMD` to match the working command.
 
 6. **Inspect Config Files**: Inspect `Makefile`, `Justfile`, `tox.ini`, `pyproject.toml` `[tool.pytest.ini_options]`, and CI config (`.github/workflows/*.yml`, `.circleci/config.yml`, etc.) to identify the project's existing commands. Fill `RUN_TEST_CMD`, and `RUN_LINT_CMD` / `RUN_TYPECHECK_CMD` when present. If a command can't be found, leave the value empty.
+   > 🔒 **Never store secrets in `state.md`.** `state.md` is committed. When a derived
+   > command embeds a credential (an inline token, a `--token=…` flag, a database URL
+   > with a password, an API key), do **not** copy the literal value. Reference the
+   > environment variable name instead (e.g. `RUN_TEST_CMD=DATABASE_URL=$DATABASE_URL uv run pytest …`),
+   > and have the user supply the secret via their environment at run time. Redact any
+   > literal credential before writing the file. The same applies to `manifest.md` —
+   > it captures structure, not secrets.
 
 7. **Proceed Only After Verification**: Only proceed to the next phase if `RUN_TEST_CMD` succeeds. If it fails, guide the user to resolve the issue before continuing.
 

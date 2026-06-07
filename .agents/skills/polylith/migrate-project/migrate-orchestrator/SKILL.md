@@ -43,18 +43,36 @@ Migration is destructive — files move, directories are deleted, `pyproject.tom
    git status
    ```
    If there are uncommitted changes, ask the user to commit/stash before proceeding. Do not start a migration on top of a dirty tree. (If the repo has **no commits yet**, create an initial baseline commit so there is a `GIT_BASE_SHA` to roll back to.)
-2. Create a dedicated migration branch:
+2. **Secret-hygiene precondition (do this before any phase stages files).** Later
+   phases stage changes broadly, and the migration *creates* untracked files
+   mid-flow (e.g. `.venv/` from `uv sync`/`poetry install`, regenerated lock files).
+   A "clean" tracked tree can still leave **untracked** secrets (`.env*`, `*.pem`,
+   `*.key`, `*_rsa`, `*service-account*.json`, credential files) that a broad stage
+   would commit. Before proceeding:
+   - Confirm `.gitignore` covers `.venv/`, `.env*`, and common secret material.
+   - Review `git status --porcelain` for untracked sensitive files; have the user
+     remove, relocate, or ignore them. **Do not start** until no untracked secret
+     material remains stageable.
+3. Create a dedicated migration branch:
    ```bash
    git checkout -b migrate/<project-name>
    ```
-3. After each completed phase, commit per that phase's `## Commit` section. The commit message follows the pattern `migrate(<project-name>): phase <N> — <phase-name>` so phases can be located in `git log` later.
+4. After each completed phase, commit per that phase's `## Commit` section. The commit message follows the pattern `migrate(<project-name>): phase <N> — <phase-name>` so phases can be located in `git log` later.
+   - **Stage narrowly.** Prefer scoped `git add <path>` over `git add -A`, limiting
+     the stage to migration-relevant paths (the bricks/components/bases touched, the
+     project dir, and `migration/<project-name>/`). Where a phase's `## Commit`
+     section still shows `git add -A`, first run `git status --porcelain` and
+     **exclude anything matching secret patterns** (`.env*`, `*.pem`, `*.key`,
+     `*_rsa`, `*service-account*.json`, credential files) or build artifacts
+     (`.venv/`, caches). Never stage a file you have not accounted for.
    ```bash
-   git add -A && git commit -m "migrate(<project-name>): phase <N> — <phase-name>"
+   git add <scoped paths> && git commit -m "migrate(<project-name>): phase <N> — <phase-name>"
    ```
    This gives the user (and the agent) a discrete, named rollback point per phase. If a later phase fails verification, the agent can `git reset --hard HEAD~1` to back out exactly one phase without losing earlier progress.
-4. Record the branch name and starting commit SHA in `migration/<project-name>/state.md` (the `migrate-discover` skill defines that file).
+5. Record the branch name and starting commit SHA in `migration/<project-name>/state.md` (the `migrate-discover` skill defines that file).
 
 > ⚠ Never `git reset --hard` past the start of the migration branch without explicit user approval — the user's pre-migration work lives there.
+> ⚠ Because phases may stage broadly, a `git reset --hard HEAD` *before* a commit also discards untracked work. This is a second reason to stage narrowly (step 4).
 
 ## Workflow
 
