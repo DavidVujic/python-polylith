@@ -8,7 +8,7 @@
 Two kinds of skill live under this directory; the distinction matters when picking an entry point:
 
 - **Atomic skills (`polylith-*`).** Each maps to one `poly` CLI command (or one focused concept). Safe to load in isolation; individually composable. These cover everyday Polylith workflows — creating bricks, syncing, checking, inspecting, and so on.
-- **Orchestrated skill set (`migrate-project/migrate-*`).** A multi-phase workflow with shared state (`migration/<PROJECT>/state.md`) and a git safety net. **Never load an individual `migrate-*` skill directly** — always load `migrate-orchestrator` and let it drive the phases in order. See [`migrate-project/README.md`](./migrate-project/README.md). This is an advanced, explicit-opt-in workflow used for migrating a **non-Polylith** project into a Polylith workspace, **not** part of daily Polylith use.
+- **Orchestrated skill set (`migrate-project/polylith-migrate-*`).** A multi-phase workflow with shared state (`migration/<PROJECT>/state.md`) and a git safety net. **Never load an individual `polylith-migrate-*` skill directly** — always load `polylith-migrate-orchestrator` and let it drive the phases in order. See [`migrate-project/README.md`](./migrate-project/README.md). This is an advanced, explicit-opt-in workflow used for migrating a **non-Polylith** project into a Polylith workspace, **not** part of daily Polylith use.
 
 ## Available Skills (daily Polylith workflows)
 
@@ -31,4 +31,4 @@ Two kinds of skill live under this directory; the distinction matters when picki
 
 ## Advanced workflow
 
-For migrating an existing **non-Polylith** Python project into a Polylith workspace, see [`migrate-project/README.md`](./migrate-project/README.md). This is a destructive, multi-phase, explicit-opt-in workflow — start with the `migrate-orchestrator` skill, not any individual `migrate-*` sub-skill.
+For migrating an existing **non-Polylith** Python project into a Polylith workspace, see [`migrate-project/README.md`](./migrate-project/README.md). This is a destructive, multi-phase, explicit-opt-in workflow — start with the `polylith-migrate-orchestrator` skill, not any individual `polylith-migrate-*` sub-skill.
