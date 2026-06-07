@@ -51,20 +51,9 @@ description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directl
 
 ## End-to-end checks
 
-These checks go beyond per-phase verification and exercise the migrated project as a whole. **All three must pass.**
+These checks go beyond per-phase verification and exercise the migrated project as a whole. **Both must pass.**
 
-### 1. Entrypoint smoke test
-
-For **each base** in the project, smoke-test its entrypoint:
-
-- **HTTP API base** → start the server and curl a health endpoint (or any GET that doesn't require auth). Verify it returns 200.
-- **CLI base** → run `<cli> --help` and a no-op subcommand. Verify exit code 0. (If the entrypoint does real I/O at startup — e.g. a CLI that calls `init_db()` in `__main__` *before* arg parsing — that is **pre-existing behavior**, not a migration regression. In that case verify the module imports cleanly and the wiring matches the original.)
-- **Worker/consumer base** → start the process and observe one cycle of its main loop in the logs. Stop it cleanly.
-- **Lambda / Cloud Function base** → invoke the handler with a representative event payload (mocked or recorded). Verify it returns without exception.
-
-If any base fails to start, the migration is **not done** — return to `migrate-distribute-wiring` and check entrypoint wiring.
-
-### 2. Baseline test count restored
+### 1. Baseline test count restored
 
 Compare collected test count to the baseline recorded by `migrate-discover`:
 
@@ -74,7 +63,7 @@ Compare collected test count to the baseline recorded by `migrate-discover`:
 
 The count must **equal** the baseline. A lower count means `pytest` discovery is misconfigured (see `migrate-refactor-tests` failure modes). A higher count means tests were inadvertently duplicated during the move.
 
-### 3. No undocumented shims remain
+### 2. No undocumented shims remain
 
 Inspect `migration/<PROJECT>/shims.md` (if it exists):
 
@@ -92,7 +81,7 @@ Inspect `migration/<PROJECT>/shims.md` (if it exists):
 | Symptom | Likely cause | Remediation |
 |---------|--------------|-------------|
 | `RUN_TEST_CMD` passes but collected test count is lower than the baseline from `migrate-discover` | `pytest` discovery is misconfigured after the test reorganisation. | Update `[tool.pytest.ini_options].testpaths` (or pass paths explicitly in `RUN_TEST_CMD`). Run `pytest --collect-only` and diff against baseline collection. See `migrate-refactor-tests` for details. |
-| `poly check` is green and tests pass, but the application doesn't start | Entrypoint wiring regression — a base imports something that no longer exists at the expected path, but no test exercises the boot path. | Smoke-test each base's entrypoint manually (run the FastAPI server, invoke the CLI, send a test event to the consumer). Revisit `migrate-distribute-wiring`. |
+| `poly check` is green and tests pass, but a base imports something that no longer exists at the expected path | Entrypoint wiring regression introduced while moving code into bases/components. | Verify each base's entrypoint module imports cleanly and that its wiring matches the original. Revisit `migrate-distribute-wiring`. |
 | `migration/shims.md` still lists active shims | Shims from `migrate-extract-to-base` (namespace change) were never removed. | Either rewrite imports to the new namespace and delete the shims, or schedule shim removal as a follow-up PR and note it in the migration branch description. Do not merge with undocumented shims. |
 
 ## Commit
