@@ -60,11 +60,13 @@ From `migration/<PROJECT>/manifest.md`:
 - Move third-party dependencies with version constraints to the workspace root `pyproject.toml`.
 - Move dev/test/tooling dependencies to the workspace root.
 - List runtime dependencies **without version numbers** in the project `pyproject.toml`.
-- Run `uv sync` (or equivalent for your package manager) to update the virtual environment.
-- Verify dependencies with:
+- Sync the virtual environment with the project's package manager (e.g. `uv sync`,
+  `pdm install`, `poetry install` — match `PACKAGE_MANAGER` in `state.md`).
+- Verify dependencies, substituting your package manager's run prefix (`<RUN>` =
+  `uv run` / `pdm run` / `poetry run` / bare in an activated venv):
   ```bash
-  uv run pip list  # Confirm all dependencies are installed
-  uv run python -c "import <dependency>"  # Verify key dependencies are available
+  <RUN> pip list  # Confirm all dependencies are installed
+  <RUN> python -c "import <dependency>"  # Verify key dependencies are available
   ```
 
 ## Verify

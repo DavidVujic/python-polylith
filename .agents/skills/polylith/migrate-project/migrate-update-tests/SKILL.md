@@ -1,6 +1,6 @@
 ---
 name: migrate-update-tests
-description: Update test files to import from the compatibility shim or the new namespace, ensuring test stability after namespace migration.
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Update test files to import from the compatibility shim or the new namespace, ensuring test stability after namespace migration."
 ---
 
 # Skill: migrate-update-tests
@@ -21,9 +21,19 @@ Update test files to import from the compatibility shim or the new namespace, en
 1. Review the import analysis report to identify test files (typically in `projects/${PROJECT}/tests/`) that import from the original namespace.
 
 ### 2. Update imports in test files
+The compatibility shim re-exports the original namespace's public symbols at the
+**top level** of `${ORIG_TOP_NS}` (from `projects/${PROJECT}/${ORIG_TOP_NS}/__init__.py`).
+So test imports keep the `${ORIG_TOP_NS}` prefix — only **submodule-qualified** imports
+need collapsing onto that top-level surface:
+
 1. For each test file importing from the original namespace:
-   - Replace `from ${ORIG_TOP_NS} import ...` with `from ${ORIG_TOP_NS} import ...` (using the compatibility shim at `projects/${PROJECT}/${ORIG_TOP_NS}/__init__.py`)
-   - Replace `import ${ORIG_TOP_NS}` with `import ${ORIG_TOP_NS}` (using the compatibility shim)
+   - Collapse submodule-qualified imports onto the shim: rewrite
+     `from ${ORIG_TOP_NS}.<submodule> import <symbol>` to `from ${ORIG_TOP_NS} import <symbol>`
+     (the symbol is re-exported by the shim).
+   - Leave top-level imports (`from ${ORIG_TOP_NS} import <symbol>`, `import ${ORIG_TOP_NS}`)
+     unchanged — they already resolve through the shim.
+   - If a symbol is **not** re-exported by the shim, either add it to the shim's `__all__`
+     (see `migrate-generate-shim`) or import it from its new namespace path directly.
 
 Example:
 ```python

@@ -1,6 +1,6 @@
 ---
 name: migrate-verify-stability
-description: Verify that the migration did not break the project by running test discovery, checking for circular imports, and ensuring the compatibility shim covers all necessary symbols.
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Verify that the migration did not break the project by running test discovery, checking for circular imports, and ensuring the compatibility shim covers all necessary symbols."
 ---
 
 # Skill: migrate-verify-stability

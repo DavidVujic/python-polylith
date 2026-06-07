@@ -1,6 +1,6 @@
 ---
 name: migrate-automate-import-updates
-description: Update imports in the new base location to reference the new namespace instead of the original namespace.
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Update imports in the new base location to reference the new namespace instead of the original namespace."
 ---
 
 # Skill: migrate-automate-import-updates

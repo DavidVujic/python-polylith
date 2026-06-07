@@ -1,6 +1,6 @@
 ---
 name: migrate-detect-circular-imports
-description: Detect and report circular imports introduced by the namespace migration.
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Detect and report circular imports introduced by the namespace migration."
 ---
 
 # Skill: migrate-detect-circular-imports

@@ -1,6 +1,6 @@
 ---
 name: migrate-generate-shim
-description: Generate a compatibility shim that re-exports all symbols from the new base location to maintain backward compatibility during namespace migration.
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Generate a compatibility shim that re-exports all symbols from the new base location to maintain backward compatibility during namespace migration."
 ---
 
 # Skill: migrate-generate-shim

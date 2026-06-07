@@ -82,4 +82,4 @@ After verification passes, commit this phase to the migration branch:
 git add -A && git commit -m "migrate(<PROJECT>): phase optional — convert-linter"
 ```
 
-Substitute `<PROJECT>`, `<N>`, and `<phase-name>` from `state.md` and the orchestrator's phase table. Do not proceed to the next phase without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.
+Substitute `<PROJECT>` from `state.md`. This is an **optional** skill off the numbered main line, so the commit uses the literal `phase optional` label (no `<N>`). Do not proceed without a clean commit — the per-phase commit is the rollback point for the next phase's failure-mode tables.

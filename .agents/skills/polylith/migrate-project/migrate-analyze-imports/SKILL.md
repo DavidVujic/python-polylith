@@ -1,6 +1,6 @@
 ---
 name: migrate-analyze-imports
-description: Analyze the project's import graph to find how the original namespace is referenced, choose the namespace-rewrite strategy (shim vs shimless), detect circular imports, and list symbols exported by the original namespace.
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Analyze the project's import graph to find how the original namespace is referenced, choose the namespace-rewrite strategy (shim vs shimless), detect circular imports, and list symbols exported by the original namespace."
 ---
 
 # Skill: migrate-analyze-imports

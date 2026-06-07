@@ -1,6 +1,6 @@
 ---
 name: migrate-resolve-circular-imports
-description: Resolve circular imports by updating imports in the new base location to avoid referencing the compatibility shim.
+description: "[Internal sub-skill of `migrate-orchestrator`. Do not load directly — load `migrate-orchestrator` first, which drives all phases.] Resolve circular imports by updating imports in the new base location to avoid referencing the compatibility shim."
 ---
 
 # Skill: migrate-resolve-circular-imports
