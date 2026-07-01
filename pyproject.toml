@@ -1,11 +1,38 @@
-[tool.poetry]
+[project]
 name = "python-polylith"
-version = "0.0.2"
+version = "1.0.0"
 description = "A Python Polylith repo adding tooling support for the Polylith Architecture"
-authors = ["David Vujic"]
-homepage = "https://github.com/davidvujic/python-polylith"
-repository = "https://github.com/davidvujic/python-polylith"
+authors = [{ name = "David Vujic" }]
+license = "MIT"
 readme = "README.md"
+requires-python = ">=3.8.1,<4"
+dependencies = [
+    "poetry",
+    "tomlkit>=0,<1",
+    "rich>=13,<16; python_version >= '3.9'",
+    "rich>=13,<15; python_version < '3.9'",
+    "cleo~=2.1.0",
+    "hatchling~=1.21.0",
+    "typer>=0,<1",
+    "pyyaml",
+    "typing_extensions>=4.14; python_version >= '3.9'",
+    "typing_extensions<4.14; python_version < '3.9'"
+]
+
+[project.urls]
+Homepage = "https://github.com/davidvujic/python-polylith"
+Documentation = "https://davidvujic.github.io/python-polylith-docs/"
+
+[dependency-groups]
+dev = [
+  "isort~=5.10.1",
+  "mypy~=1.14.0",
+  "flake8~=7.0.0",
+  "pytest~=8.3.5",
+  "types-pyyaml~=6.0.12.20241230"
+]
+
+[tool.poetry]
 packages = [
     { include = "polylith/poetry_plugin", from = "bases" },
     { include = "polylith/cli", from = "bases" },
@@ -46,31 +73,6 @@ packages = [
     { include = "polylith/workspace", from = "components" },
     { include = "development" },
 ]
-
-[tool.poetry.dependencies]
-python = "^3.8.1"
-poetry = "*"
-tomlkit = "0.*"
-rich = ">=13,<15"
-cleo = "^2.1.0"
-hatchling = "^1.21.0"
-typer = "0.*"
-pyyaml = "*"
-typing_extensions = [
-  { version = "<4.14", python = ">=3.8,<3.9" },
-  { version = "*",     python = ">=3.9" }
-]
-
-[tool.poetry.group.dev.dependencies]
-black = "^24.3.0"
-isort = "^5.10.1"
-mypy = "^1.14.0"
-flake8 = "^7.0.0"
-pytest = "^8.3.5"
-types-pyyaml = "^6.0.12.20241230"
-
-[tool.poetry.scripts]
-poly = "polylith.cli.core:app"
 
 [tool.isort]
 profile = "black"
