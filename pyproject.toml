@@ -48,7 +48,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.9"
 poetry = "*"
 tomlkit = "0.*"
 rich = ">=13,<15"
@@ -68,6 +68,7 @@ mypy = "^1.14.0"
 flake8 = "^7.0.0"
 pytest = "^8.3.5"
 types-pyyaml = "^6.0.12.20241230"
+libcst = "^1.8.6"
 
 [tool.poetry.scripts]
 poly = "polylith.cli.core:app"
