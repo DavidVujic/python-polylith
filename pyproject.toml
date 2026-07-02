@@ -32,54 +32,51 @@ dev = [
   "types-pyyaml~=6.0.12.20241230"
 ]
 
-[tool.poetry]
-packages = [
-    { include = "polylith/poetry_plugin", from = "bases" },
-    { include = "polylith/cli", from = "bases" },
-    { include = "polylith/hatch_hooks", from = "bases" },
-    { include = "polylith/pdm_project_hooks", from = "bases" },
-    { include = "polylith/pdm_workspace_hooks", from = "bases" },
-    { include = "polylith/alias", from = "components" },
-    { include = "polylith/bricks", from = "components" },
-    { include = "polylith/building", from = "components" },
-    { include = "polylith/check", from = "components" },
-    { include = "polylith/configuration", from = "components" },
-    { include = "polylith/commands", from = "components" },
-    { include = "polylith/deps", from = "components" },
-    { include = "polylith/development", from = "components" },
-    { include = "polylith/diff", from = "components" },
-    { include = "polylith/dirs", from = "components" },
-    { include = "polylith/distributions", from = "components" },
-    { include = "polylith/environment", from = "components" },
-    { include = "polylith/files", from = "components" },
-    { include = "polylith/hatch", from = "components" },
-    { include = "polylith/imports", from = "components" },
-    { include = "polylith/info", from = "components" },
-    { include = "polylith/interactive",from = "components" },
-    { include = "polylith/interface", from = "components" },
-    { include = "polylith/libs", from = "components" },
-    { include = "polylith/output", from = "components" },
-    { include = "polylith/parsing", from = "components" },
-    { include = "polylith/pdm", from = "components" },
-    { include = "polylith/poetry", from = "components" },
-    { include = "polylith/project", from = "components" },
-    { include = "polylith/readme", from = "components" },
-    { include = "polylith/repo", from = "components" },
-    { include = "polylith/reporting", from = "components" },
-    { include = "polylith/sync", from = "components" },
-    { include = "polylith/test", from = "components" },
-    { include = "polylith/toml", from = "components" },
-    { include = "polylith/yaml", from = "components" },
-    { include = "polylith/workspace", from = "components" },
-    { include = "development" },
-]
+[tool.polylith.bricks]
+"bases/polylith/cli" = "polylith/cli"
+"bases/polylith/pdm_project_hooks" = "polylith/pdm_project_hooks"
+"bases/polylith/hatch_hooks" = "polylith/hatch_hooks"
+"bases/polylith/pdm_workspace_hooks" = "polylith/pdm_workspace_hooks"
+"bases/polylith/poetry_plugin" = "polylith/poetry_plugin"
+"components/polylith/hatch" = "polylith/hatch"
+"components/polylith/poetry" = "polylith/poetry"
+"components/polylith/parsing" = "polylith/parsing"
+"components/polylith/readme" = "polylith/readme"
+"components/polylith/deps" = "polylith/deps"
+"components/polylith/yaml" = "polylith/yaml"
+"components/polylith/building" = "polylith/building"
+"components/polylith/check" = "polylith/check"
+"components/polylith/workspace" = "polylith/workspace"
+"components/polylith/reporting" = "polylith/reporting"
+"components/polylith/dirs" = "polylith/dirs"
+"components/polylith/configuration" = "polylith/configuration"
+"components/polylith/diff" = "polylith/diff"
+"components/polylith/distributions" = "polylith/distributions"
+"components/polylith/bricks" = "polylith/bricks"
+"components/polylith/pdm" = "polylith/pdm"
+"components/polylith/output" = "polylith/output"
+"components/polylith/environment" = "polylith/environment"
+"components/polylith/development" = "polylith/development"
+"components/polylith/libs" = "polylith/libs"
+"components/polylith/project" = "polylith/project"
+"components/polylith/commands" = "polylith/commands"
+"components/polylith/sync" = "polylith/sync"
+"components/polylith/toml" = "polylith/toml"
+"components/polylith/files" = "polylith/files"
+"components/polylith/imports" = "polylith/imports"
+"components/polylith/alias" = "polylith/alias"
+"components/polylith/interface" = "polylith/interface"
+"components/polylith/interactive" = "polylith/interactive"
+"components/polylith/repo" = "polylith/repo"
+"components/polylith/test" = "polylith/test"
+"components/polylith/info" = "polylith/info"
 
 [tool.isort]
 profile = "black"
 
+[tool.pytest.ini_options]
+addopts = "-sv"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pytest.ini_options]
-addopts = "-sv"
