@@ -34,8 +34,8 @@ dev = [
 
 [tool.polylith.bricks]
 "bases/polylith/cli" = "polylith/cli"
-"bases/polylith/pdm_project_hooks" = "polylith/pdm_project_hooks"
 "bases/polylith/hatch_hooks" = "polylith/hatch_hooks"
+"bases/polylith/pdm_project_hooks" = "polylith/pdm_project_hooks"
 "bases/polylith/pdm_workspace_hooks" = "polylith/pdm_workspace_hooks"
 "bases/polylith/poetry_plugin" = "polylith/poetry_plugin"
 "components/polylith/alias" = "polylith/alias"
