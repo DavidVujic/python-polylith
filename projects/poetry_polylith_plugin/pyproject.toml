@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "poetry-polylith-plugin"
-version = "1.52.0"
+version = "1.52.1"
 description = "A Poetry plugin that adds tooling support for the Polylith Architecture"
 authors = ["David Vujic"]
 homepage = "https://davidvujic.github.io/python-polylith-docs/"
@@ -46,7 +46,7 @@ poetry-polylith-plugin = "polylith.poetry_plugin:PolylithPlugin"
 python = "^3.8"
 poetry = "*"
 tomlkit = "0.*"
-rich = ">=13,<15"
+rich = "*"
 cleo = "^2.1.0"
 pyyaml = "*"
 
