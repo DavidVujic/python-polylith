@@ -45,7 +45,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 tomlkit = "0.*"
-rich = ">=13,<15"
+rich = "*"
 typer = "0.*"
 pyyaml = "*"
 typing_extensions = [
