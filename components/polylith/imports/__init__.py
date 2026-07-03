@@ -9,12 +9,18 @@ from polylith.imports.parser import (
     list_imports,
     parse_module,
 )
-from polylith.imports.usages import SYMBOLS, extract_api, fetch_brick_import_usages
+from polylith.imports.usages import (
+    SYMBOLS,
+    extract_api,
+    extract_api_part,
+    fetch_brick_import_usages,
+)
 
 __all__ = [
     "extract_brick_imports",
     "extract_brick_imports_with_namespaces",
     "extract_api",
+    "extract_api_part",
     "extract_top_ns",
     "fetch_all_imports",
     "fetch_brick_import_usages",

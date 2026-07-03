@@ -78,8 +78,8 @@ def extract_collected_imports(
     ns: str, imports_in_bases: dict, imports_in_components: dict
 ) -> dict:
     brick_imports = {
-        "bases": imports.grouping.extract_brick_imports(imports_in_bases, ns),
-        "components": imports.grouping.extract_brick_imports(imports_in_components, ns),
+        "bases": imports.extract_brick_imports(imports_in_bases, ns),
+        "components": imports.extract_brick_imports(imports_in_components, ns),
     }
 
     third_party_imports = {
