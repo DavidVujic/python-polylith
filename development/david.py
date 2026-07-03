@@ -46,4 +46,4 @@ changed_projects = diff.collect.get_changed_projects(root, changed_files)
 
 projects_data = info.get_bricks_in_projects(root, changed_components, changed_bases, ns)
 
-bases_data = bricks.base.get_bases_data(root, ns)
+bases_data = dirs.get_bases_data(root, ns)

@@ -14,7 +14,7 @@ from polylith.deps.report import (
 __all__ = [
     "calculate_brick_deps",
     "find_bricks_with_circular_dependencies",
-    "get_brick_imports"
+    "get_brick_imports",
     "sorted_used_by",
     "print_brick_deps",
     "print_brick_with_circular_deps",

@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Set
 
-from polylith.bricks import get_bases_data, get_components_data
+from polylith.dirs import get_bases_data, get_components_data
 
 from polylith.info.report import is_project
 from polylith.project import get_packages_for_projects, parse_package_paths

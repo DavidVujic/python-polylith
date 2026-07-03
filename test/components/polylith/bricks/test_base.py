@@ -1,6 +1,7 @@
 from pathlib import Path
 
-from polylith.bricks.base import create_base, get_bases_data
+from polylith.bricks.base import create_base
+from polylith.dirs import get_bases_data
 
 
 def test_create_base(handle_workspace_files, tmp_path: Path):

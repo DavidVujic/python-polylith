@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Set
 
 from polylith import deps, info, interface
-from polylith.bricks import get_bases_data, get_components_data
+from polylith.dirs import get_bases_data, get_components_data
 
 
 def get_imports(root: Path, ns: str, bricks: dict) -> dict:
