@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pytest
-from polylith.bricks.base import create_base
+from polylith.bricks import create_base
 
 source_file = """
 [tool.polylith]

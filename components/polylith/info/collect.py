@@ -1,7 +1,8 @@
 from pathlib import Path
 from typing import List, Set
 
-from polylith.bricks import base, component
+from polylith.dirs import get_bases_data, get_components_data
+
 from polylith.info.report import is_project
 from polylith.project import get_packages_for_projects, parse_package_paths
 
@@ -26,11 +27,11 @@ def get_project_bricks(project_packages: List[dict], components, bases, namespac
 
 
 def get_components(root: Path, namespace: str) -> List[str]:
-    return [c["name"] for c in component.get_components_data(root, namespace)]
+    return [c["name"] for c in get_components_data(root, namespace)]
 
 
 def get_bases(root: Path, namespace: str) -> List[str]:
-    return [b["name"] for b in base.get_bases_data(root, namespace)]
+    return [b["name"] for b in get_bases_data(root, namespace)]
 
 
 def get_bricks_in_projects(

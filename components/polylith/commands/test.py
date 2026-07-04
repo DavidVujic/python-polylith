@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import List, Set, Tuple, Union
 
-from polylith import bricks, configuration, diff, info, test
+from polylith import configuration, diff, dirs, info, test
 
 
 def get_imported_bricks_in_tests(
@@ -22,8 +22,8 @@ def get_affected_bricks(
 ) -> Tuple[Set[str], Set[str]]:
     found = get_imported_bricks_in_tests(root, ns, tag_name, theme)
 
-    bases = extract_brick_names(bricks.get_bases_data(root, ns), found)
-    components = extract_brick_names(bricks.get_components_data(root, ns), found)
+    bases = extract_brick_names(dirs.get_bases_data(root, ns), found)
+    components = extract_brick_names(dirs.get_components_data(root, ns), found)
 
     return bases, components
 

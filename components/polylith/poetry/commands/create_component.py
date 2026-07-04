@@ -1,6 +1,6 @@
 from cleo.helpers import option
 from poetry.console.commands.command import Command
-from polylith.bricks import component
+from polylith.bricks import create_component
 from polylith.poetry.commands.create_brick import try_create
 
 
@@ -20,4 +20,4 @@ class CreateComponentCommand(Command):
     ]
 
     def handle(self) -> int:
-        return try_create(self, component.create_component)
+        return try_create(self, create_component)
