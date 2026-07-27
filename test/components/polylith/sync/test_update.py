@@ -78,16 +78,16 @@ expected_hatch_packages = {
 }
 
 unsorted_packages = [
-    {"include": "hello/c", "from": "components"},
-    {"include": "hello/a", "from": "bases"},
     {"include": "hello/b", "from": "components"},
+    {"include": "hello/x", "from": "bases"},
+    {"include": "hello/a", "from": "components"},
 ]
 
 expected_sorted_pep621_bricks = {
     "bases/hello/first": "hello/first",
-    "bases/hello/a": "hello/a",
+    "bases/hello/x": "hello/x",
+    "components/hello/a": "hello/a",
     "components/hello/b": "hello/b",
-    "components/hello/c": "hello/c",
 }
 
 poetry_project_data = """\
@@ -140,9 +140,9 @@ def test_generate_updated_poetry_project_with_the_bricks_to_update_sorted():
 
     expected = [
         {"include": "hello/first", "from": "bases"},
-        {"include": "hello/a", "from": "bases"},
+        {"include": "hello/x", "from": "bases"},
+        {"include": "hello/a", "from": "components"},
         {"include": "hello/b", "from": "components"},
-        {"include": "hello/c", "from": "components"},
     ]
 
     updated = update.generate_updated_project(data, unsorted_packages)
