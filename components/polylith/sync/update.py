@@ -81,10 +81,9 @@ def to_sorted_packages(packages: List[dict]) -> List[dict]:
     sorted_by_brick_type = sorted(packages, key=sort_fn_by_from)
     grouped = itertools.groupby(sorted_by_brick_type, key=sort_fn_by_from)
 
-    groups = [list(g) for _k, g in grouped]
-    flattened: List[dict] = reduce(operator.iadd, groups, [])
+    groups = [sorted(g, key=sort_fn_by_include) for _k, g in grouped]
 
-    return sorted(flattened, key=sort_fn_by_include)
+    return reduce(operator.iadd, groups, [])
 
 
 def generate_updated_poetry_project(data: TOMLDocument, packages: List[dict]) -> str:
