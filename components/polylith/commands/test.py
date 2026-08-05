@@ -28,6 +28,16 @@ def get_affected_bricks(
     return bases, components
 
 
+def get_related_bricks(
+    root: Path, ns: str, tag_name: Union[str, None], theme: str
+) -> Tuple[Set[str], Set[str]]:
+    files = test.get_changed_files(root, tag_name)
+
+    bricks = test.get_related_bricks(root, ns, theme, files)
+
+    return bricks["bases"], bricks["components"]
+
+
 def get_affected_projects(
     root: Path, ns: str, bases: Set[str], components: Set[str]
 ) -> List[dict]:

@@ -1,0 +1,14 @@
+from pathlib import Path
+
+from polylith.test import core
+
+
+def test_extract_brick_name_from_test() -> None:
+    expected = "check"
+    root = Path.cwd()
+
+    changed_test = root / f"test/components/polylith/{expected}/the_test.py"
+
+    res = core.extract_brick_name_from_test(root, changed_test, theme="loose")
+
+    assert res == expected
