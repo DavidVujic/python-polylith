@@ -13,8 +13,8 @@ def get_imported_bricks_in_tests(
     return set().union(*brick_imports.values())
 
 
-def extract_brick_names(bricks_data: List[dict], imported_bricks: Set[str]) -> Set[str]:
-    return {v for b in bricks_data for v in b.values() if v in imported_bricks}
+def extract_brick_names(bricks_data: List[dict], possible_bricks: Set[str]) -> Set[str]:
+    return {v for b in bricks_data for v in b.values() if v in possible_bricks}
 
 
 def get_affected_bricks(
@@ -32,10 +32,12 @@ def get_related_bricks(
     root: Path, ns: str, tag_name: Union[str, None], theme: str
 ) -> Tuple[Set[str], Set[str]]:
     files = test.get_changed_files(root, tag_name)
+    related = test.get_related_bricks(root, ns, theme, files)
 
-    bricks = test.get_related_bricks(root, ns, theme, files)
+    bases = extract_brick_names(dirs.get_bases_data(root, ns), related["bases"])
+    components = extract_brick_names(dirs.get_bases_data(root, ns), related["components"])
 
-    return bricks["bases"], bricks["components"]
+    return bases, components
 
 
 def get_affected_projects(
