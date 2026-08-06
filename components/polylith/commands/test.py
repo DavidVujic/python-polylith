@@ -35,7 +35,7 @@ def get_related_bricks(
     related = test.get_related_bricks(root, ns, theme, files)
 
     bases = extract_brick_names(dirs.get_bases_data(root, ns), related["bases"])
-    components = extract_brick_names(dirs.get_bases_data(root, ns), related["components"])
+    components = extract_brick_names(dirs.get_components_data(root, ns), related["components"])
 
     return bases, components
 
@@ -52,10 +52,27 @@ def get_affected_projects(
     return [p for p in projects_data if p["path"].name in names]
 
 
+def parse_strategy(strategy: str) -> List[str]:
+    strategies = str.split(strategy, ",")
+
+    return [str.lower(s) for s in strategies]
+
+
 def run(root: Path, ns: str, tag: str, options: dict) -> None:
     theme = configuration.get_theme_from_config(root)
 
-    bases, components = get_affected_bricks(root, ns, tag, theme)
+    strategy = parse_strategy(options["strategy"])
+
+    by_imports = "imports" in strategy
+    by_path = "path" in strategy
+
+    fallback: Tuple[Set[str], Set[str]] = set(), set()
+    affected = get_affected_bricks(root, ns, tag, theme) if by_imports else fallback
+    related = get_related_bricks(root, ns, tag, theme) if by_path else fallback
+
+    bases = set().union(affected[0], related[0])
+    components = set().union(affected[1], related[1])
+
     projects_data = get_affected_projects(root, ns, bases, components)
 
     if options.get("bricks"):

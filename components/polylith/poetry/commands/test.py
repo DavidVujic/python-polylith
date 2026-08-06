@@ -25,6 +25,12 @@ class TestDiffCommand(Command):
             description="Projects affected by changes in tests",
             flag=True,
         ),
+        option(
+            long_name="strategy",
+            description="By 'imports' (the bricks used in tests) or by 'path' (the corresponding bricks)",
+            flag=False,
+            default="imports",
+        ),
     ]
 
     def handle(self) -> int:
@@ -34,6 +40,7 @@ class TestDiffCommand(Command):
             "short": self.option("short"),
             "bricks": self.option("bricks"),
             "projects": self.option("projects"),
+            "strategy": self.option("strategy"),
         }
 
         root = repo.get_workspace_root(Path.cwd())

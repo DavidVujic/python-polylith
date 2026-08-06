@@ -70,8 +70,7 @@ def get_related_brick(root: Path, path: Path, theme: str) -> dict:
 def get_related_bricks(root: Path, ns: str, theme: str, files: List[Path]) -> dict:
     matched = find_tests(root, ns, theme, files)
 
-    bricks = (get_related_brick(root, m, theme) for m in matched)
-
+    bricks = [get_related_brick(root, m, theme) for m in matched]
     bases = {b["name"] for b in bricks if b["type"] == "bases"}
     components = {b["name"] for b in bricks if b["type"] == "components"}
 
