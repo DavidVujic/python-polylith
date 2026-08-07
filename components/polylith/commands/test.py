@@ -13,8 +13,8 @@ def get_imported_bricks_in_tests(
     return set().union(*brick_imports.values())
 
 
-def extract_brick_names(bricks_data: List[dict], imported_bricks: Set[str]) -> Set[str]:
-    return {v for b in bricks_data for v in b.values() if v in imported_bricks}
+def extract_brick_names(bricks_data: List[dict], possible_bricks: Set[str]) -> Set[str]:
+    return {v for b in bricks_data for v in b.values() if v in possible_bricks}
 
 
 def get_affected_bricks(
@@ -24,6 +24,18 @@ def get_affected_bricks(
 
     bases = extract_brick_names(dirs.get_bases_data(root, ns), found)
     components = extract_brick_names(dirs.get_components_data(root, ns), found)
+
+    return bases, components
+
+
+def get_related_bricks(
+    root: Path, ns: str, tag_name: Union[str, None], theme: str
+) -> Tuple[Set[str], Set[str]]:
+    files = test.get_changed_files(root, tag_name)
+    related = test.get_related_bricks(root, ns, theme, files)
+
+    bases = extract_brick_names(dirs.get_bases_data(root, ns), related["bases"])
+    components = extract_brick_names(dirs.get_components_data(root, ns), related["components"])
 
     return bases, components
 
@@ -40,10 +52,27 @@ def get_affected_projects(
     return [p for p in projects_data if p["path"].name in names]
 
 
+def parse_strategy(strategy: str) -> List[str]:
+    strategies = str.split(strategy, ",")
+
+    return [str.lower(s) for s in strategies]
+
+
 def run(root: Path, ns: str, tag: str, options: dict) -> None:
     theme = configuration.get_theme_from_config(root)
 
-    bases, components = get_affected_bricks(root, ns, tag, theme)
+    strategy = parse_strategy(options["strategy"])
+
+    by_imports = "imports" in strategy
+    by_path = "path" in strategy
+
+    fallback: Tuple[Set[str], Set[str]] = set(), set()
+    affected = get_affected_bricks(root, ns, tag, theme) if by_imports else fallback
+    related = get_related_bricks(root, ns, tag, theme) if by_path else fallback
+
+    bases = set().union(affected[0], related[0])
+    components = set().union(affected[1], related[1])
+
     projects_data = get_affected_projects(root, ns, bases, components)
 
     if options.get("bricks"):
