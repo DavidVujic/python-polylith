@@ -6,7 +6,7 @@ The main use case is to support having one or more microservices (or apps) in a 
 
 [![DavidVujic](https://circleci.com/gh/DavidVujic/python-polylith.svg?style=svg)](https://app.circleci.com/pipelines/github/DavidVujic/python-polylith?branch=main&filter=all)
 
-[![CodeScene Code Health](https://codescene.io/projects/36630/status-badges/code-health)](https://codescene.io/projects/36630)
+[![CodeScene Average Code Health](https://codescene.io/projects/36630/status-badges/average-code-health)](https://codescene.io/projects/36630)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DavidVujic_python-polylith&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DavidVujic_python-polylith)
 
