@@ -41,9 +41,7 @@ def extract_third_party_imports(all_imports: dict, top_ns: str) -> dict:
     return exclude_empty(with_third_party)
 
 
-def get_third_party_imports(
-    root: Path, paths: Set[Path], project_data: dict
-) -> dict:
+def get_third_party_imports(root: Path, paths: Set[Path], project_data: dict) -> dict:
     top_ns = configuration.get_namespace_from_config(root)
 
     all_imports = fetch_all_imports(paths)

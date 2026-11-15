@@ -35,7 +35,9 @@ def get_related_bricks(
     related = test.get_related_bricks(root, ns, theme, files)
 
     bases = extract_brick_names(dirs.get_bases_data(root, ns), related["bases"])
-    components = extract_brick_names(dirs.get_components_data(root, ns), related["components"])
+    components = extract_brick_names(
+        dirs.get_components_data(root, ns), related["components"]
+    )
 
     return bases, components
 
