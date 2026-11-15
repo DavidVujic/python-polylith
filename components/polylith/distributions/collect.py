@@ -30,7 +30,10 @@ def extract_library_names(deps: dict) -> Set[str]:
 
 
 def known_aliases_and_sub_dependencies(
-    deps: dict, library_alias: list, options: dict, from_lock_file: bool,
+    deps: dict,
+    library_alias: list,
+    options: dict,
+    from_lock_file: bool,
 ) -> Set[str]:
     """Collect known aliases (packages) for third-party libraries.
 

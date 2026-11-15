@@ -8,7 +8,9 @@ def test_extract_brick_name_from_test() -> None:
     root = Path.cwd()
 
     first_test = root / f"test/components/my_namespace/{expected}/the_test.py"
-    second_test = root / f"components/{expected}/my_namespace/{expected}/test/the_test.py"
+    second_test = (
+        root / f"components/{expected}/my_namespace/{expected}/test/the_test.py"
+    )
 
     third_test = root / "test/conftest.py"
 

@@ -16,6 +16,8 @@ jobs:
             python --version
             poetry run flake8
             poetry run mypy .
+            poetry run black --check .
+            poetry run isort --check-only .
             poetry run pytest
           name: Linting and testing
 

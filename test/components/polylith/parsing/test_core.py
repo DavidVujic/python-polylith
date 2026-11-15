@@ -1,6 +1,5 @@
 from polylith.parsing import core
 
-
 expected_ns = "unittest"
 bricks = {
     f"../../bases/{expected_ns}/one": f"{expected_ns}/one",

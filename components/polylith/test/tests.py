@@ -1,8 +1,8 @@
 from pathlib import Path
 
+from polylith import configuration
 from polylith.dirs import create_dir
 from polylith.files import create_file
-from polylith import configuration
 
 template = """\
 from {namespace}.{package} import {modulename}
