@@ -35,6 +35,12 @@ def get_project_groups(path: Path, data: dict) -> Set[str]:
     return configuration.get_project_groups_from_config(path, project_name)
 
 
+def get_project_teams(path: Path, data: dict) -> Set[str]:
+    project_name = get_project_name_from_toml(data)
+
+    return configuration.get_project_teams_from_config(path, project_name)
+
+
 @lru_cache
 def get_toml(path: Path) -> tomlkit.TOMLDocument:
     return toml.read_toml_document(path)
@@ -72,6 +78,7 @@ def get_packages_for_projects(root: Path) -> List[dict]:
             "name": get_project_name_from_toml(d),
             "alias": get_project_alias(root, d),
             "groups": get_project_groups(root, d),
+            "teams": get_project_teams(root, d),
             "packages": toml.get_project_package_includes(namespace, d["toml"]),
             "path": d["path"],
             "type": d["type"],

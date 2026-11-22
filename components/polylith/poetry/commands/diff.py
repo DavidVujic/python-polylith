@@ -21,6 +21,11 @@ class DiffCommand(Command):
             description="Print bricks that depend on the changes. Use with --bricks.",
             flag=True,
         ),
+        option(
+            long_name="teams",
+            description="Show contents based on configured teams.",
+            flag=True,
+        ),
     ]
 
     def handle(self) -> int:
@@ -30,6 +35,7 @@ class DiffCommand(Command):
             "short": self.option("short"),
             "bricks": self.option("bricks"),
             "deps": self.option("deps"),
+            "teams": self.option("teams"),
         }
 
         commands.diff.run(since, options)

@@ -22,3 +22,4 @@ save = Option(help="Store the contents of this command to file.")
 interface = Option(help="Show the brick interface.")
 
 group = Option(help="Show contents based on configured project group.")
+team = Option(help="Show contents based on configured teams.")

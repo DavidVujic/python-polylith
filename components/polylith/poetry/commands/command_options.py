@@ -7,7 +7,6 @@ alias = option(
     multiple=True,
 )
 
-
 save = option(
     long_name="save",
     description="Store the contents of this command to file",
@@ -34,10 +33,16 @@ strict = option(
     flag=True,
 )
 
-
 group = option(
     long_name="group",
     description="Show contents based on configured project group",
+    flag=False,
+    multiple=True,
+)
+
+team = option(
+    long_name="team",
+    description="Show contents based on configured teams.",
     flag=False,
     multiple=True,
 )
