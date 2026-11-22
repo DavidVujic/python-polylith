@@ -103,7 +103,7 @@ def test_distribution_sub_packages():
     res = distributions.distributions_sub_packages(dists)
 
     expected_dist = "typer"
-    expected_sub_package = "annotated-doc"
+    expected_sub_package = "rich"
 
     assert res.get(expected_dist) is not None
     assert expected_sub_package in res[expected_dist]
