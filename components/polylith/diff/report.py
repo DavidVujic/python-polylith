@@ -86,6 +86,9 @@ def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
 
 
 def print_teams_affected_by_changes(teams: Set[str], short: bool) -> None:
+    if not teams:
+        return
+
     sorted_teams = sorted(teams)
 
     console = Console(theme=theme.poly_theme)
