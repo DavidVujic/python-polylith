@@ -155,7 +155,9 @@ def test_get_project_alias_from_config(use_loose):
 
 
 def test_get_project_groups_from_config(use_loose):
-    first = core.get_project_groups_from_config(fake_path, "my-project-with-a-long-name")
+    first = core.get_project_groups_from_config(
+        fake_path, "my-project-with-a-long-name"
+    )
     other = core.get_project_groups_from_config(fake_path, "unknown")
 
     assert first == {"accounting", "handlers"}

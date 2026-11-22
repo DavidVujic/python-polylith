@@ -1,5 +1,9 @@
 from polylith.test import report
-from polylith.test.core import get_brick_imports_in_tests, get_changed_files, get_related_bricks
+from polylith.test.core import (
+    get_brick_imports_in_tests,
+    get_changed_files,
+    get_related_bricks,
+)
 from polylith.test.tests import create_test
 
 __all__ = [

@@ -32,8 +32,8 @@ def test_distribution_packages():
 
     res = distributions.distributions_packages(dists)
 
-    expected_dist = "mypy-extensions"
-    expected_package = "mypy_extensions"
+    expected_dist = "requests-toolbelt"
+    expected_package = "requests_toolbelt"
 
     assert res.get(expected_dist) is not None
     assert res[expected_dist] == [expected_package]
@@ -103,7 +103,7 @@ def test_distribution_sub_packages():
     res = distributions.distributions_sub_packages(dists)
 
     expected_dist = "typer"
-    expected_sub_package = "typing-extensions"
+    expected_sub_package = "rich"
 
     assert res.get(expected_dist) is not None
     assert expected_sub_package in res[expected_dist]
