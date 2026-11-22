@@ -29,6 +29,7 @@ my-other-project-that-also-has-a-long-name = "second"
 [tool.polylith.projects.groups]
 accounting = ["the-accounting-project", "my-project-with-a-long-name"]
 handlers = ["my-project-with-a-long-name", "other-handler-project"]
+group-with-alias = ["first"]
 
 [tool.polylith.projects.teams]
 team-one = ["first", "second"]
@@ -165,7 +166,7 @@ def test_get_project_groups_from_config(use_loose):
     )
     other = core.get_project_groups_from_config(fake_path, "unknown")
 
-    assert first == {"accounting", "handlers"}
+    assert first == {"accounting", "handlers", "group-with-alias"}
     assert other == set()
 
 
