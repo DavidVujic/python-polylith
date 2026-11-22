@@ -19,5 +19,5 @@ poetry-polylith-plugin = "poetry-plugin"
 polylith-cli = "cli"
 
 [tool.polylith.projects.groups]
-hooks = ["hatch-polylith-bricks", "pdm-polylith-bricks", "pdm-polylith-workspace"]
-command-line = ["poetry-polylith-plugin", "polylith-cli"]
+hooks = ["hatch", "pdm-bricks", "pdm-workspace"]
+command-line = ["poetry-plugin", "cli"]

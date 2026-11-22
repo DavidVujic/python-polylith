@@ -127,12 +127,13 @@ def get_project_alias_from_config(path: Path, project_name: str) -> Union[str, N
 def get_project_groups_from_config(path: Path, project_name: str) -> Set[str]:
     projects_conf = get_projects_config(path)
 
+    alias = get_project_alias_from_config(path, project_name)
     groups = projects_conf.get("groups") or {}
 
     if not groups:
         return set()
 
-    return {k for k, v in groups.items() if project_name in v}
+    return {k for k, v in groups.items() if project_name in v or alias in v}
 
 
 def get_project_teams_from_config(path: Path, project_name: str) -> Set[str]:
