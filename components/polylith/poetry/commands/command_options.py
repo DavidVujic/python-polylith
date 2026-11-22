@@ -43,5 +43,6 @@ group = option(
 team = option(
     long_name="team",
     description="Show contents based on configured teams.",
-    flag=True,
+    flag=False,
+    multiple=True,
 )
