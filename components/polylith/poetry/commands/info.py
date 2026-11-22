@@ -23,6 +23,7 @@ class InfoCommand(Command):
             "save": save,
             "output": output,
             "groups": set(self.option("group") or []),
+            "teams": set(self.option("team") or []),
         }
         commands.info.run(root, options)
 

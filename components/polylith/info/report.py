@@ -95,6 +95,7 @@ def print_workspace_summary(
 ) -> None:
     save = options.get("save", False)
     groups = ", ".join(options.get("groups") or set())
+    teams = ", ".join(options.get("teams") or set())
 
     console = Console(theme=theme.poly_theme, record=save)
 
@@ -112,6 +113,9 @@ def print_workspace_summary(
 
     if groups:
         console.print(Padding(f"[data]group[/]: [proj]{groups}[/]", (1, 0, 0, 0)))
+
+    if teams:
+        console.print(Padding(f"[data]team[/]: [proj]{teams}[/]", (1, 0, 0, 0)))
 
     if save:
         output.save_recorded(console, options, "workspace_summary")

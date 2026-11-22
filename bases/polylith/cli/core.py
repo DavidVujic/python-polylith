@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Union
+from typing import List, Set, Union
 
 from polylith import commands, configuration, info, repo
 from polylith.cli import build, create, env, options, test
@@ -64,11 +64,16 @@ def enriched_with_lock_files_data(
     return [enriched_with_lock_file_data(root, p, is_verbose) for p in projects_data]
 
 
+def _to_group(group: str) -> Set[str]:
+    return set(str.split(group, ",")) if group else set()
+
+
 @app.command("info")
 def info_command(
     short: Annotated[bool, options.short_workspace] = False,
     save: Annotated[bool, options.save] = False,
     group: Annotated[str, options.group] = "",
+    team: Annotated[str, options.team] = "",
 ):
     """Info about the Polylith workspace."""
     root = repo.get_workspace_root(Path.cwd())
@@ -78,7 +83,8 @@ def info_command(
         "short": short,
         "save": save,
         "output": output,
-        "groups": set(str.split(group, ",")) if group else set(),
+        "groups": _to_group(group),
+        "teams": _to_group(team),
     }
     commands.info.run(root, cli_options)
 

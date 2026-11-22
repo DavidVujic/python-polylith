@@ -133,3 +133,19 @@ def get_project_groups_from_config(path: Path, project_name: str) -> Set[str]:
         return set()
 
     return {k for k, v in groups.items() if project_name in v}
+
+
+def get_project_teams_from_config(path: Path, project_name: str) -> Set[str]:
+    projects_conf = get_projects_config(path)
+
+    teams = projects_conf.get("teams") or {}
+
+    if not teams:
+        return set()
+
+    alias = get_project_alias_from_config(path, project_name)
+    groups = get_project_groups_from_config(path, project_name)
+
+    names = groups.union({project_name}, {alias} if alias else {})
+
+    return {k for k, v in teams.items() if names.intersection(set(v))}
