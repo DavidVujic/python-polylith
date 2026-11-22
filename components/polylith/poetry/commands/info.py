@@ -9,7 +9,12 @@ class InfoCommand(Command):
     name = "poly info"
     description = "Info about the <comment>Polylith</> workspace."
 
-    options = [command_options.save, command_options.short, command_options.group]
+    options = [
+        command_options.save,
+        command_options.short,
+        command_options.group,
+        command_options.team,
+    ]
 
     def handle(self) -> int:
         short = True if self.option("short") else False

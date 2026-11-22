@@ -23,7 +23,7 @@ class DiffCommand(Command):
         ),
         option(
             long_name="teams",
-            description="Show contents based on configured team.",
+            description="Show contents based on configured teams.",
             flag=True,
         ),
     ]
