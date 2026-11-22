@@ -1,5 +1,7 @@
+import operator
 import re
 import subprocess
+from functools import reduce
 from pathlib import Path
 from typing import List, Set, Union
 
@@ -124,3 +126,16 @@ def get_projects_affected_by_changes(
     c = set(projects)
 
     return {*a, *b, *c}
+
+
+def get_affected_teams(
+    projects_data: List[dict], affected_projects: Set[str]
+) -> Set[str]:
+    relevant_projects = [
+        p for p in projects_data if p["path"].name in affected_projects
+    ]
+
+    teams_matrix = [list(p["teams"]) for p in relevant_projects]
+    flattened: List[str] = reduce(operator.iadd, teams_matrix, [])
+
+    return set().union(flattened)

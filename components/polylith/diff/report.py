@@ -2,8 +2,10 @@ from typing import List, Set
 
 from polylith import info
 from polylith.reporting import theme
+from rich import box
 from rich.console import Console
 from rich.padding import Padding
+from rich.table import Table
 
 
 def print_diff_details(
@@ -81,6 +83,24 @@ def print_projects_affected_by_changes(projects: Set[str], short: bool) -> None:
     sorted_projects = sorted(projects)
 
     print_detected_changes(sorted_projects, "proj", short)
+
+
+def print_teams_affected_by_changes(teams: Set[str], short: bool) -> None:
+    sorted_teams = sorted(teams)
+
+    console = Console(theme=theme.poly_theme)
+
+    if short:
+        console.out(",".join(sorted_teams))
+        return
+
+    table = Table(box=box.SIMPLE_HEAD)
+    table.add_column("[data]Teams affected by the changes[/]")
+
+    for t in sorted_teams:
+        table.add_row(f"[data]{t}[/]")
+
+    console.print(table, overflow="ellipsis")
 
 
 def print_diff_summary(tag: str, bases: List[str], components: List[str]) -> None:

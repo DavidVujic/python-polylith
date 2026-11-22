@@ -132,9 +132,10 @@ def diff_command(
     deps: Annotated[
         bool, Option(help="Print bricks that depend on changes. Use with --bricks.")
     ] = False,
+    teams: Annotated[bool, options.team] = False,
 ):
     """Shows changed bricks compared to the latest git tag."""
-    options = {"short": short, "bricks": bricks, "deps": deps}
+    options = {"short": short, "bricks": bricks, "deps": deps, "teams": teams}
 
     commands.diff.run(since, options)
 

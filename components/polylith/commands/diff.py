@@ -59,6 +59,7 @@ def print_views(root: Path, tag: str, options: dict) -> None:
     short = options.get("short", False)
     only_bricks = options.get("bricks", False)
     with_deps = options.get("deps", False)
+    teams = options.get("teams", False)
 
     ns = configuration.get_namespace_from_config(root)
     files = diff.collect.get_files(tag)
@@ -67,33 +68,40 @@ def print_views(root: Path, tag: str, options: dict) -> None:
     changed_components = diff.collect.get_changed_components(root, files, ns)
     changed_bricks = set(changed_bases + changed_components)
     changed_projects = diff.collect.get_changed_projects(root, files)
-
     projects_data = get_projects_data(root, ns)
 
-    if not short and not only_bricks:
-        diff.report.print_diff_summary(tag, changed_bases, changed_components)
-        diff.report.print_detected_changes_in_projects(changed_projects, short)
-        diff.report.print_diff_details(projects_data, changed_bases, changed_components)
+    affected_projects = diff.collect.get_projects_affected_by_changes(
+        projects_data, changed_projects, changed_bases, changed_components
+    )
+    affected_teams = diff.collect.get_affected_teams(projects_data, affected_projects)
+
+    if only_bricks:
+        dependent_bricks = (
+            calculate_dependent_bricks(root, ns, projects_data, changed_bricks)
+            if with_deps
+            else {}
+        )
+
+        diff.report.print_detected_changes_in_bricks(
+            changed_bases, changed_components, dependent_bricks, options
+        )
 
         return
 
-    if short and not only_bricks:
-        affected_projects = diff.collect.get_projects_affected_by_changes(
-            projects_data, changed_projects, changed_bases, changed_components
-        )
+    if teams:
+        diff.report.print_teams_affected_by_changes(affected_teams, short)
+
+        return
+
+    if short:
         diff.report.print_projects_affected_by_changes(affected_projects, short)
 
         return
 
-    dependent_bricks = (
-        calculate_dependent_bricks(root, ns, projects_data, changed_bricks)
-        if with_deps
-        else {}
-    )
-
-    diff.report.print_detected_changes_in_bricks(
-        changed_bases, changed_components, dependent_bricks, options
-    )
+    diff.report.print_diff_summary(tag, changed_bases, changed_components)
+    diff.report.print_detected_changes_in_projects(changed_projects, short)
+    diff.report.print_diff_details(projects_data, changed_bases, changed_components)
+    diff.report.print_teams_affected_by_changes(affected_teams, short)
 
 
 def run(tag_name: Union[str, None], options: dict):
